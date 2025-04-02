@@ -1,0 +1,73 @@
+﻿@page "/machines"
+@inject HttpClient HttpClient
+@inject NavigationManager NavigationManager
+@inject IHttpClientFactory HttpClientFactory
+@inject MachineService MachineService
+@using Newtonsoft.Json;
+
+
+<h3>Machines</h3>
+
+@if (_isLoading)
+{
+    <div>loading....</div>
+}
+        
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Code</th>
+                <th>Description</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var machine in machines)
+            {
+                <tr>
+                    <td>@machine.Code</td>
+                    <td>@machine.Description</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+@code {
+    private List<MachineDto>? machines;
+    private bool _isLoading = true;
+
+    private void ThrowException()
+    {
+        throw new InvalidOperationException("This is a test exception.");
+    }
+
+    private void Recover()
+    {
+//        errorBoundary.Recover();
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        Func<Task> lambda = async () => machines = await MachineService.MachinesAsync();
+        await Run(lambda);
+    }
+
+    public async Task Run(Func<Task> action)
+    {
+        try
+        {
+            await action();
+        }
+        catch (Exception x)
+        {
+            //exception = x;
+            //_isError = true;
+        }
+        finally
+        {
+            _isLoading = false;
+        }
+    }
+}

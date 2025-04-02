@@ -11,8 +11,11 @@ builder.Services.AddSingleton<WeatherForecastService>();
 
 builder.Services.AddHttpClient("BackendApi", client =>
 {
-    client.BaseAddress = new Uri("https://localhost:5001/"); // Adjust base URL to your backend
+    client.BaseAddress = new Uri("https://localhost:6001/"); // Adjust base URL to your backend
 });
+
+builder.Services.AddScoped<MachineService>();
+
 
 var app = builder.Build();
 
