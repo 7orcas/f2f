@@ -45,9 +45,12 @@
 
                 successMessage = responseDto.SuccessMessage;
                 successMessage += "  Token:" + token.Token;
-Console.WriteLine("XXXX");
 
-                NavigationManager.NavigateTo("https://localhost:7170", true);
+               
+
+Console.WriteLine("XXXX " + token.Token);
+
+                NavigationManager.NavigateTo("https://localhost:7170?t=" + token.Token, true);
                 // Save token, e.g., in localStorage if this were Blazor WebAssembly
             }
             else

@@ -1,6 +1,8 @@
 using FrontendServer.Data;
+using FrontendServer.Service;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
+using System.Net;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -12,9 +14,20 @@ builder.Services.AddSingleton<WeatherForecastService>();
 builder.Services.AddHttpClient("BackendApi", client =>
 {
     client.BaseAddress = new Uri("https://localhost:6001/"); // Adjust base URL to your backend
+}).ConfigurePrimaryHttpMessageHandler(() =>
+{
+    var handler = new HttpClientHandler();
+    handler.UseCookies = true; // Enable cookies
+    handler.CookieContainer = new CookieContainer(); // Cookie container for managing cookies
+    return handler;
 });
 
+
+
 builder.Services.AddScoped<MachineService>();
+builder.Services.AddScoped<TokenStorageService>();
+builder.Services.AddScoped<AuthorizationMessageHandler>();
+
 
 
 var app = builder.Build();

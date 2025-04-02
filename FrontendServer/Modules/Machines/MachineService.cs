@@ -21,6 +21,13 @@ namespace FrontendServer.Modules.Machines
         {
             var client = _httpClientFactory.CreateClient("BackendApi");
 
+            var tokenResponse = await client.GetAsync("api/Token");
+            var token = await tokenResponse.Content.ReadAsStringAsync();
+
+            client.DefaultRequestHeaders.Authorization =
+                new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
+
+
             var response = await client.GetAsync("api/Machine/machines");
             if (response.IsSuccessStatusCode)
             {

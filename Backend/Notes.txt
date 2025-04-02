@@ -1,0 +1,4 @@
+﻿
+JwtBearer:
+  help: https://learn.microsoft.com/en-us/aspnet/core/security/authentication/configure-jwt-bearer-authentication?view=aspnetcore-9.0
+

@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 
 namespace Backend.Modules.Machines
 {
@@ -17,7 +18,7 @@ namespace Backend.Modules.Machines
             _machineService = machineService;
         }
 
-
+        [Authorize]
         [HttpGet("machines")]
         public async Task<IActionResult> Get()
         {

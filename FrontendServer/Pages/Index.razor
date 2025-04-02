@@ -1,4 +1,6 @@
 ﻿@page "/"
+@inject HttpClient HttpClient
+@inject IHttpClientFactory HttpClientFactory
 
 <PageTitle>Index</PageTitle>
 
@@ -7,3 +9,18 @@
 Welcome to your new app.
 
 <SurveyPrompt Title="How is Blazor working for you?" />
+
+<p>Token: @token</p>
+
+
+@code {
+    private string token = string.Empty;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var client = HttpClientFactory.CreateClient("BackendApi");
+        var tokenResponse = await client.GetAsync("api/Token");
+        token = await tokenResponse.Content.ReadAsStringAsync();
+    }
+
+}
