@@ -1,0 +1,71 @@
+﻿@page "/"
+@inject HttpClient HttpClient
+@inject NavigationManager NavigationManager
+@inject IHttpClientFactory HttpClientFactory
+@inject LoginService LoginService
+@using Newtonsoft.Json;
+
+<h3>Login</h3>
+<EditForm Model="@loginRequest" OnValidSubmit="@HandleLogin">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+
+    <div>
+        <label>Username:</label>
+        <InputText @bind-Value="loginRequest.Username" />
+    </div>
+    <div>
+        <label>Password:</label>
+        <InputText @bind-Value="loginRequest.Password" Type="password" />
+    </div>
+    <button type="submit">Login</button>
+</EditForm>
+
+<p>@successMessage</p>
+<p>@errorMessage</p>
+
+@code {
+    private LoginRequest loginRequest = new();
+    private string errorMessage = string.Empty;
+    private string successMessage = string.Empty;
+    private string test;
+
+    private async Task HandleLogin()
+    {
+        try
+        {
+            var client = HttpClientFactory.CreateClient("BackendApi");
+
+            var response = await client.PostAsJsonAsync("api/Login/login", loginRequest);
+            if (response.IsSuccessStatusCode)
+            {
+                var result = await response.Content.ReadAsStringAsync();
+                var responseDto = JsonConvert.DeserializeObject<_ResponseDto>(result);
+                var token = JsonConvert.DeserializeObject<LoginTokenDto>(responseDto.Result.ToString());
+
+                successMessage = responseDto.SuccessMessage;
+                successMessage += "  Token:" + token.Token;
+Console.WriteLine("XXXX");
+
+                NavigationManager.NavigateTo("https://localhost:7170", true);
+                // Save token, e.g., in localStorage if this were Blazor WebAssembly
+            }
+            else
+            {
+                errorMessage = "Invalid username or password + "
+                    + test;
+
+            }
+        }
+        catch (Exception ex)
+        {
+            errorMessage = $"An error occurred: {ex.Message}";
+        }
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        test = await LoginService.LoginAsync();
+    }
+
+}
