@@ -3,7 +3,7 @@ using Backend.Modules.Machines.Ent;
 
 namespace Backend.Modules.Machines
 {
-    public class LoginService: BaseService, ILoginService
+    public class MachineService: BaseService, ILoginService
     {
         public async Task<List<Machine>> GetMachines()
         {

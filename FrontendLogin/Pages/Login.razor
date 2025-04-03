@@ -50,6 +50,7 @@
 
 Console.WriteLine("XXXX " + token.Token);
 
+                client.DefaultRequestHeaders.Add("Authorization", "Bearer " + token.Token);
                 NavigationManager.NavigateTo("https://localhost:7170?t=" + token.Token, true);
                 // Save token, e.g., in localStorage if this were Blazor WebAssembly
             }
