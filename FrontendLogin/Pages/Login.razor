@@ -18,6 +18,10 @@
         <label>Password:</label>
         <InputText @bind-Value="loginRequest.Password" Type="password" />
     </div>
+    <div>
+        <label>Org:</label>
+        <InputNumber @bind-Value="loginRequest.Org" Type="1" />
+    </div>
     <button type="submit">Login</button>
 </EditForm>
 
@@ -34,6 +38,9 @@
     {
         try
         {
+            errorMessage = string.Empty;
+            successMessage = string.Empty;
+
             var client = HttpClientFactory.CreateClient("BackendApi");
 
             var response = await client.PostAsJsonAsync("api/Login/login", loginRequest);
@@ -41,17 +48,20 @@
             {
                 var result = await response.Content.ReadAsStringAsync();
                 var responseDto = JsonConvert.DeserializeObject<_ResponseDto>(result);
-                var token = JsonConvert.DeserializeObject<LoginTokenDto>(responseDto.Result.ToString());
 
-                successMessage = responseDto.SuccessMessage;
-                successMessage += "  Token:" + token.Token;
-
-               
-
-Console.WriteLine("XXXX " + token.Token);
-
-                client.DefaultRequestHeaders.Add("Authorization", "Bearer " + token.Token);
-                NavigationManager.NavigateTo("https://localhost:7170?t=" + token.Token, true);
+                if (responseDto.Valid)
+                {
+                    var token = JsonConvert.DeserializeObject<LoginTokenDto>(responseDto.Result.ToString());
+                    successMessage = responseDto.SuccessMessage;
+                    successMessage += "  Token:" + token.Token;
+                    client.DefaultRequestHeaders.Add("Authorization", "Bearer " + token.Token);
+                    //  NavigationManager.NavigateTo("https://localhost:7170?t=" + token.Token, true);
+                }
+                else
+                {
+                    errorMessage = responseDto.ErrorMessage;
+                }
+                
                 // Save token, e.g., in localStorage if this were Blazor WebAssembly
             }
             else

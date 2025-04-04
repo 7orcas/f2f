@@ -7,13 +7,13 @@ namespace Backend.Modules.Machines
     [Route("api/[controller]")]
     public class MachineController : ControllerBase
     {
-        private readonly IMachineService _machineService;
+        private readonly MachineServiceI _machineService;
 
         /// <summary>
         /// Constructor
         /// </summary>
-        /// <param name="labelService"></param>
-        public MachineController(IMachineService machineService)
+        /// <param name="MachineService"></param>
+        public MachineController(MachineServiceI machineService)
         {
             _machineService = machineService;
         }

@@ -8,14 +8,14 @@ namespace Backend.Modules._Base
         public T ReadBaseEntity<T> (SqlDataReader r) where T : _BaseEntity, new()
         {
             var entity = new T ();
-            entity._OrgId = GetId(r, "_OrgId");
+            entity.OrgId = GetId(r, "_OrgId");
             entity.Id = GetId(r, "Id");
-            entity.Descrim = (string)r["Descrim"];
             entity.Code = (string)r["Code"];
             entity.Description = GetString(r, "Descr");
             entity.Encoded = GetString(r, "Encoded");
-            //entity.Encoded = (string)r["Encoded"]; // Force Error
-            entity.Updated = (DateTime)r["Updated"];
+            //entity.Encoded = (string)r["Encoded"]; // Force Error, testing
+            entity.Updated = GetDateTime(r, "Updated");
+            entity.IsActive = GetBoolean(r, "Encoded");
 
             return entity;
         }
@@ -38,6 +38,16 @@ namespace Backend.Modules._Base
         public int GetInt(SqlDataReader r, string column)
         {
             return (int)r[column];
+        }
+
+        public bool GetBoolean(SqlDataReader r, string column)
+        {
+            return !r.IsDBNull(r.GetOrdinal(column)) && r.GetBoolean(r.GetOrdinal(column));
+        }
+
+        public DateTime GetDateTime(SqlDataReader r, string column)
+        {
+            return r[column] == DBNull.Value ? DateTime.MinValue : (DateTime)r[column];
         }
 
     }

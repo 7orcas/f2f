@@ -1,5 +1,6 @@
 --Do individually
 /*
+CREATE SCHEMA _app;
 CREATE SCHEMA _base;
 CREATE SCHEMA _cntrl;
 */
@@ -10,46 +11,41 @@ CREATE SEQUENCE _cntrl.temp_id
     INCREMENT BY 1;
 
 CREATE TABLE _cntrl.token (
-    id         INT             PRIMARY KEY NOT NULL,
+    id         INT             PRIMARY KEY IDENTITY (1, 1) NOT NULL,
 	token      NVARCHAR (MAX)  NOT NULL,
-	updated    DATETIME        NOT NULL
+	expires    DATETIME        NOT NULL
 );
 
 CREATE TABLE _base.org (
-    id         INT             PRIMARY KEY NOT NULL,
+    id         INT             PRIMARY KEY IDENTITY (1, 1) NOT NULL,
+	nr         INT             NOT NULL,
 	code       NVARCHAR (100)  NOT NULL,
-	descr      NVARCHAR (MAX)  NOT NULL
-);
-CREATE TABLE _base.entity (
-	_orgId     INT             NOT NULL,
-    id         INT             PRIMARY KEY IDENTITY (10000, 1) NOT NULL,
-	descrim    NVARCHAR (100)  NOT NULL,
-	code       NVARCHAR (100)  NOT NULL,
-	descr      NVARCHAR (MAX)  NULL,
+	descr      NVARCHAR (MAX)  NOT NULL,
 	encoded    NVARCHAR (MAX)  NULL,
 	updated    DATETIME        NOT NULL DEFAULT GETDATE(),
-	FOREIGN KEY (_orgId) REFERENCES _base.org(id)
+	isActive   BIT             NOT NULL DEFAULT 1
 );
 CREATE TABLE _base.label (
-    id         INT             PRIMARY KEY IDENTITY (10000, 1) NOT NULL,
+    id         INT             PRIMARY KEY IDENTITY (1, 1) NOT NULL,
 	lang       NVARCHAR (4)    NOT NULL,
 	code       NVARCHAR (100)  NOT NULL,
-	_orgId     INT             NULL,
+	orgId      INT             NULL,
 	descr      NVARCHAR (MAX)  NOT NULL,
 	tooltip    NVARCHAR (MAX)  NULL,
 	encoded    NVARCHAR (MAX)  NULL,
 	updated    DATETIME        NOT NULL DEFAULT GETDATE(),
-	FOREIGN KEY (_orgId) REFERENCES _base.org(id),
-	CONSTRAINT label_uq_code UNIQUE (lang, code, _orgId)
+	FOREIGN KEY (orgId)        REFERENCES _base.org(id),
+	CONSTRAINT label_uq_code   UNIQUE (lang, code, orgId)
 );
 CREATE TABLE _base.zzz
 (
 	id         INT             PRIMARY KEY IDENTITY (10000, 1) NOT NULL,
-	xxx        NVARCHAR (4)    NOT NULL UNIQUE,
-	yyy        NVARCHAR (4)    NOT NULL,
-	_orgs      NVARCHAR (MAX)  NULL,
+	xxx        NVARCHAR (40)   NOT NULL UNIQUE,
+	yyy        NVARCHAR (100)  NOT NULL,
+	orgs       NVARCHAR (MAX)  NULL,
  	attempts   INT             NULL DEFAULT (0),
- 	lastlogin  DATETIME        NOT NULL
+ 	lastlogin  DATETIME        NOT NULL DEFAULT GETDATE(),
+	isActive   BIT             NOT NULL DEFAULT 1
 );
 CREATE TABLE _base.permission
 (
@@ -65,8 +61,8 @@ CREATE TABLE _base.rolePermission
 	id           INT             PRIMARY KEY IDENTITY (10000, 1) NOT NULL,
     roleId       INT             NOT NULL,
     permissionId INT             NOT NULL,
-	FOREIGN KEY (roleId) REFERENCES _base.role(id),
-	FOREIGN KEY (permissionId) REFERENCES _base.permission(id),
+	FOREIGN KEY (roleId)         REFERENCES _base.role(id),
+	FOREIGN KEY (permissionId)   REFERENCES _base.permission(id),
 	CONSTRAINT rolePermission_uq_role_persmission UNIQUE (roleId, permissionId)
 );
 CREATE TABLE _base.zzzRole
@@ -74,8 +70,8 @@ CREATE TABLE _base.zzzRole
 	id           INT             PRIMARY KEY IDENTITY (10000, 1) NOT NULL,
 	zzzId        INT             NOT NULL,
 	roleId       INT             NOT NULL,
-	FOREIGN KEY (zzzId) REFERENCES _base.zzz(id),
-	FOREIGN KEY (roleId) REFERENCES _base.role(id),
+	FOREIGN KEY (zzzId)          REFERENCES _base.zzz(id),
+	FOREIGN KEY (roleId)         REFERENCES _base.role(id),
 	CONSTRAINT zzzRole_uq_zzz_role UNIQUE (zzzId, roleId)
 );
 CREATE TABLE _base.lang

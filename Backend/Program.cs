@@ -1,4 +1,5 @@
 using System.Text;
+using Backend.App.Login;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens; // For TokenValidationParameters
 
@@ -8,6 +9,7 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 
 builder.Services.AddControllers();
+
 builder.Services.AddSession(options =>
 {
     options.IdleTimeout = TimeSpan.FromMinutes(30); // Session timeout
@@ -15,8 +17,9 @@ builder.Services.AddSession(options =>
     options.Cookie.IsEssential = true; // Mark the session cookie as essential
 });
 
-
 builder.Services.AddDistributedMemoryCache();
+builder.Services.AddMemoryCache();
+
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
@@ -37,10 +40,17 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
         };
     });
 
-builder.Services.AddScoped<ILoginService, LoginService>();
 
+builder.Services.AddScoped<LoginServiceI, LoginService>();
+builder.Services.AddScoped<MachineServiceI, MachineService>();
 
 var app = builder.Build();
+
+
+app.UseHttpsRedirection();
+
+app.UseSession();
+app.UseAuthorization();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
@@ -49,11 +59,6 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-app.UseHttpsRedirection();
-
-app.UseAuthorization();
-
 app.MapControllers();
-app.UseSession();
 
 app.Run();

@@ -3,16 +3,16 @@ using Backend.Modules.Machines.Ent;
 
 namespace Backend.Modules.Machines
 {
-    public class LoginService: BaseService, ILoginService
+    public class MachineService: BaseService, MachineServiceI
     {
         public async Task<List<Machine>> GetMachines()
         {
             List <Machine> machines = new List<Machine>();
             await Sql.Run(
-                    "SELECT * FROM Machine m" + Sql.AddBaseEntity("m"),
+                    "SELECT * FROM _app.Machine m",
                     r => {
                         var m = ReadBaseEntity<Machine>(r);
-                        m.StationPairs = GetInt(r, "StationPairs");
+                        m.StationPairs = GetInt(r, "stationPairs");
                         machines.Add(m);
                     }
             );

@@ -2,7 +2,7 @@
 
 namespace Backend.Modules.Machines
 {
-    public interface ILoginService
+    public interface MachineServiceI
     {
         Task<List<Machine>> GetMachines();
     }

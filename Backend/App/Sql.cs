@@ -10,13 +10,13 @@ namespace Backend.App
     public class Sql
     {
 
-        static public async Task<bool> Run(string sqlString, Action<SqlDataReader> action)
+        static public async Task<bool> Run(string sqlString, Action<SqlDataReader> action, params SqlParameter[] parameters)
         {
             return await Task.Run(() =>
             {
                 
 //Thread.Sleep(400);
-                var connectionString = "Server=np:localhost;Database=dsp;TrustServerCertificate=True;Authentication=Active Directory Integrated;";
+                var connectionString = "Server=np:localhost;Database=blue;TrustServerCertificate=True;Authentication=Active Directory Integrated;";
 
                 SqlConnection connection = null;
                 SqlDataReader reader = null;
@@ -25,6 +25,10 @@ namespace Backend.App
                     connection = new SqlConnection(connectionString);
                     connection.Open();
                     var command = new SqlCommand(sqlString, connection);
+
+                    if (parameters != null && parameters.Length > 0)
+                        command.Parameters.AddRange(parameters);
+
                     reader = command.ExecuteReader();
                     while (reader.Read())
                     {
@@ -52,7 +56,7 @@ namespace Backend.App
             {
 
                 //Thread.Sleep(400);
-                var connectionString = "Server=np:localhost;Database=dsp;TrustServerCertificate=True;Authentication=Active Directory Integrated;";
+                var connectionString = "Server=np:localhost;Database=blue;TrustServerCertificate=True;Authentication=Active Directory Integrated;";
 
                 SqlConnection connection = null;
                 try
@@ -76,15 +80,11 @@ namespace Backend.App
             });
         }
 
-        static public string AddBaseEntity (string table)
+        static public bool ValidateParameter(string parameter)
         {
-            return AddBaseEntity(table, "b");
+            return !string.IsNullOrWhiteSpace(parameter);
         }
 
-        static public string AddBaseEntity(string table, string baseTable)
-        {
-            return " INNER JOIN App.BaseEntity " + baseTable + " ON " + baseTable + ".Id = " + table + "._id";
-        }
 
     }
 }
