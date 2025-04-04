@@ -1,4 +1,4 @@
-﻿using Backend.Modules._Base;
+﻿using Backend.App.Token;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
@@ -13,14 +13,17 @@ namespace Backend.App.Login
     public class LoginController : ControllerBase
     {
         private readonly LoginServiceI _loginService;
+        private readonly TokenServiceI _tokenService;
 
         /// <summary>
         /// Constructor
         /// </summary>
         /// <param name="labelService"></param>
-        public LoginController(LoginServiceI loginService)
+        public LoginController(LoginServiceI loginService,
+            TokenServiceI tokenService)
         {
             _loginService = loginService;
+            _tokenService = tokenService;
         }
 
 
@@ -66,10 +69,12 @@ namespace Backend.App.Login
             await _loginService.InitialiseLogin(l);
 
 
+
             var claims = new[]
             {
                 new Claim(ClaimTypes.Name, l.Userid),
-                new Claim("Role", "User")
+                new Claim("Org", "" + request.Org),
+                new Claim("Role", "User"),
             };
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("ThisIsASecureLongEnoughKeyZ1234567890"));
             var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
@@ -83,13 +88,20 @@ namespace Backend.App.Login
                 );
             var tokenX = new JwtSecurityTokenHandler().WriteToken(token);
 
-            var session = HttpContext.Session;
-            HttpContext.Session.SetString("JwtToken", tokenX);
+            var keyX = Guid.NewGuid().ToString();
+            _tokenService.AddToken(keyX, tokenX);
+
+            //var session = HttpContext.Session;
+            //HttpContext.Session.SetString("JwtToken", tokenX);
+            //HttpContext.Session.SetString("TokenKey", keyX);
 
             var r = new _ResponseDto
             {
                 SuccessMessage = "Login Ok",
-                Result = new LoginTokenDto { Token = tokenX }
+                Result = new LoginTokenDto { 
+                    TokenKey = keyX,
+                    Token = tokenX 
+                }
             };
             return Ok(r);
             

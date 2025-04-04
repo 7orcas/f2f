@@ -27,11 +27,15 @@
 
 <p>@successMessage</p>
 <p>@errorMessage</p>
+<p>@tokenkey</p>
+<p>@token</p>
 
 @code {
     private LoginRequest loginRequest = new();
     private string errorMessage = string.Empty;
     private string successMessage = string.Empty;
+    private string tokenkey;
+    private string token;
     private string test;
 
     private async Task HandleLogin()
@@ -43,6 +47,7 @@
 
             var client = HttpClientFactory.CreateClient("BackendApi");
 
+loginRequest.Org = 1;
             var response = await client.PostAsJsonAsync("api/Login/login", loginRequest);
             if (response.IsSuccessStatusCode)
             {
@@ -51,11 +56,17 @@
 
                 if (responseDto.Valid)
                 {
-                    var token = JsonConvert.DeserializeObject<LoginTokenDto>(responseDto.Result.ToString());
+                    var loginToken = JsonConvert.DeserializeObject<LoginTokenDto>(responseDto.Result.ToString());
                     successMessage = responseDto.SuccessMessage;
-                    successMessage += "  Token:" + token.Token;
-                    client.DefaultRequestHeaders.Add("Authorization", "Bearer " + token.Token);
-                    //  NavigationManager.NavigateTo("https://localhost:7170?t=" + token.Token, true);
+                    tokenkey = loginToken.TokenKey;
+                    token = loginToken.Token;
+
+                    //client.DefaultRequestHeaders.Add("Authorization", "Bearer " + token.Token);
+
+                    await TestPauseForTwoSeconds();
+
+
+                    NavigationManager.NavigateTo("https://localhost:7170?tk=" + tokenkey, true);
                 }
                 else
                 {
@@ -76,6 +87,12 @@
             errorMessage = $"An error occurred: {ex.Message}";
         }
     }
+
+    private async Task TestPauseForTwoSeconds()
+    {
+        await Task.Delay(2000);
+    }
+
 
     protected override async Task OnInitializedAsync()
     {

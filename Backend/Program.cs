@@ -1,5 +1,7 @@
 using System.Text;
 using Backend.App.Login;
+using Backend.App.Token;
+
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens; // For TokenValidationParameters
 
@@ -42,6 +44,8 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 
 
 builder.Services.AddScoped<LoginServiceI, LoginService>();
+builder.Services.AddScoped<TokenServiceI, TokenService>();
+
 builder.Services.AddScoped<MachineServiceI, MachineService>();
 
 var app = builder.Build();

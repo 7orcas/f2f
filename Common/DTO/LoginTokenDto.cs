@@ -8,6 +8,7 @@ namespace Common.DTO
 {
     public class LoginTokenDto
     {
+        public string TokenKey { get; set; }
         public string Token { get; set; }
     }
 }

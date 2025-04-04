@@ -12,13 +12,13 @@ Welcome to your new app.
 
 <SurveyPrompt Title="How is Blazor working for you?" />
 
-<p>Token in url: @token1</p>
-<p>Token on server: @token2</p>
+<p>Tokenkey in url: @tokenkey</p>
+<p>Token on server: @token</p>
 
 
 @code {
-    private string token1 = string.Empty;
-    private string token2 = string.Empty;
+    private string tokenkey = string.Empty;
+    private string token = string.Empty;
 
     protected override async Task OnInitializedAsync()
     {
@@ -28,16 +28,16 @@ Welcome to your new app.
         var query = Microsoft.AspNetCore.WebUtilities.QueryHelpers.ParseQuery(uri.Query);
 
         // Get a specific query parameter value
-        if (query.TryGetValue("t", out var value))
+        if (query.TryGetValue("tk", out var value))
         {
-            token1 = value;
+            tokenkey = value;
         }
 
 
 
         var client = HttpClientFactory.CreateClient("BackendApi");
-        var tokenResponse = await client.GetAsync("api/Token");
-        token2 = await tokenResponse.Content.ReadAsStringAsync();
+        var tokenResponse = await client.GetAsync("api/Token/token?key=" + tokenkey);
+        token = await tokenResponse.Content.ReadAsStringAsync();
     }
 
 }
