@@ -17,12 +17,12 @@ namespace FrontendServer.Modules.Machines
         }
 
 
-        public async Task<List<MachineDto>> MachinesAsync()
+        public async Task<List<MachineDto>> MachinesAsync(string token)
         {
-            var client = _httpClientFactory.CreateClient("BackendApi");
+            var client = _httpClientFactory.CreateClient("AuthorizedClient");
 
-            var tokenResponse = await client.GetAsync("api/Token");
-            var token = await tokenResponse.Content.ReadAsStringAsync();
+            //var tokenResponse = await client.GetAsync("api/Token");
+            //var token = await tokenResponse.Content.ReadAsStringAsync();
 
             client.DefaultRequestHeaders.Authorization =
                 new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);

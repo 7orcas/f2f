@@ -2,6 +2,10 @@
 @inject HttpClient HttpClient
 @inject IHttpClientFactory HttpClientFactory
 @inject NavigationManager NavigationManager
+@inject SessionTokenStorageService TokenStorage
+
+@using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage
+@inject ProtectedSessionStorage ProtectedSessionStore
 
 
 <PageTitle>Index</PageTitle>
@@ -18,7 +22,23 @@ Welcome to your new app.
 
 @code {
     private string tokenkey = string.Empty;
-    private string token = string.Empty;
+    private string token;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            //     SessionService.SetSessionValue("token", token);
+
+            if (!string.IsNullOrEmpty(token))
+                await ProtectedSessionStore.SetAsync("tokenX", token);
+
+            // await TokenStorage.InitializeAsync(); // Enable interop after rendering
+            // if (!string.IsNullOrEmpty(token))
+            //     await TokenStorage.SetTokenAsync(token);
+        }
+    }
+
 
     protected override async Task OnInitializedAsync()
     {
@@ -32,12 +52,11 @@ Welcome to your new app.
         {
             tokenkey = value;
         }
-
-
-
         var client = HttpClientFactory.CreateClient("BackendApi");
         var tokenResponse = await client.GetAsync("api/Token/token?key=" + tokenkey);
         token = await tokenResponse.Content.ReadAsStringAsync();
+        
+        
     }
 
 }

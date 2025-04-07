@@ -5,6 +5,10 @@
 @inject MachineService MachineService
 @using Newtonsoft.Json;
 
+@using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage
+@inject ProtectedSessionStorage ProtectedSessionStore
+
+
 
 <h3>Machines</h3>
 
@@ -32,11 +36,14 @@ else
             }
         </tbody>
     </table>
+
+    <p>Token in storage: @token</p>
 }
 
 @code {
     private List<MachineDto>? machines;
     private bool _isLoading = true;
+    private string token;
 
     private void ThrowException()
     {
@@ -45,13 +52,32 @@ else
 
     private void Recover()
     {
-//        errorBoundary.Recover();
+        //        errorBoundary.Recover();
     }
 
     protected override async Task OnInitializedAsync()
     {
-        Func<Task> lambda = async () => machines = await MachineService.MachinesAsync();
-        await Run(lambda);
+        /*
+        string token = null;
+        var result = await ProtectedSessionStore.GetAsync<string>("token");
+        if (result.Success)
+            token = result.Value;
+        */
+        // Func<Task> lambda = async () => machines = await MachineService.MachinesAsync(token);
+        // await Run(lambda);
+        machines = await MachineService.MachinesAsync(token);
+        _isLoading = false;
+
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            var result = await ProtectedSessionStore.GetAsync<string>("tokenX");
+            if (result.Success)
+                token = result.Value;
+        }
     }
 
     public async Task Run(Func<Task> action)

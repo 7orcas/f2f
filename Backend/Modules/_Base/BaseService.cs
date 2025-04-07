@@ -8,7 +8,7 @@ namespace Backend.Modules._Base
         public T ReadBaseEntity<T> (SqlDataReader r) where T : _BaseEntity, new()
         {
             var entity = new T ();
-            entity.OrgId = GetId(r, "_OrgId");
+            entity.OrgId = GetId(r, "OrgId");
             entity.Id = GetId(r, "Id");
             entity.Code = (string)r["Code"];
             entity.Description = GetString(r, "Descr");

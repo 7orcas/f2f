@@ -11,9 +11,9 @@ CREATE TABLE _app.machineGroup (
 );
 CREATE TABLE _app.machine (
     id                     INT             PRIMARY KEY IDENTITY (10000, 1) NOT NULL,
-	stationPairs           INT             NOT NULL,
 	orgId                  INT             NOT NULL,
 	machineGroupId         INT             NULL,
+	stationPairs           INT             NOT NULL,
 	code                   NVARCHAR (100)  NOT NULL,
 	descr                  NVARCHAR (MAX)  NULL,
 	encoded                NVARCHAR (MAX)  NULL,

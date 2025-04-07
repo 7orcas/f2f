@@ -28,3 +28,4 @@ INSERT INTO currency (id,reftype_id,sort,code,descr,org_nr,updated,updated_useri
 INSERT INTO currency (id,reftype_id,sort,code,descr,org_nr,updated,updated_userid) VALUES (10021,10002,2,'AUD','Australian Dollar',  1,current_timestamp,1);
 INSERT INTO currency (id,reftype_id,sort,code,descr,org_nr,updated,updated_userid) VALUES (10022,10002,1,'GBP','Great Britain Pound',1,current_timestamp,1);
 */
+
