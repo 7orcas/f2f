@@ -1,4 +1,6 @@
 ﻿using Backend.App.Token;
+using Backend.App.Token.Ent;
+using Backend.Modules._Base;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
@@ -12,18 +14,18 @@ namespace Backend.App.Login
     [Route("api/[controller]")]
     public class LoginController : ControllerBase
     {
-        private readonly LoginServiceI _loginService;
         private readonly TokenServiceI _tokenService;
+        private readonly LoginServiceI _loginService;
 
         /// <summary>
         /// Constructor
         /// </summary>
         /// <param name="labelService"></param>
-        public LoginController(LoginServiceI loginService,
-            TokenServiceI tokenService)
+        public LoginController(TokenServiceI tokenService,
+            LoginServiceI loginService)
         {
-            _loginService = loginService;
             _tokenService = tokenService;
+            _loginService = loginService;
         }
 
 
@@ -68,32 +70,14 @@ namespace Backend.App.Login
 
             await _loginService.InitialiseLogin(l);
 
-
-
-            var claims = new[]
-            {
-                new Claim(ClaimTypes.Name, l.Userid),
-                new Claim("Org", "" + request.Org),
-                new Claim("Role", "User"),
+            var tv = new TokenValues { 
+                Userid = l.Userid,
+                Org = request.Org,
             };
-            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("ThisIsASecureLongEnoughKeyZ1234567890"));
-            var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
 
-            var token = new JwtSecurityToken(
-                issuer: "yourIssuer",
-                audience: "yourAudience",
-                claims: claims,
-                expires: DateTime.Now.AddMinutes(30),
-                signingCredentials: creds
-                );
-            var tokenX = new JwtSecurityTokenHandler().WriteToken(token);
-
+            var tokenX = _tokenService.CreateToken(tv);
             var keyX = Guid.NewGuid().ToString();
             _tokenService.AddToken(keyX, tokenX);
-
-            //var session = HttpContext.Session;
-            //HttpContext.Session.SetString("JwtToken", tokenX);
-            //HttpContext.Session.SetString("TokenKey", keyX);
 
             var r = new _ResponseDto
             {

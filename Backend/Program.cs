@@ -1,6 +1,8 @@
+using System.Security.Cryptography;
 using System.Text;
 using Backend.App.Login;
 using Backend.App.Token;
+using Backend.App.Token.Ent;
 
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens; // For TokenValidationParameters
@@ -28,20 +30,7 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-    .AddJwtBearer(options =>
-    {
-        options.TokenValidationParameters = new TokenValidationParameters
-        {
-            ValidateIssuer = true,
-            ValidateAudience = true,
-            ValidateLifetime = true,
-            ValidateIssuerSigningKey = true,
-            ValidIssuer = "yourIssuer",
-            ValidAudience = "yourAudience",
-            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("S3cureK3yWith128B1tsOrMore!"))
-        };
-    });
-
+    .AddJwtBearer(options => options.TokenValidationParameters = TokenParameters.GetParameters());
 
 builder.Services.AddScoped<LoginServiceI, LoginService>();
 builder.Services.AddScoped<TokenServiceI, TokenService>();

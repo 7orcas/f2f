@@ -1,4 +1,6 @@
 ﻿
+using Backend.App.Login;
+using Backend.App.Token;
 using Backend.Modules.Machines.Ent;
 
 namespace Backend.Modules.Machines

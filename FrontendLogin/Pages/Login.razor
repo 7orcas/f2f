@@ -47,7 +47,6 @@
 
             var client = HttpClientFactory.CreateClient("BackendApi");
 
-loginRequest.Org = 1;
             var response = await client.PostAsJsonAsync("api/Login/login", loginRequest);
             if (response.IsSuccessStatusCode)
             {
@@ -63,7 +62,7 @@ loginRequest.Org = 1;
 
                     //client.DefaultRequestHeaders.Add("Authorization", "Bearer " + token.Token);
 
-                    await TestPauseForTwoSeconds();
+                 //   await TestPauseForTwoSeconds();
 
 
                     NavigationManager.NavigateTo("https://localhost:7170?tk=" + tokenkey, true);

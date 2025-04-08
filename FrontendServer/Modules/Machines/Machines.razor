@@ -1,4 +1,6 @@
 ﻿@page "/machines"
+@attribute [Authorize]
+
 @inject HttpClient HttpClient
 @inject NavigationManager NavigationManager
 @inject IHttpClientFactory HttpClientFactory
@@ -9,36 +11,43 @@
 @inject ProtectedSessionStorage ProtectedSessionStore
 
 
+<AuthorizeView>
+    <Authorized>
 
-<h3>Machines</h3>
+        <h3>Machines</h3>
 
-@if (_isLoading)
-{
-    <div>loading....</div>
-}
+        @if (_isLoading)
+        {
+            <div>loading....</div>
+        }
         
-else
-{
-    <table class="table">
-        <thead>
-            <tr>
-                <th>Code</th>
-                <th>Description</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var machine in machines)
-            {
-                <tr>
-                    <td>@machine.Code</td>
-                    <td>@machine.Description</td>
-                </tr>
-            }
-        </tbody>
-    </table>
+        else
+        {
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Code</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var machine in machines)
+                    {
+                        <tr>
+                            <td>@machine.Code</td>
+                            <td>@machine.Description</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
 
-    <p>Token in storage: @token</p>
-}
+            <p>Token in storage: @token</p>
+        }
+    </Authorized>
+    <NotAuthorized>
+        <p>You are not authorized to view this content.</p>
+    </NotAuthorized>
+</AuthorizeView>
 
 @code {
     private List<MachineDto>? machines;
@@ -65,8 +74,8 @@ else
         */
         // Func<Task> lambda = async () => machines = await MachineService.MachinesAsync(token);
         // await Run(lambda);
-        machines = await MachineService.MachinesAsync(token);
-        _isLoading = false;
+        // machines = await MachineService.MachinesAsync(token);
+        // _isLoading = false;
 
     }
 
@@ -77,6 +86,10 @@ else
             var result = await ProtectedSessionStore.GetAsync<string>("tokenX");
             if (result.Success)
                 token = result.Value;
+
+            machines = await MachineService.MachinesAsync(token);
+            _isLoading = false;
+            StateHasChanged();
         }
     }
 

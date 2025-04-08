@@ -26,17 +26,18 @@ Welcome to your new app.
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        if (firstRender)
-        {
+         if (firstRender)
+         {
             //     SessionService.SetSessionValue("token", token);
 
-            if (!string.IsNullOrEmpty(token))
+            var result = await ProtectedSessionStore.GetAsync<string>("tokenX");
+            if (!result.Success && !string.IsNullOrEmpty(token))
                 await ProtectedSessionStore.SetAsync("tokenX", token);
 
             // await TokenStorage.InitializeAsync(); // Enable interop after rendering
             // if (!string.IsNullOrEmpty(token))
             //     await TokenStorage.SetTokenAsync(token);
-        }
+         }
     }
 
 
@@ -55,8 +56,7 @@ Welcome to your new app.
         var client = HttpClientFactory.CreateClient("BackendApi");
         var tokenResponse = await client.GetAsync("api/Token/token?key=" + tokenkey);
         token = await tokenResponse.Content.ReadAsStringAsync();
-        
-        
+        StateHasChanged();
     }
 
 }
