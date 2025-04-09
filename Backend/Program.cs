@@ -1,9 +1,7 @@
 using System.Security.Cryptography;
 using System.Text;
-using Backend.App.Login;
-using Backend.App.Token;
-using Backend.App.Token.Ent;
-
+using Backend.App.Machines;
+using Backend.Base.Token.Ent;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens; // For TokenValidationParameters
 
@@ -12,7 +10,12 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
-builder.Services.AddControllers();
+builder.Services.AddControllers(options =>
+{
+    options.Filters.Add<InterceptorFilter>();
+});
+//builder.Services.AddScoped<InterceptorFilter>();
+
 
 builder.Services.AddSession(options =>
 {
@@ -32,9 +35,13 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options => options.TokenValidationParameters = TokenParameters.GetParameters());
 
+//Base Services
 builder.Services.AddScoped<LoginServiceI, LoginService>();
 builder.Services.AddScoped<TokenServiceI, TokenService>();
+builder.Services.AddScoped<OrgServiceI, OrgService>();
+builder.Services.AddScoped<SessionServiceI, SessionService>();
 
+//App Services
 builder.Services.AddScoped<MachineServiceI, MachineService>();
 
 var app = builder.Build();

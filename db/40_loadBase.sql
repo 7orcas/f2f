@@ -6,7 +6,7 @@ SET IDENTITY_INSERT _base.org OFF;
 
 
 SET IDENTITY_INSERT _base.zzz ON;
-INSERT INTO _base.zzz (id, xxx, yyy, orgs) VALUES (1, '1', '1', '0');
+INSERT INTO _base.zzz (id, xxx, yyy, orgs) VALUES (1, '1', '1', '0,1,2');
 INSERT INTO _base.zzz (id, xxx, yyy, orgs) VALUES (2, 'user', 'password', '1,2,12');
 SET IDENTITY_INSERT _base.zzz OFF;
 

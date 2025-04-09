@@ -28,7 +28,7 @@ namespace FrontendServer.Modules.Machines
                 new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
 
 
-            var response = await client.GetAsync("api/Machine/machines");
+            var response = await client.GetAsync("api/Machine/list");
             if (response.IsSuccessStatusCode)
             {
                 var result = await response.Content.ReadAsStringAsync();
