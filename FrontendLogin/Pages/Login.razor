@@ -20,7 +20,7 @@
     </div>
     <div>
         <label>Org:</label>
-        <InputNumber @bind-Value="loginRequest.Org" Type="1" />
+        <InputNumber @bind-Value="loginRequest.Org" />
     </div>
     <button type="submit">Login</button>
 </EditForm>
@@ -62,7 +62,7 @@
 
                     //client.DefaultRequestHeaders.Add("Authorization", "Bearer " + token.Token);
 
-                 //   await TestPauseForTwoSeconds();
+                    //   await TestPauseForTwoSeconds();
 
 
                     NavigationManager.NavigateTo("https://localhost:7170?tk=" + tokenkey, true);
@@ -71,7 +71,7 @@
                 {
                     errorMessage = responseDto.ErrorMessage;
                 }
-                
+
                 // Save token, e.g., in localStorage if this were Blazor WebAssembly
             }
             else
@@ -95,6 +95,7 @@
 
     protected override async Task OnInitializedAsync()
     {
+        loginRequest.Org = 1;
         test = await LoginService.LoginAsync();
     }
 

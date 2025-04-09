@@ -11,43 +11,36 @@
 @inject ProtectedSessionStorage ProtectedSessionStore
 
 
-<AuthorizeView>
-    <Authorized>
+<h3>Machines</h3>
 
-        <h3>Machines</h3>
-
-        @if (_isLoading)
-        {
-            <div>loading....</div>
-        }
+@if (_isLoading)
+{
+    <div>loading....</div>
+}
         
-        else
-        {
-            <table class="table">
-                <thead>
-                    <tr>
-                        <th>Code</th>
-                        <th>Description</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach (var machine in machines)
-                    {
-                        <tr>
-                            <td>@machine.Code</td>
-                            <td>@machine.Description</td>
-                        </tr>
-                    }
-                </tbody>
-            </table>
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Code</th>
+                <th>Description</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var machine in machines)
+            {
+                <tr>
+                    <td>@machine.Code</td>
+                    <td>@machine.Description</td>
+                </tr>
+            }
+        </tbody>
+    </table>
 
-            <p>Token in storage: @token</p>
-        }
-    </Authorized>
-    <NotAuthorized>
-        <p>You are not authorized to view this content.</p>
-    </NotAuthorized>
-</AuthorizeView>
+    <p>Token in storage: @token</p>
+}
+
 
 @code {
     private List<MachineDto>? machines;
@@ -86,6 +79,8 @@
             var result = await ProtectedSessionStore.GetAsync<string>("tokenX");
             if (result.Success)
                 token = result.Value;
+            else
+                NavigationManager.NavigateTo("https://localhost:7289", true);
 
             machines = await MachineService.MachinesAsync(token);
             _isLoading = false;

@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Backend.Modules.Machines
 {
+    [Authorize]
     [ApiController]
     [Route("api/[controller]")]
     public class MachineController : ControllerBase
@@ -22,7 +23,6 @@ namespace Backend.Modules.Machines
             _machineService = machineService;
         }
 
-        [Authorize]
         [HttpGet("machines")]
         public async Task<IActionResult> Get()
         {
