@@ -17,7 +17,10 @@
 {
     <div>loading....</div>
 }
-        
+else if (_isError)
+{
+    <div>@message</div>
+}        
 else
 {
     <table class="table">
@@ -38,6 +41,7 @@ else
         </tbody>
     </table>
 
+
     <p>Token in storage: @token</p>
 }
 
@@ -45,6 +49,8 @@ else
 @code {
     private List<MachineDto>? machines;
     private bool _isLoading = true;
+    private bool _isError = false;
+    private string message;
     private string token;
 
     private void ThrowException()
@@ -63,7 +69,7 @@ else
         string token = null;
         var result = await ProtectedSessionStore.GetAsync<string>("token");
         if (result.Success)
-            token = result.Value;
+        token = result.Value;
         */
         // Func<Task> lambda = async () => machines = await MachineService.MachinesAsync(token);
         // await Run(lambda);
@@ -76,13 +82,17 @@ else
     {
         if (firstRender)
         {
-            var result = await ProtectedSessionStore.GetAsync<string>("tokenX");
-            if (result.Success)
-                token = result.Value;
+            var store = await ProtectedSessionStore.GetAsync<string>("tokenX");
+            if (store.Success)
+                token = store.Value;
             else
                 NavigationManager.NavigateTo("https://localhost:7289", true);
 
-            machines = await MachineService.MachinesAsync(token);
+            var result = await MachineService.MachinesAsync(token);
+            machines = result.machines;
+            message = result.message;
+
+            _isError = !string.IsNullOrEmpty(message);
             _isLoading = false;
             StateHasChanged();
         }

@@ -1,6 +1,11 @@
 ﻿using Backend.App.Machines;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Controllers;
 using Microsoft.AspNetCore.Mvc.Filters;
+using System.Collections.Generic;
+using System.Reflection;
+using System.Reflection.Metadata;
+using System.Security;
 
 namespace Backend.Base
 {
@@ -41,6 +46,7 @@ Console.WriteLine("calling inteceptor...");
             //    Console.WriteLine($"Argument Key: {argument.Key}, Value: {argument.Value}");
             //}
 
+            var session = null as SessionEnt;
 
             // Extract the token and get session
             var authorizationHeader = context.HttpContext.Request.Headers["Authorization"].ToString();
@@ -48,9 +54,32 @@ Console.WriteLine("calling inteceptor...");
             {
                 var token = authorizationHeader.Substring("Bearer".Length);
                 var tv = _tokenService.DecodeToken(token);
-                var session = _sessionService.GetSession(tv.SessionKey);
+                session = _sessionService.GetSession(tv.SessionKey);
                 context.HttpContext.Items["session"] = session;
             }
+
+            // Cast ActionDescriptor to ControllerActionDescriptor
+            if (context.ActionDescriptor is ControllerActionDescriptor controllerActionDescriptor)
+            {
+                MethodInfo methodInfo = controllerActionDescriptor.MethodInfo;
+                var perm = methodInfo.GetCustomAttribute<PermissionAtt>();
+
+                if (perm != null
+                    && (session == null
+                    || !session.IsPermission(perm.Name)))
+                {
+                    var r = new _ResponseDto
+                    {
+                        Valid = false,
+                        ErrorMessage = "Not Authorised",  //ToDo label
+                        StatusCode = 403 // HTTP status code
+                    };
+                    context.Result = new OkObjectResult(r);
+                }
+            }
+
+
+            
 
         }
 

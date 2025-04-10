@@ -11,7 +11,7 @@ namespace Backend.Base.Org
             try
             {
                 await Sql.Run(
-                    "SELECT * FROM _base.org "
+                    "SELECT * FROM base.org "
                     + "WHERE nr = @nr ",
                     r => {
                         l.Id = GetId(r, "id");

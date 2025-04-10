@@ -17,7 +17,7 @@ namespace Backend.Base.Login
                     return l;
 
                 await Sql.Run(
-                    "SELECT * FROM _base.zzz "
+                    "SELECT * FROM base.zzz "
                     + "WHERE xxx = @userid ",
                     r => {
                         l.Id = GetId(r, "id");
@@ -96,7 +96,7 @@ namespace Backend.Base.Login
         private async Task<bool> SetAttempts(int id, int attempts)
         {
             await Sql.Execute(
-                   "UPDATE _base.zzz "
+                   "UPDATE base.zzz "
                    + "SET Attempts = " + attempts + " "
                    + "WHERE id = " + id
                );

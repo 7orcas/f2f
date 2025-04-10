@@ -20,6 +20,7 @@ namespace Backend.App.Machines
         }
 
         [HttpGet("list")]
+        [PermissionAtt("machine")]
         public async Task<IActionResult> Get()
         {
             var session = HttpContext.Items["session"] as SessionEnt;

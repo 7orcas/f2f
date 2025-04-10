@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Net.Http;
 using Newtonsoft.Json;
 
@@ -17,7 +18,7 @@ namespace FrontendServer.Modules.Machines
         }
 
 
-        public async Task<List<MachineDto>> MachinesAsync(string token)
+        public async Task<(List<MachineDto> machines, string message)> MachinesAsync(string token)
         {
             var client = _httpClientFactory.CreateClient("AuthorizedClient");
 
@@ -27,17 +28,22 @@ namespace FrontendServer.Modules.Machines
             client.DefaultRequestHeaders.Authorization =
                 new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
 
+            var list = new List<MachineDto>();
+            var message = "";
 
             var response = await client.GetAsync("api/Machine/list");
             if (response.IsSuccessStatusCode)
             {
                 var result = await response.Content.ReadAsStringAsync();
                 var responseDto = JsonConvert.DeserializeObject<_ResponseDto>(result);
-                var list = JsonConvert.DeserializeObject<List<MachineDto>>(responseDto.Result.ToString());
 
-Console.WriteLine("Get Machines");
+                if (responseDto.Valid)
+                    list = JsonConvert.DeserializeObject<List<MachineDto>>(responseDto.Result.ToString());
+                else
+                    message = responseDto.ErrorMessage;
 
-                return list;
+
+                return (list, message);
 
                 //successMessage = responseDto.SuccessMessage;
                 //successMessage += "  Token:" + token.Token;
@@ -51,7 +57,8 @@ Console.WriteLine("Get Machines");
                 //    + test;
 
             }
-            return new List<MachineDto>();
+            //ToDo label
+            return (list, "Opps, something went wrong?");
         }
     }
 }
