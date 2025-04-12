@@ -1,4 +1,7 @@
-﻿namespace Backend.Base.Session.Ent
+﻿using System.Security;
+using GC = Backend.GlobalConstants;
+
+namespace Backend.Base.Session.Ent
 {
     public class SessionEnt
     {
@@ -6,12 +9,12 @@
         public OrgEnt Org { get; set; }
         public LoginEnt Login { get; set; }
 
-
-        public bool IsPermission (string permission)
+        //ToDo
+        public string GetUserPermissionCrud (string perm)
         {
-            if (permission.Equals("machine"))
-                return true;
-            return false;
+            if (perm.Equals("machine")) return GC.CrudAll;
+
+            return null; //Not found
         }
 
 

@@ -40,6 +40,7 @@ builder.Services.AddScoped<LoginServiceI, LoginService>();
 builder.Services.AddScoped<TokenServiceI, TokenService>();
 builder.Services.AddScoped<OrgServiceI, OrgService>();
 builder.Services.AddScoped<SessionServiceI, SessionService>();
+builder.Services.AddScoped<PermissionServiceI, PermissionService>();
 
 //App Services
 builder.Services.AddScoped<MachineServiceI, MachineService>();

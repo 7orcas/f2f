@@ -1,12 +1,14 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using GC = Backend.GlobalConstants;
 
 namespace Backend.App.Machines
 {
     [Authorize]
+    [PermissionAtt("machine")]
     [ApiController]
     [Route("api/[controller]")]
-    public class MachineController : ControllerBase
+    public class MachineController : BaseController
     {
         private readonly MachineServiceI _machineService;
 
@@ -19,8 +21,8 @@ namespace Backend.App.Machines
             _machineService = machineService;
         }
 
+        [CrudAtt(GC.CrudRead)]
         [HttpGet("list")]
-        [PermissionAtt("machine")]
         public async Task<IActionResult> Get()
         {
             var session = HttpContext.Items["session"] as SessionEnt;

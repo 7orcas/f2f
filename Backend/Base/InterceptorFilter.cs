@@ -13,13 +13,16 @@ namespace Backend.Base
     {
         private readonly TokenServiceI _tokenService;
         private readonly SessionServiceI _sessionService;
+        private readonly PermissionServiceI _permissionService;
 
         public InterceptorFilter(
             TokenServiceI tokenService,
-            SessionServiceI sessionService)
+            SessionServiceI sessionService,
+            PermissionServiceI permissionService)
         {
             _tokenService = tokenService;
             _sessionService = sessionService;
+            _permissionService = permissionService;
         }
 
         public override void OnActionExecuting(ActionExecutingContext context)
@@ -58,15 +61,22 @@ Console.WriteLine("calling inteceptor...");
                 context.HttpContext.Items["session"] = session;
             }
 
-            // Cast ActionDescriptor to ControllerActionDescriptor
+            //Test permissions
             if (context.ActionDescriptor is ControllerActionDescriptor controllerActionDescriptor)
             {
+                //Method assign permission
                 MethodInfo methodInfo = controllerActionDescriptor.MethodInfo;
                 var perm = methodInfo.GetCustomAttribute<PermissionAtt>();
+                var crud = methodInfo.GetCustomAttribute<CrudAtt>();
 
-                if (perm != null
-                    && (session == null
-                    || !session.IsPermission(perm.Name)))
+                //Class assign permission
+                if (perm == null)
+                {
+                    Type controllerType = controllerActionDescriptor.ControllerTypeInfo.AsType();
+                    perm = controllerType.GetCustomAttribute<PermissionAtt>();
+                }
+
+                if (!_permissionService.IsAuthorizedCall(session, perm, crud))
                 {
                     var r = new _ResponseDto
                     {
@@ -77,7 +87,6 @@ Console.WriteLine("calling inteceptor...");
                     context.Result = new OkObjectResult(r);
                 }
             }
-
 
             
 
