@@ -1,6 +1,6 @@
 ﻿namespace Backend.Base.Org.Ent
 {
-    public class OrgEnt : _Encode
+    public class OrgEnt : Encode
     {
         public int Id { get; set; }
         public int Nr { get; set; }

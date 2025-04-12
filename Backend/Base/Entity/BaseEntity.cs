@@ -1,6 +1,6 @@
 ﻿namespace Backend.Base.Entity
 {
-    public class _BaseEntity : _Encode
+    public class BaseEntity : Encode
     {
         public int Id { get; set; }
         public int OrgId { get; set; }
@@ -9,6 +9,6 @@
         public DateTime Updated { get; set; }
         public bool IsActive { get; set; }
 
-        public _BaseEntity() { }
+        public BaseEntity() { }
     }
 }

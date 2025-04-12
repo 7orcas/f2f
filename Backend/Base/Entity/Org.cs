@@ -1,6 +1,6 @@
 ﻿namespace Backend.Base.Entity
 {
-    public class _Org
+    public class Org
     {
         public int Id { get; set; }
         public string Code { get; set; }

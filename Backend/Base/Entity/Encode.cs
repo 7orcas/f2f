@@ -1,6 +1,6 @@
 ﻿namespace Backend.Base.Entity
 {
-    public class _Encode
+    public class Encode
     {
         public string? Encoded { get; set; }
     }

@@ -4,7 +4,7 @@ namespace Backend.Base
 {
     public class BaseService
     {
-        public T ReadBaseEntity<T>(SqlDataReader r) where T : _BaseEntity, new()
+        public T ReadBaseEntity<T>(SqlDataReader r) where T : BaseEntity, new()
         {
             var entity = new T();
             entity.OrgId = GetId(r, "OrgId");
