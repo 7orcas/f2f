@@ -43,9 +43,9 @@ namespace Backend.Base.Login
                         ErrorMessage = err.Message
                     });
 
-            await _loginService.InitialiseLogin(login);
             var org = await _orgService.GetOrg(request.Org);
-            var session = await _sessionService.CreateSession(login, org);
+            var user = await _loginService.InitialiseLogin(login, org);
+            var session = await _sessionService.CreateSession(user, org);
 
             var tv = new TokenValues {
                 SessionKey = session.Key,

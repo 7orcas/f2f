@@ -5,6 +5,13 @@ using Microsoft.Extensions.Caching.Memory;
 
 namespace Backend.Base.Session
 {
+    /// <summary>
+    /// Create and manage sessions containing relevant objects for the logged in user
+    /// Note a user can have multiple sessions open
+    /// </summary>
+    /// <author>John Stewart</author>
+    /// <created>April 5, 2025</created>
+    /// <license>**Licence**</license>
     public class SessionService: BaseService, SessionServiceI
     {
         private readonly IMemoryCache _memoryCache;
@@ -14,13 +21,13 @@ namespace Backend.Base.Session
             _memoryCache = memoryCache;
         }
 
-        public async Task<SessionEnt> CreateSession(LoginEnt login, OrgEnt org)
+        public async Task<SessionEnt> CreateSession(UserEnt user, OrgEnt org)
         {
-            var key = login.Userid + "-" + Guid.NewGuid().ToString();
+            var key = user.Userid + "-" + Guid.NewGuid().ToString();
             var ses = new SessionEnt
             {
                 Key = key,
-                Login = login,
+                User = user,
                 Org = org
             };
 

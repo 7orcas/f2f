@@ -1,12 +1,27 @@
-﻿
-using Azure.Core;
+﻿using Azure.Core;
 using Backend.Base.Entity;
 using Microsoft.Data.SqlClient;
+using Microsoft.Extensions.Caching.Memory;
 
 namespace Backend.Base.Login
 {
+    /// <summary>
+    /// Manage login process for user
+    /// Note a user can have multiple sessions open
+    /// </summary>
+    /// <author>John Stewart</author>
+    /// <created>March 5, 2025</created>
+    /// <license>**Licence**</license>
     public class LoginService: BaseService, LoginServiceI
     {
+        private readonly PermissionServiceI _permissionService;
+
+        public LoginService (PermissionServiceI permissionService)
+        {
+            _permissionService = permissionService;
+        }
+
+
         public async Task<LoginEnt> GetLogin(string userid)
         {
             var l = new LoginEnt();
@@ -81,11 +96,19 @@ namespace Backend.Base.Login
         }
 
 
-        public async Task<bool> InitialiseLogin(LoginEnt l)
+        public async Task<UserEnt> InitialiseLogin(LoginEnt l, OrgEnt org)
         {
             await SetAttempts(l.Id, 0);
+            var permissions = await _permissionService.LoadPermissions (l.Id, org.Id);
 
-            return true;
+            var user = new UserEnt
+            {
+                LoginId = l.Id,
+                Userid = l.Userid,
+                Permissions = permissions,
+            };
+
+            return user;
         }
 
         public async Task<bool> IncrementAttempts(LoginEnt l)

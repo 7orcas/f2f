@@ -5,7 +5,7 @@ namespace Backend.Base.Login
     {
         Task<LoginEnt> GetLogin(string userid);
         Task<bool> IncrementAttempts(LoginEnt l);
-        Task<bool> InitialiseLogin(LoginEnt l);
+        Task<UserEnt> InitialiseLogin(LoginEnt l, OrgEnt org);
         Task<LoginErr> Validate(LoginEnt l, string password, int org);
     }
 }

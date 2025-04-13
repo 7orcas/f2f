@@ -3,18 +3,30 @@ using GC = Backend.GlobalConstants;
 
 namespace Backend.Base.Session.Ent
 {
+    /// <summary>
+    /// Session containing relevant objects for the logged in user
+    /// Note a user can have multiple sessions open
+    /// </summary>
+    /// <author>John Stewart</author>
+    /// <created>April 5, 2025</created>
+    /// <license>**Licence**</license>
     public class SessionEnt
     {
         public string Key { get; set; }
         public OrgEnt Org { get; set; }
-        public LoginEnt Login { get; set; }
+        public UserEnt User { get; set; }
 
-        //ToDo
-        public string GetUserPermissionCrud (string perm)
+        /// <summary>
+        /// Return the user's crud value for the permission
+        /// Return null if permission not loaded
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        public string GetUserPermissionCrud (int id)
         {
-            if (perm.Equals("machine")) return GC.CrudAll;
-
-            return null; //Not found
+            var p = User.Permissions.FirstOrDefault(p => p.PermissionId == id);
+            if (p == null) return null;
+            return p.Crud;
         }
 
 

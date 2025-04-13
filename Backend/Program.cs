@@ -36,6 +36,7 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options => options.TokenValidationParameters = TokenParameters.GetParameters());
 
 //Base Services
+builder.Services.AddSingleton<PermissionInitialiseServiceI, PermissionInitialiseService>();
 builder.Services.AddScoped<LoginServiceI, LoginService>();
 builder.Services.AddScoped<TokenServiceI, TokenService>();
 builder.Services.AddScoped<OrgServiceI, OrgService>();
@@ -60,6 +61,15 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-app.MapControllers();
-
+app.MapControllers(); 
+RunOnStartup(app);
 app.Run();
+
+void RunOnStartup(WebApplication app)
+{
+    // Resolve the service from the DI container
+    var permissionService = app.Services.GetRequiredService<PermissionInitialiseServiceI>();
+
+    // Call the service method
+    permissionService.InitialisePermissions();
+}
