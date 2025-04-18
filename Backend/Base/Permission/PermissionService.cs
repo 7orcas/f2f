@@ -105,7 +105,7 @@ namespace Backend.Base.Permission
         }
 
 
-        public bool IsAuthorizedCall(SessionEnt session, PermissionAtt perm, CrudAtt crud)
+        public bool IsAuthorizedToAccessEndPoint(SessionEnt session, PermissionAtt perm, CrudAtt crud)
         {
             if (perm == null) return true;
             if (session == null) return false;

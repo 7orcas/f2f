@@ -7,6 +7,6 @@ namespace Backend.Base.Permission
     {
         PermissionEnt GetPermissionEnt(string perm);
         Task<List<PermissionCrudEnt>> LoadPermissions(int userId, int orgId);
-        bool IsAuthorizedCall(SessionEnt session, PermissionAtt perm, CrudAtt crud);
+        bool IsAuthorizedToAccessEndPoint(SessionEnt session, PermissionAtt perm, CrudAtt crud);
     }
 }

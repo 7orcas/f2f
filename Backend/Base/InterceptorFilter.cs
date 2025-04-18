@@ -76,7 +76,7 @@ Console.WriteLine("calling inteceptor...");
                     perm = controllerType.GetCustomAttribute<PermissionAtt>();
                 }
 
-                if (!_permissionService.IsAuthorizedCall(session, perm, crud))
+                if (!_permissionService.IsAuthorizedToAccessEndPoint(session, perm, crud))
                 {
                     var r = new _ResponseDto
                     {
