@@ -27,6 +27,8 @@ namespace Backend.Base.Permission
         private readonly IMemoryCache _memoryCache;
         private const string KEY = "PermissionService_list";
 
+        public PermissionService() { }
+
         public PermissionService(IMemoryCache memoryCache)
         {
             _memoryCache = memoryCache;
@@ -42,7 +44,6 @@ namespace Backend.Base.Permission
             }
             return null;
         }
-
 
         /// <summary>
         /// Load and setup a user's permission/crud settings
@@ -118,6 +119,12 @@ namespace Backend.Base.Permission
             if (crud == null || userCrud.Equals(GC.CrudAll)) return true;
 
             return userCrud.IndexOf(crud.Action) != -1;
+        }
+
+
+        public string test()
+        {
+            return "TEST OK";
         }
     }
 }
