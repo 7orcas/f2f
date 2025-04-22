@@ -50,5 +50,20 @@ namespace Backend.Base.Permission
 
             _memoryCache.Set(KEY, list);
         }
+
+        /// <summary>
+        /// Get all permissions 
+        /// </summary>
+        /// <returns></returns>
+        public List<PermissionEnt> GetPermissions()
+        {
+            if (_memoryCache.TryGetValue(KEY, out var cachedValue))
+            {
+                return cachedValue as List<PermissionEnt>;
+            }
+            return new List<PermissionEnt>();
+        }
+
+
     }
 }

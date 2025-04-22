@@ -41,10 +41,11 @@ builder.Services.AddSession();
 builder.Services.AddDistributedMemoryCache();
 
 builder.Services.AddScoped<ProtectedSessionStorage>();
-builder.Services.AddScoped<MachineService>();
 builder.Services.AddScoped<SessionTokenStorageService>();
 builder.Services.AddScoped<AuthorizationMessageHandler>();
+builder.Services.AddScoped<PermissionService>();
 
+builder.Services.AddScoped<MachineService>();
 
 
 var app = builder.Build();

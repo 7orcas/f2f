@@ -99,7 +99,7 @@ namespace Backend.Base.Login
         public async Task<UserEnt> InitialiseLogin(LoginEnt l, OrgEnt org)
         {
             await SetAttempts(l.Id, 0);
-            var permissions = await _permissionService.LoadPermissions (l.Id, org.Id);
+            var permissions = await _permissionService.LoadEffectivePermissions (l.Id, org.Id);
 
             var user = new UserEnt
             {
