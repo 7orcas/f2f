@@ -26,7 +26,7 @@ SET IDENTITY_INSERT base.permission OFF;
 
 
 SET IDENTITY_INSERT base.role ON;
-INSERT INTO base.role (id, orgId, code) VALUES (1, 0, 'Admin');
+INSERT INTO base.role (id, orgId, code, descr) VALUES (1, 0, 'Admin', 'Full Admin Access');
 INSERT INTO base.role (id, orgId, code) VALUES (2, 0, 'Org RO');
 INSERT INTO base.role (id, orgId, code) VALUES (3, 0, 'LangEdit');
 INSERT INTO base.role (id, orgId, code) VALUES (4, 0, 'Machines0');

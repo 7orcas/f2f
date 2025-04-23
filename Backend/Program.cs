@@ -42,6 +42,7 @@ builder.Services.AddScoped<TokenServiceI, TokenService>();
 builder.Services.AddScoped<OrgServiceI, OrgService>();
 builder.Services.AddScoped<SessionServiceI, SessionService>();
 builder.Services.AddScoped<PermissionServiceI, PermissionService>();
+builder.Services.AddScoped<RoleServiceI, RoleService>();
 
 //App Services
 builder.Services.AddScoped<MachineServiceI, MachineService>();

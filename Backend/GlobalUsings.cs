@@ -9,5 +9,7 @@ global using Backend.Base.Org;
 global using Backend.Base.Org.Ent;
 global using Backend.Base.Permission;
 global using Backend.Base.Permission.Ent;
+global using Backend.Base.Role;
+global using Backend.Base.Role.Ent;
 global using Backend.Base.Session;
 global using Backend.Base.Session.Ent;
