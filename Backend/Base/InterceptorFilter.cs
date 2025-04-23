@@ -27,7 +27,24 @@ namespace Backend.Base
 
         public override void OnActionExecuting(ActionExecutingContext context)
         {
-Console.WriteLine("calling inteceptor...");
+
+var x = "";
+if (context.ActionDescriptor is ControllerActionDescriptor controllerActionDescriptorX)
+{
+    x = controllerActionDescriptorX.ControllerName;
+
+    MethodInfo methodInfo = controllerActionDescriptorX.MethodInfo;
+    x += "." + methodInfo.Name;
+
+    var p = methodInfo.GetCustomAttribute<PermissionAtt>();
+    if (p != null)
+        x += ", perm: " + p.Name;
+
+    var c = methodInfo.GetCustomAttribute<CrudAtt>();
+    if (c != null)
+        x += ", crud: " + c.Action;
+}
+Console.WriteLine("calling inteceptor..." + x);
 
             // Intercept the request before the controller action executes
             var interceptedObject = context.ActionArguments; // Access action arguments

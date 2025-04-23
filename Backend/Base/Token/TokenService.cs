@@ -18,13 +18,18 @@ namespace Backend.Base.Token
             _memoryCache = memoryCache;
         }
 
+        /// <summary>
+        /// Login process creates this token
+        /// </summary>
+        /// <param name="tv"></param>
+        /// <returns></returns>
         public string CreateToken(TokenValues tv)
         {
+Console.WriteLine("Creating token");
             var claims = new[]
             {
                 new Claim("Key", tv.SessionKey),
                 new Claim("Org", "" + tv.Org),
-                new Claim("Role", "UserX"),
             };
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(TokenParameters._Key));
             var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
@@ -39,6 +44,11 @@ namespace Backend.Base.Token
             return new JwtSecurityTokenHandler().WriteToken(token);
         }
 
+        /// <summary>
+        /// Every call will use this method
+        /// </summary>
+        /// <param name="token"></param>
+        /// <returns></returns>
         public TokenValues DecodeToken(string token)
         {
             token = token.Trim();
@@ -54,31 +64,45 @@ namespace Backend.Base.Token
                 tv.SessionKey = principal.FindFirst("Key")?.Value.ToString();
                 int.TryParse(principal.FindFirst("Org")?.Value, out int orgId);
                 tv.Org = orgId;
+Console.WriteLine("Decode token, SessionKey=" + tv.SessionKey);
+                return tv;
             }
             catch (Exception ex)
             {
                 //ToDo Logme
                 Console.WriteLine($"Token validation failed: {ex.Message}");
+                return null;
             }
-            return tv;
         }
 
+        /// <summary>
+        /// Login process adds this token
+        /// </summary>
+        /// <param name="key"></param>
+        /// <param name="token"></param>
         public void AddToken(string key, string token)
         {
+Console.WriteLine("Add token, key=" + key);
             var cacheEntryOptions = new MemoryCacheEntryOptions
             {
-                AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(5), // Cache expiration
-                SlidingExpiration = TimeSpan.FromMinutes(2) // Renew expiration on access
+                AbsoluteExpirationRelativeToNow = TimeSpan.FromSeconds(30) // Cache expiration
             };
 
             _memoryCache.Set(Key(key), token, cacheEntryOptions);
 
         }
 
+        /// <summary>
+        /// Login process will call this method twice
+        /// </summary>
+        /// <param name="key"></param>
+        /// <returns></returns>
         public string? GetToken(string key)
         {
+Console.WriteLine("Get token, key=" + key);
             if (_memoryCache.TryGetValue(Key(key), out var cachedValue))
             {
+               // _memoryCache.Remove(Key(key));
                 return cachedValue.ToString();
             }
             return null;
