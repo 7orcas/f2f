@@ -62,7 +62,7 @@
 
                     //client.DefaultRequestHeaders.Add("Authorization", "Bearer " + token.Token);
 
-await TestPauseForTwoSeconds();
+await TestPause();
 
 
                     NavigationManager.NavigateTo("https://localhost:7170?tk=" + tokenkey, true);
@@ -87,9 +87,9 @@ await TestPauseForTwoSeconds();
         }
     }
 
-    private async Task TestPauseForTwoSeconds()
+    private async Task TestPause()
     {
-        await Task.Delay(2000);
+        await Task.Delay(3000);
     }
 
 

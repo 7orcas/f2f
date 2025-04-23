@@ -38,7 +38,7 @@ Console.WriteLine("Creating token");
                 issuer: TokenParameters._Issuer,
                 audience: TokenParameters._Audience,
                 claims: claims,
-                expires: DateTime.Now.AddMinutes(30),
+                expires: DateTime.Now.AddHours(30),
                 signingCredentials: creds
                 );
             return new JwtSecurityTokenHandler().WriteToken(token);
