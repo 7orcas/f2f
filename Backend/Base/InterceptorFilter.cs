@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Controllers;
 using Microsoft.AspNetCore.Mvc.Filters;
+using Serilog.Events;
 using System.Collections.Generic;
 using System.Reflection;
 using System.Reflection.Metadata;
@@ -9,8 +10,12 @@ using System.Security;
 
 namespace Backend.Base
 {
+    /// <summary>
+    /// Intercept all calls
+    /// </summary>
     public class InterceptorFilter : ActionFilterAttribute
     {
+        private readonly Serilog.ILogger _log;
         private readonly TokenServiceI _tokenService;
         private readonly SessionServiceI _sessionService;
         private readonly PermissionServiceI _permissionService;
@@ -20,52 +25,20 @@ namespace Backend.Base
             SessionServiceI sessionService,
             PermissionServiceI permissionService)
         {
+            _log = Serilog.Log.Logger;
             _tokenService = tokenService;
             _sessionService = sessionService;
             _permissionService = permissionService;
         }
 
+
+        /// <summary>
+        /// Intercept all calls and inspect for autorisation
+        /// </summary>
+        /// <param name="context"></param>
         public override void OnActionExecuting(ActionExecutingContext context)
-        {
-
-var x = "";
-if (context.ActionDescriptor is ControllerActionDescriptor controllerActionDescriptorX)
-{
-    x = controllerActionDescriptorX.ControllerName;
-
-    MethodInfo methodInfo = controllerActionDescriptorX.MethodInfo;
-    x += "." + methodInfo.Name;
-
-    var p = methodInfo.GetCustomAttribute<PermissionAtt>();
-    if (p != null)
-        x += ", perm: " + p.Name;
-
-    var c = methodInfo.GetCustomAttribute<CrudAtt>();
-    if (c != null)
-        x += ", crud: " + c.Action;
-}
-Console.WriteLine("calling inteceptor..." + x);
-
-            // Intercept the request before the controller action executes
-            var interceptedObject = context.ActionArguments; // Access action arguments
-                                                             // Add your interception logic here
-
-            //Do Errors here
-            //if (someCondition)
-            //{
-            //    context.Result = new ContentResult
-            //    {
-            //        Content = "Request intercepted",
-            //        StatusCode = 403
-            //    };
-            //    return; // This prevents the controller action from executing
-            //}
-
-            //foreach (var argument in context.ActionArguments)
-            //{
-            //    Console.WriteLine($"Argument Key: {argument.Key}, Value: {argument.Value}");
-            //}
-
+        {   
+            var sessionKey = null as string;
             var session = null as SessionEnt;
 
             // Extract the token and get session
@@ -74,7 +47,8 @@ Console.WriteLine("calling inteceptor..." + x);
             {
                 var token = authorizationHeader.Substring("Bearer".Length);
                 var tv = _tokenService.DecodeToken(token);
-                session = _sessionService.GetSession(tv.SessionKey);
+                sessionKey = tv.SessionKey;
+                session = _sessionService.GetSession(sessionKey);
                 context.HttpContext.Items["session"] = session;
             }
 
@@ -95,6 +69,7 @@ Console.WriteLine("calling inteceptor..." + x);
 
                 if (!_permissionService.IsAuthorizedToAccessEndPoint(session, perm, crud))
                 {
+                    Log(LogEventLevel.Error, "NotAuthorisedAccess call", context, sessionKey);
                     var r = new _ResponseDto
                     {
                         Valid = false,
@@ -105,7 +80,8 @@ Console.WriteLine("calling inteceptor..." + x);
                 }
             }
 
-            
+            if (_log.IsEnabled(LogEventLevel.Debug))
+                Log(LogEventLevel.Debug, "Interceptor call", context, sessionKey);
 
         }
 
@@ -113,6 +89,38 @@ Console.WriteLine("calling inteceptor..." + x);
         {
             // Intercept after the controller action executes
         }
+
+        private void Log(LogEventLevel level, string message, ActionExecutingContext context, string? sessionKey)
+        {
+            var logstring = "";
+            if (context.ActionDescriptor is ControllerActionDescriptor controllerActionDescriptorX)
+            {
+                logstring = controllerActionDescriptorX.ControllerName;
+
+                MethodInfo methodInfo = controllerActionDescriptorX.MethodInfo;
+                logstring += "." + methodInfo.Name;
+
+                var p = methodInfo.GetCustomAttribute<PermissionAtt>();
+                if (p != null)
+                    logstring += ", perm: " + p.Name;
+
+                var c = methodInfo.GetCustomAttribute<CrudAtt>();
+                if (c != null)
+                    logstring += ", crud: " + c.Action;
+
+                if (sessionKey != null)
+                    logstring += ", SessionKey: " + sessionKey;
+
+                logstring = message + ": " + logstring;
+
+                if (level == LogEventLevel.Debug) 
+                    _log.Debug(logstring);
+
+                if (level == LogEventLevel.Error)
+                    _log.Error(logstring);
+            }
+        }
+
     }
 }
 

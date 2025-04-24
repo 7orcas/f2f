@@ -10,5 +10,7 @@
         public static int MaxGetTokenCalls { get; set; }
         public static int CacheExpirationAddSeconds { get; set; }
         public static int CacheExpirationGetSeconds { get; set; }
+        public static string MainClientUrl { get; set; }
+        public static string PathBase { get; set; }
     }
 }

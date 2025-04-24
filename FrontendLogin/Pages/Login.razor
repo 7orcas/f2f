@@ -55,17 +55,17 @@
 
                 if (responseDto.Valid)
                 {
-                    var loginToken = JsonConvert.DeserializeObject<LoginTokenDto>(responseDto.Result.ToString());
+                    var login = JsonConvert.DeserializeObject<LoginTokenDto>(responseDto.Result.ToString());
                     successMessage = responseDto.SuccessMessage;
-                    tokenkey = loginToken.TokenKey;
-                    token = loginToken.Token;
+                    tokenkey = login.TokenKey;
+                    token = login.Token;
 
                     //client.DefaultRequestHeaders.Add("Authorization", "Bearer " + token.Token);
 
 //await TestPause();
 
 
-                    NavigationManager.NavigateTo("https://localhost:7170?tk=" + tokenkey, true);
+                    NavigationManager.NavigateTo(login.MainUrl + "?tk=" + tokenkey, true);
                 }
                 else
                 {

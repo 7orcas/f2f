@@ -1,5 +1,5 @@
 {
-  "iisSettings": {
+  "iisSettings DELETE": {
     "windowsAuthentication": false,
     "anonymousAuthentication": true,
     "iisExpress": {
@@ -8,25 +8,16 @@
     }
   },
   "profiles": {
-    "http": {
-      "commandName": "Project",
-      "dotnetRunMessages": true,
-      "launchBrowser": false,
-      "applicationUrl": "http://localhost:5292",
-      "environmentVariables": {
-        "ASPNETCORE_ENVIRONMENT": "Development"
-      }
-    },
     "https": {
       "commandName": "Project",
       "dotnetRunMessages": true,
       "launchBrowser": false,
-      "applicationUrl": "https://localhost:7170;http://localhost:5292",
+      "applicationUrl": "https://localhost:7171",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       }
     },
-    "IIS Express": {
+    "IIS Express DELETE": {
       "commandName": "IISExpress",
       "launchBrowser": false,
       "environmentVariables": {

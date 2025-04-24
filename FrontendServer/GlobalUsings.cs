@@ -1,5 +1,6 @@
 ﻿global using Common.DTO;
 global using Common.Request;
+global using Serilog;
 global using FrontendServer.Base.Persmission;
 global using FrontendServer.Base.Role;
-global using FrontendServer.Modules.Machines;
+global using FrontendServer.Mods.Machines;

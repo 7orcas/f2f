@@ -3,6 +3,8 @@ using Microsoft.AspNetCore.Components.Web;
 
 var builder = WebApplication.CreateBuilder(args);
 
+LoadAppSettings(builder);
+
 // Add services to the container.
 builder.Services.AddRazorPages();
 builder.Services.AddServerSideBlazor();
@@ -10,7 +12,7 @@ builder.Services.AddSingleton<LoginService>();
 
 builder.Services.AddHttpClient("BackendApi", client =>
 {
-    client.BaseAddress = new Uri("https://localhost:6001/"); // Adjust base URL to your backend
+    client.BaseAddress = new Uri(AppSettings.BackendApiBaseUri); // Adjust base URL to your backend
 });
 
 var app = builder.Build();
@@ -33,3 +35,9 @@ app.MapBlazorHub();
 app.MapFallbackToPage("/_Host");
 
 app.Run();
+
+
+void LoadAppSettings(WebApplicationBuilder builder)
+{
+    AppSettings.BackendApiBaseUri = builder.Configuration["Urls:BackendApiBaseUri"];
+}

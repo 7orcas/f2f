@@ -1,4 +1,4 @@
-using FrontendServer.Data;
+using FrontendServer;
 using FrontendServer.Service;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage;
@@ -7,16 +7,26 @@ using System.Net;
 
 var builder = WebApplication.CreateBuilder(args);
 
+
+// Add Serilog configuration
+// Set up Serilog to use appsettings.json
+Log.Logger = new LoggerConfiguration()
+    .ReadFrom.Configuration(builder.Configuration) // Reads from appsettings.json
+    .CreateLogger();
+
+builder.Host.UseSerilog();
+
+LoadAppSettings(builder);
+
 // Add services to the container.
 builder.Services.AddRazorPages();
 
 builder.Services.AddServerSideBlazor();
-builder.Services.AddSingleton<WeatherForecastService>();
 
 //ToDo is the ConfigurePrimaryHttpMessageHandler required?
 builder.Services.AddHttpClient("BackendApi", client =>
 {
-    client.BaseAddress = new Uri("https://localhost:6001/"); // Adjust base URL to your backend
+    client.BaseAddress = new Uri(AppSettings.BackendApiBaseUri); 
 }).ConfigurePrimaryHttpMessageHandler(() =>
 {
     var handler = new HttpClientHandler();
@@ -27,7 +37,7 @@ builder.Services.AddHttpClient("BackendApi", client =>
 
 builder.Services.AddHttpClient("AuthorizedClient", client =>
 {
-    client.BaseAddress = new Uri("https://localhost:6001/"); // Adjust base URL to your backend
+    client.BaseAddress = new Uri(AppSettings.AuthorizedClientBaseUri); 
 }).AddHttpMessageHandler<AuthorizationMessageHandler>();
 
 
@@ -72,3 +82,11 @@ app.MapBlazorHub();
 app.MapFallbackToPage("/_Host");
 
 app.Run();
+
+void LoadAppSettings(WebApplicationBuilder builder)
+{
+    AppSettings.BackendApiBaseUri = builder.Configuration["Urls:BackendApiBaseUri"];
+    AppSettings.AuthorizedClientBaseUri = builder.Configuration["Urls:AuthorizedClientBaseUri"];
+
+ 
+}

@@ -48,6 +48,7 @@ namespace Backend.Base.Login
             var session = await _sessionService.CreateSession(user, org);
 
             var tv = new TokenValues {
+                Username = request.Username,
                 SessionKey = session.Key,
                 Org = request.Org,
             };
@@ -61,7 +62,8 @@ namespace Backend.Base.Login
                 SuccessMessage = "Login Ok",
                 Result = new LoginTokenDto { 
                     TokenKey = keyX,
-                    Token = tokenX 
+                    Token = tokenX,
+                    MainUrl = AppSettings.MainClientUrl,
                 }
             };
             return Ok(r);

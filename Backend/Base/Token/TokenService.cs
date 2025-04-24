@@ -9,6 +9,9 @@ using System.Text;
 
 namespace Backend.Base.Token
 {
+    /// <summary>
+    /// Tokens are used to control authorisation to this app
+    /// </summary>
     public class TokenService: BaseService, TokenServiceI
     {
         private readonly IMemoryCache _memoryCache;
@@ -26,7 +29,6 @@ namespace Backend.Base.Token
         /// <returns></returns>
         public string CreateToken(TokenValues tv)
         {
-Console.WriteLine("Creating token");
             var claims = new[]
             {
                 new Claim("Key", tv.SessionKey),
@@ -42,6 +44,9 @@ Console.WriteLine("Creating token");
                 expires: DateTime.Now.AddHours(30),
                 signingCredentials: creds
                 );
+
+            _log.Debug("Create token, TokenValues=" + tv.ToLogString());
+
             return new JwtSecurityTokenHandler().WriteToken(token);
         }
 
@@ -65,13 +70,12 @@ Console.WriteLine("Creating token");
                 tv.SessionKey = principal.FindFirst("Key")?.Value.ToString();
                 int.TryParse(principal.FindFirst("Org")?.Value, out int orgId);
                 tv.Org = orgId;
-Console.WriteLine("Decode token, SessionKey=" + tv.SessionKey);
+                _log.Debug("Decode token, SessionKey=" + tv.SessionKey);
                 return tv;
             }
             catch (Exception ex)
             {
-                //ToDo Logme
-                Console.WriteLine($"Token validation failed: {ex.Message}");
+                _log.Error("Token validation failed: {ex.Message}");
                 return null;
             }
         }
@@ -84,8 +88,8 @@ Console.WriteLine("Decode token, SessionKey=" + tv.SessionKey);
         public void AddToken(string key, string token)
         {
             string tokenX = AppSettings.MaxGetTokenCalls.ToString().PadLeft(PAD_TOKEN, '0') + token;
+            _log.Debug("Add token, key=" + key + ", token=" + tokenX);
 
-Console.WriteLine("Add token, key=" + key + ", token=" + tokenX);
             var cacheEntryOptions = new MemoryCacheEntryOptions
             {
                 AbsoluteExpirationRelativeToNow = TimeSpan.FromSeconds(AppSettings.CacheExpirationAddSeconds) // Cache expiration
@@ -101,11 +105,11 @@ Console.WriteLine("Add token, key=" + key + ", token=" + tokenX);
         /// <returns></returns>
         public string? GetToken(string key)
         {
-            _logger.Information("GetToken, key=" + key);
+            _log.Debug("GetToken, key=" + key);
+
             if (_memoryCache.TryGetValue(Key(key), out var cachedValue))
             {
                 var tokenX = cachedValue.ToString();
-Console.WriteLine("Get token, key=" + key + ", tokenX=" + tokenX);
                 var calls = int.Parse(tokenX.Substring(0, PAD_TOKEN));
                 var token = tokenX.Substring(PAD_TOKEN);
                 
@@ -121,8 +125,9 @@ Console.WriteLine("Get token, key=" + key + ", tokenX=" + tokenX);
                     _memoryCache.Set(Key(key), tokenX, cacheEntryOptions);
                     return token;
                 }
+                _log.Error("GetToken rejected, calls=" + calls + ", key = " + key);
             }
-            _logger.Warning("GetToken null, key=" + key);
+            _log.Error("GetToken is null, key=" + key);
             return null;
         }
 

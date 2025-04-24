@@ -4,11 +4,11 @@ namespace Backend.Base
 {
     public class BaseService
     {
-        protected readonly Serilog.ILogger _logger;
+        protected readonly Serilog.ILogger _log;
 
         public BaseService() 
         { 
-            _logger = Log.Logger;
+            _log = Log.Logger;
         }
 
 

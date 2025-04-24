@@ -4,19 +4,21 @@ using Backend;
 using Backend.App.Machines;
 using Backend.Base.Token.Ent;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.IdentityModel.Tokens; // For TokenValidationParameters
 
 
 var builder = WebApplication.CreateBuilder(args);
 
-LoadAppSettings(builder);
-
 // Add Serilog configuration
-builder.Host.UseSerilog((context, config) =>
-{
-    config.WriteTo.File("Logs/log-.txt", rollingInterval: RollingInterval.Day);
-});
+// Set up Serilog to use appsettings.json
+Log.Logger = new LoggerConfiguration()
+    .ReadFrom.Configuration(builder.Configuration) // Reads from appsettings.json
+    .CreateLogger();
 
+builder.Host.UseSerilog();
+
+LoadAppSettings(builder);
 
 // Add services to the container.
 
@@ -59,11 +61,12 @@ builder.Services.AddScoped<MachineServiceI, MachineService>();
 
 var app = builder.Build();
 
+app.UsePathBase(AppSettings.PathBase);
 
 app.UseHttpsRedirection();
 
-app.UseSession();
 app.UseAuthorization();
+app.UseSession();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
@@ -72,7 +75,19 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-app.MapControllers(); 
+app.MapControllers();
+
+app.Use(async (context, next) =>
+{
+    if (!context.Request.PathBase.Equals(AppSettings.PathBase))
+    {
+        context.Response.StatusCode = 404; // Not Found
+        await context.Response.WriteAsync("Invalid path base.");
+        return;
+    }
+    await next();
+});
+
 RunOnStartup(app);
 app.Run();
 
@@ -91,4 +106,17 @@ void LoadAppSettings(WebApplicationBuilder builder)
     AppSettings.MaxGetTokenCalls = int.Parse(builder.Configuration["Token:MaxGetTokenCalls"]);
     AppSettings.CacheExpirationAddSeconds = int.Parse(builder.Configuration["Token:CacheExpirationAddSeconds"]);
     AppSettings.CacheExpirationGetSeconds = int.Parse(builder.Configuration["Token:CacheExpirationGetSeconds"]);
+    AppSettings.MainClientUrl = builder.Configuration["Urls:MainClientUrl"];
+    AppSettings.PathBase = builder.Configuration["PathBase"];
+
+    var _log = Serilog.Log.Logger;
+    _log.Information("---------Backend Startup------------" +
+        "\nDBMainConnection=" + AppSettings.DBMainConnection +
+        "\nMaxGetTokenCalls=" + AppSettings.MaxGetTokenCalls + 
+        "\nCacheExpirationAddSeconds=" + AppSettings.CacheExpirationAddSeconds + 
+        "\nCacheExpirationGetSeconds=" + AppSettings.CacheExpirationGetSeconds +
+        "\nMainClientUrl=" + AppSettings.MainClientUrl +
+        "\nPathBase=" + AppSettings.PathBase
+        );
+
 }

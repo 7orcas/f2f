@@ -3,7 +3,7 @@ using System.Net.Http;
 using Newtonsoft.Json;
 
 
-namespace FrontendServer.Modules.Machines
+namespace FrontendServer.Mods.Machines
 {
 
     //May not need this
