@@ -12,6 +12,7 @@ namespace Backend.Base.Token
     public class TokenService: BaseService, TokenServiceI
     {
         private readonly IMemoryCache _memoryCache;
+        private const int PAD_TOKEN = 5;
 
         public TokenService(IMemoryCache memoryCache)
         {
@@ -82,28 +83,43 @@ Console.WriteLine("Decode token, SessionKey=" + tv.SessionKey);
         /// <param name="token"></param>
         public void AddToken(string key, string token)
         {
-Console.WriteLine("Add token, key=" + key);
+            string tokenX = AppSettings.MaxGetTokenCalls.ToString().PadLeft(PAD_TOKEN, '0') + token;
+
+Console.WriteLine("Add token, key=" + key + ", token=" + tokenX);
             var cacheEntryOptions = new MemoryCacheEntryOptions
             {
-                AbsoluteExpirationRelativeToNow = TimeSpan.FromSeconds(30) // Cache expiration
+                AbsoluteExpirationRelativeToNow = TimeSpan.FromSeconds(AppSettings.CacheExpirationAddSeconds) // Cache expiration
             };
-
-            _memoryCache.Set(Key(key), token, cacheEntryOptions);
-
+            _memoryCache.Set(Key(key), tokenX, cacheEntryOptions);
         }
 
         /// <summary>
-        /// Login process will call this method twice
+        /// Login process can call this method twice
+        /// The number of calls is limited by appsetting value
         /// </summary>
         /// <param name="key"></param>
         /// <returns></returns>
         public string? GetToken(string key)
         {
-Console.WriteLine("Get token, key=" + key);
             if (_memoryCache.TryGetValue(Key(key), out var cachedValue))
             {
-               // _memoryCache.Remove(Key(key));
-                return cachedValue.ToString();
+                var tokenX = cachedValue.ToString();
+Console.WriteLine("Get token, key=" + key + ", tokenX=" + tokenX);
+                var calls = int.Parse(tokenX.Substring(0, PAD_TOKEN));
+                var token = tokenX.Substring(PAD_TOKEN);
+                
+                _memoryCache.Remove(Key(key));
+
+                if (--calls >= 0)
+                {
+                    var cacheEntryOptions = new MemoryCacheEntryOptions
+                    {
+                        AbsoluteExpirationRelativeToNow = TimeSpan.FromSeconds(AppSettings.CacheExpirationGetSeconds) // Cache expiration
+                    };
+                    tokenX = calls.ToString().PadLeft(PAD_TOKEN, '0') + token;
+                    _memoryCache.Set(Key(key), tokenX, cacheEntryOptions);
+                    return token;
+                }
             }
             return null;
         }

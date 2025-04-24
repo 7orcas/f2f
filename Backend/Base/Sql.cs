@@ -11,7 +11,7 @@ namespace Backend.Base
             {
                 
 //Thread.Sleep(400);
-                var connectionString = "Server=np:localhost;Database=blue;TrustServerCertificate=True;Authentication=Active Directory Integrated;";
+                var connectionString = AppSettings.DBMainConnection;
 
                 SqlConnection connection = null;
                 SqlDataReader reader = null;

@@ -1,5 +1,6 @@
 using System.Security.Cryptography;
 using System.Text;
+using Backend;
 using Backend.App.Machines;
 using Backend.Base.Token.Ent;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -7,6 +8,8 @@ using Microsoft.IdentityModel.Tokens; // For TokenValidationParameters
 
 
 var builder = WebApplication.CreateBuilder(args);
+
+LoadAppSettings(builder);
 
 // Add services to the container.
 
@@ -73,4 +76,12 @@ void RunOnStartup(WebApplication app)
 
     // Call the service method
     permissionService.InitialisePermissions();
+}
+
+void LoadAppSettings(WebApplicationBuilder builder)
+{
+    AppSettings.DBMainConnection = builder.Configuration["ConnectionStrings:DBMainConnection"];
+    AppSettings.MaxGetTokenCalls = int.Parse(builder.Configuration["Token:MaxGetTokenCalls"]);
+    AppSettings.CacheExpirationAddSeconds = int.Parse(builder.Configuration["Token:CacheExpirationAddSeconds"]);
+    AppSettings.CacheExpirationGetSeconds = int.Parse(builder.Configuration["Token:CacheExpirationGetSeconds"]);
 }
