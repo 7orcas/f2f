@@ -1,5 +1,6 @@
 ﻿global using Common.DTO;
 global using Common.Request;
+global using Serilog;
 global using Backend.Base;
 global using Backend.Base.Token;
 global using Backend.Base.Entity;

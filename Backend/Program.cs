@@ -11,6 +11,13 @@ var builder = WebApplication.CreateBuilder(args);
 
 LoadAppSettings(builder);
 
+// Add Serilog configuration
+builder.Host.UseSerilog((context, config) =>
+{
+    config.WriteTo.File("Logs/log-.txt", rollingInterval: RollingInterval.Day);
+});
+
+
 // Add services to the container.
 
 builder.Services.AddControllers(options =>

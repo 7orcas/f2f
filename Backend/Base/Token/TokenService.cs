@@ -101,6 +101,7 @@ Console.WriteLine("Add token, key=" + key + ", token=" + tokenX);
         /// <returns></returns>
         public string? GetToken(string key)
         {
+            _logger.Information("GetToken, key=" + key);
             if (_memoryCache.TryGetValue(Key(key), out var cachedValue))
             {
                 var tokenX = cachedValue.ToString();
@@ -121,6 +122,7 @@ Console.WriteLine("Get token, key=" + key + ", tokenX=" + tokenX);
                     return token;
                 }
             }
+            _logger.Warning("GetToken null, key=" + key);
             return null;
         }
 

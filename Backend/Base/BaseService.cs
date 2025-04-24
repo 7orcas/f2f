@@ -4,6 +4,14 @@ namespace Backend.Base
 {
     public class BaseService
     {
+        protected readonly Serilog.ILogger _logger;
+
+        public BaseService() 
+        { 
+            _logger = Log.Logger;
+        }
+
+
         public T ReadBaseEntity<T>(SqlDataReader r) where T : BaseEntity, new()
         {
             var entity = new T();
