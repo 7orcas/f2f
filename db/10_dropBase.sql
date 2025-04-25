@@ -1,6 +1,8 @@
 
 drop table if exists cntrl.token;
 
+drop table if exists base.audit;
+
 drop table if exists base.languageLabel;
 drop table if exists base.languageCode;
 drop table if exists base.languageKey;

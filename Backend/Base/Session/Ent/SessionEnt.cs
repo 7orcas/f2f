@@ -15,6 +15,7 @@ namespace Backend.Base.Session.Ent
         public string Key { get; set; }
         public OrgEnt Org { get; set; }
         public UserEnt User { get; set; }
+        public int SourceApp {  get; set; }
 
         /// <summary>
         /// Return the user's crud value for the permission

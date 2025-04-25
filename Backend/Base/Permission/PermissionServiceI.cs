@@ -6,8 +6,9 @@ namespace Backend.Base.Permission
     public interface PermissionServiceI
     {
         PermissionEnt GetPermissionEnt(string perm);
-        Task<List<PermissionCrudEnt>> LoadEffectivePermissions(int userId, int orgId);
-        Task<List<RolePermissionCrudEnt>> GetPermissions(int userId, int orgId);
+        Task<List<PermissionCrudEnt>> LoadEffectivePermissions(SessionEnt session);
+        Task<List<PermissionCrudEnt>> LoadEffectivePermissionsInt(int userId, int orgId);
+        Task<List<RolePermissionCrudEnt>> GetPermissions(SessionEnt session);
 
         bool IsAuthorizedToAccessEndPoint(SessionEnt session, PermissionAtt perm, CrudAtt crud);
     }

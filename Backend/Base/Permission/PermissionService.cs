@@ -27,10 +27,10 @@ namespace Backend.Base.Permission
         private readonly IMemoryCache _memoryCache;
         private const string KEY = "PermissionService_list";
 
-        public PermissionService() { }
-
-        public PermissionService(IMemoryCache memoryCache)
-        {
+        public PermissionService(IServiceProvider serviceProvider,
+            IMemoryCache memoryCache) 
+            : base(serviceProvider)
+        { 
             _memoryCache = memoryCache;
         }
 
@@ -49,10 +49,23 @@ namespace Backend.Base.Permission
         /// Load and setup a user's permission/crud settings
         /// The specifig org's permissions are used if exist, then org 0 permission's are the default
         /// </summary>
+        /// <param name="session"></param>
+        /// <returns></returns>
+        public async Task<List<PermissionCrudEnt>> LoadEffectivePermissions(SessionEnt session)
+        {
+            _auditService.ReadList(session, GC.EntityPermission, null);
+            return await LoadEffectivePermissionsInt(session.User.LoginId, session.Org.Id);
+        }
+
+
+        /// <summary>
+        /// Load and setup a user's permission/crud settings
+        /// The specifig org's permissions are used if exist, then org 0 permission's are the default
+        /// </summary>
         /// <param name="userId"></param>
         /// <param name="orgId"></param>
         /// <returns></returns>
-        public async Task<List<PermissionCrudEnt>> LoadEffectivePermissions(int userId, int orgId)
+        public async Task<List<PermissionCrudEnt>> LoadEffectivePermissionsInt(int userId, int orgId)
         {
             var perms = new Dictionary<int, PermissionCrudEnt>();
             try
@@ -114,8 +127,10 @@ namespace Backend.Base.Permission
         /// <param name="userId"></param>
         /// <param name="orgId"></param>
         /// <returns></returns>
-        public async Task<List<RolePermissionCrudEnt>> GetPermissions(int userId, int orgId)
+        public async Task<List<RolePermissionCrudEnt>> GetPermissions(SessionEnt session)
         {
+            _auditService.ReadList(session, GC.EntityPermission, null);
+
             var list = new List<RolePermissionCrudEnt>();
             try
             {
@@ -137,8 +152,8 @@ namespace Backend.Base.Permission
                             OrgId = GetId(r, "orgId")
                         });
                     },
-                    new SqlParameter("@userId", userId),
-                    new SqlParameter("@orgId", orgId)
+                    new SqlParameter("@userId", session.User.LoginId),
+                    new SqlParameter("@orgId", session.Org.Id)
                 );
 
                 await Sql.Run(sql + "AND r.orgId = " + GC.BaseOrgId + by,
@@ -152,7 +167,7 @@ namespace Backend.Base.Permission
                             OrgId = GetId(r, "orgId")
                         });
                     },
-                    new SqlParameter("@userId", userId)
+                    new SqlParameter("@userId", session.User.LoginId)
                 );
 
                 return list.OrderBy(r => r.Role).ThenBy(r => r.PermissionCode).ToList();

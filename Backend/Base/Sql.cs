@@ -51,7 +51,7 @@ namespace Backend.Base
             {
 
                 //Thread.Sleep(400);
-                var connectionString = "Server=np:localhost;Database=blue;TrustServerCertificate=True;Authentication=Active Directory Integrated;";
+                var connectionString = AppSettings.DBMainConnection;
 
                 SqlConnection connection = null;
                 try
@@ -78,6 +78,36 @@ namespace Backend.Base
         static public bool ValidateParameter(string parameter)
         {
             return !string.IsNullOrWhiteSpace(parameter);
+        }
+
+        static public string? GetString(SqlDataReader r, string column)
+        {
+            return r.IsDBNull(r.GetOrdinal(column)) ? null : (string)r[column];
+        }
+
+        static public int GetId(SqlDataReader r, string column)
+        {
+            return (int)r[column];
+        }
+
+        static public int? GetIdNull(SqlDataReader r, string column)
+        {
+            return r.IsDBNull(r.GetOrdinal(column)) ? null : (int)r[column];
+        }
+
+        static public int GetInt(SqlDataReader r, string column)
+        {
+            return (int)r[column];
+        }
+
+        static public bool GetBoolean(SqlDataReader r, string column)
+        {
+            return !r.IsDBNull(r.GetOrdinal(column)) && r.GetBoolean(r.GetOrdinal(column));
+        }
+
+        static public DateTime GetDateTime(SqlDataReader r, string column)
+        {
+            return r[column] == DBNull.Value ? DateTime.MinValue : (DateTime)r[column];
         }
 
 

@@ -45,7 +45,7 @@ namespace Backend.Base.Login
 
             var org = await _orgService.GetOrg(request.Org);
             var user = await _loginService.InitialiseLogin(login, org);
-            var session = await _sessionService.CreateSession(user, org);
+            var session = await _sessionService.CreateSession(user, org, request.SourceApplication);
 
             var tv = new TokenValues {
                 Username = request.Username,

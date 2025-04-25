@@ -10,11 +10,13 @@ CREATE SEQUENCE cntrl.temp_id
     START WITH 10000
     INCREMENT BY 1;
 
+/* DELETE
 CREATE TABLE cntrl.token (
     id         INT             PRIMARY KEY IDENTITY (1, 1) NOT NULL,
 	token      NVARCHAR (MAX)  NOT NULL,
 	expires    DATETIME        NOT NULL
 );
+*/
 
 CREATE TABLE base.org (
     id          INT             PRIMARY KEY IDENTITY (1, 1) NOT NULL,
@@ -116,4 +118,14 @@ CREATE TABLE base.languageLabel
 	FOREIGN KEY (languageKeyId) REFERENCES base.languageKey(id),
 	CONSTRAINT languageLabel_uq_code   UNIQUE (languageKeyId, languageCode, hardCodedNr)
 );
-
+CREATE TABLE base.audit (
+    id                       INT                 PRIMARY KEY IDENTITY (1, 1) NOT NULL,
+	orgId                 INT                 NOT NULL,
+	source              INT                 NOT NULL,
+	entity                INT                 NOT NULL,
+	entityId            INT                 NULL,
+	userId               INT                 NOT NULL,
+	created            DATETIME    NOT NULL DEFAULT GETDATE(),
+	crud                  NVARCHAR (10)   NULL,
+	details             NVARCHAR (MAX)  NULL
+);

@@ -5,6 +5,8 @@ namespace Backend.Base.Org
 {
     public class OrgService: BaseService, OrgServiceI
     {
+        public OrgService(IServiceProvider serviceProvider) : base(serviceProvider) { }
+
         public async Task<OrgEnt> GetOrg(int nr)
         {
             var l = new OrgEnt();

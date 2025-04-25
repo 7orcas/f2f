@@ -4,6 +4,7 @@
 @inject IHttpClientFactory HttpClientFactory
 @inject LoginService LoginService
 @using Newtonsoft.Json;
+@using GC = FrontendLogin.GlobalConstants;
 
 <h3>Login</h3>
 <EditForm Model="@loginRequest" OnValidSubmit="@HandleLogin">
@@ -42,6 +43,7 @@
     {
         try
         {
+            loginRequest.SourceApplication = GC.AppClient;
             errorMessage = string.Empty;
             successMessage = string.Empty;
 

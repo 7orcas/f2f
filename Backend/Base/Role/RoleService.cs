@@ -19,7 +19,7 @@ namespace Backend.Base.Role
     public class RoleService: BaseService, RoleServiceI
     {
 
-        public RoleService() { }
+        public RoleService(IServiceProvider serviceProvider) : base(serviceProvider) { }
 
         /// <summary>
         /// Return a user's Roles
@@ -27,8 +27,10 @@ namespace Backend.Base.Role
         /// <param name="userId"></param>
         /// <param name="orgId"></param>
         /// <returns></returns>
-        public async Task<List<UserRoleEnt>> GetUserRoles(int userId, int orgId)
+        public async Task<List<UserRoleEnt>> GetUserRoles(SessionEnt session)
         {
+            _auditService.ReadList(session, GC.EntityRole, null);
+
             var list = new List<UserRoleEnt>();
             try
             {
@@ -50,8 +52,8 @@ namespace Backend.Base.Role
                             IsActive = GetBoolean(r, "isActive"),
                         });
                     },
-                    new SqlParameter("@userId", userId),
-                    new SqlParameter("@orgId", orgId)
+                    new SqlParameter("@userId", session.User.LoginId),
+                    new SqlParameter("@orgId", session.Org.Id)
                 );
 
                 await Sql.Run(sql + "AND r.orgId = " + GC.BaseOrgId + by,
@@ -66,7 +68,7 @@ namespace Backend.Base.Role
                             IsActive = GetBoolean(r, "isActive"),
                         });
                     },
-                    new SqlParameter("@userId", userId)
+                    new SqlParameter("@userId", session.User.LoginId)
                 );
 
                 return list.OrderBy(r => r.Code).ToList();

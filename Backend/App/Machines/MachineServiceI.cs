@@ -4,6 +4,6 @@ namespace Backend.App.Machines
 {
     public interface MachineServiceI
     {
-        Task<List<Machine>> GetMachines();
+        Task<List<Machine>> GetMachines(SessionEnt session);
     }
 }

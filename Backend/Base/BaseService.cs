@@ -1,16 +1,21 @@
-﻿using Microsoft.Data.SqlClient;
+﻿using Backend.Base.Audit;
+using Microsoft.Data.SqlClient;
 
 namespace Backend.Base
 {
-    public class BaseService
+    public abstract class BaseService
     {
         protected readonly Serilog.ILogger _log;
+        protected AuditServiceI _auditService;
 
-        public BaseService() 
+        public BaseService(IServiceProvider serviceProvider) 
         { 
             _log = Log.Logger;
+            
+            // Create a scoped service provider
+            using var scope = serviceProvider.CreateScope();
+            _auditService = scope.ServiceProvider.GetRequiredService<AuditServiceI>();
         }
-
 
         public T ReadBaseEntity<T>(SqlDataReader r) where T : BaseEntity, new()
         {
@@ -29,32 +34,32 @@ namespace Backend.Base
 
         public string? GetString(SqlDataReader r, string column)
         {
-            return r.IsDBNull(r.GetOrdinal(column)) ? null : (string)r[column];
+            return Sql.GetString(r, column);
         }
 
         public int GetId(SqlDataReader r, string column)
         {
-            return (int)r[column];
+            return Sql.GetId(r, column);
         }
 
         public int? GetIdNull(SqlDataReader r, string column)
         {
-            return r.IsDBNull(r.GetOrdinal(column)) ? null : (int)r[column];
+            return Sql.GetIdNull(r, column);
         }
 
         public int GetInt(SqlDataReader r, string column)
         {
-            return (int)r[column];
+            return Sql.GetInt(r, column);
         }
 
         public bool GetBoolean(SqlDataReader r, string column)
         {
-            return !r.IsDBNull(r.GetOrdinal(column)) && r.GetBoolean(r.GetOrdinal(column));
+            return Sql.GetBoolean(r, column);
         }
 
         public DateTime GetDateTime(SqlDataReader r, string column)
         {
-            return r[column] == DBNull.Value ? DateTime.MinValue : (DateTime)r[column];
+            return Sql.GetDateTime(r, column);
         }
 
     }

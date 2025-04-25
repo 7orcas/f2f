@@ -11,5 +11,6 @@ namespace Common.Request
         public string Username { get; set; }
         public string Password { get; set; }
         public int Org { get; set; }
+        public int SourceApplication { get; set; }
     }
 }

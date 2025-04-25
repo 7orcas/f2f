@@ -13,13 +13,13 @@ namespace BackendTest.Base.Permission
 
         public PermissionServiceTest()
         {
-            service = new PermissionService();
+            service = new PermissionService(null, null);
         }
 
         [TestMethod]
         public async Task LoadPermissions()
         {
-            var list = await service.LoadEffectivePermissions(UserIdTest, OrgIdTest);
+            var list = await service.LoadEffectivePermissionsInt(UserIdTest, OrgIdTest);
 
             Assert.AreEqual(8, list.Count);
         }

@@ -21,7 +21,9 @@ namespace Backend.Base.Permission
         private readonly IMemoryCache _memoryCache;
         private const string KEY = "PermissionService_list";
 
-        public PermissionInitialiseService(IMemoryCache memoryCache)
+        public PermissionInitialiseService(IServiceProvider serviceProvider,
+            IMemoryCache memoryCache)
+            : base(serviceProvider)
         {
             _memoryCache = memoryCache;
         }

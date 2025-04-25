@@ -30,7 +30,7 @@ namespace Backend.Base.Permission
         public async Task<IActionResult> Get()
         {
             var session = HttpContext.Items["session"] as SessionEnt;
-            var Permissions = await _PermissionService.GetPermissions(session.User.LoginId, session.Org.Id);
+            var Permissions = await _PermissionService.GetPermissions(session);
             var list = new List<RolePermissionDto>();
 
             foreach (var m in Permissions)
@@ -58,7 +58,7 @@ namespace Backend.Base.Permission
         public async Task<IActionResult> GetEffective()
         {
             var session = HttpContext.Items["session"] as SessionEnt;
-            var Permissions = await _PermissionService.LoadEffectivePermissions(session.User.LoginId, session.Org.Id);
+            var Permissions = await _PermissionService.LoadEffectivePermissions(session);
             var PermList = _PermissionInitialiseService.GetPermissions();
 
             var list = new List<PermissionDto>();

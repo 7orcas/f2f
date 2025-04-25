@@ -16,19 +16,22 @@ namespace Backend.Base.Session
     {
         private readonly IMemoryCache _memoryCache;
 
-        public SessionService(IMemoryCache memoryCache)
+        public SessionService(IServiceProvider serviceProvider,
+            IMemoryCache memoryCache)
+            : base(serviceProvider)
         {
             _memoryCache = memoryCache;
         }
 
-        public async Task<SessionEnt> CreateSession(UserEnt user, OrgEnt org)
+        public async Task<SessionEnt> CreateSession(UserEnt user, OrgEnt org, int sourceApp)
         {
             var key = user.Userid + "-" + Guid.NewGuid().ToString();
             var ses = new SessionEnt
             {
                 Key = key,
                 User = user,
-                Org = org
+                Org = org,
+                SourceApp = sourceApp,
             };
 
             _memoryCache.Set(Key(key), ses);

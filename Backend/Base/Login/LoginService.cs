@@ -16,7 +16,8 @@ namespace Backend.Base.Login
     {
         private readonly PermissionServiceI _permissionService;
 
-        public LoginService (PermissionServiceI permissionService)
+        public LoginService (IServiceProvider serviceProvider,
+            PermissionServiceI permissionService) : base (serviceProvider)
         {
             _permissionService = permissionService;
         }
@@ -99,7 +100,7 @@ namespace Backend.Base.Login
         public async Task<UserEnt> InitialiseLogin(LoginEnt l, OrgEnt org)
         {
             await SetAttempts(l.Id, 0);
-            var permissions = await _permissionService.LoadEffectivePermissions (l.Id, org.Id);
+            var permissions = await _permissionService.LoadEffectivePermissionsInt(l.Id, org.Id);
 
             var user = new UserEnt
             {

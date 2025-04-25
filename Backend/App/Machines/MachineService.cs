@@ -1,12 +1,17 @@
-﻿
+﻿using GC = Backend.GlobalConstants;
 using Backend.App.Machines.Ent;
 
 namespace Backend.App.Machines
 {
     public class MachineService: BaseService, MachineServiceI
     {
-        public async Task<List<Machine>> GetMachines()
+        public MachineService(IServiceProvider serviceProvider) : base (serviceProvider) { }
+
+        public async Task<List<Machine>> GetMachines(SessionEnt session)
         {
+
+            _auditService.ReadList(session, GC.EntityMachine, null);
+
             List <Machine> machines = new List<Machine>();
             await Sql.Run(
                     "SELECT * FROM app.Machine m",

@@ -48,6 +48,7 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options => options.TokenValidationParameters = TokenParameters.GetParameters());
 
 //Base Services
+builder.Services.AddScoped<AuditServiceI, AuditService>();
 builder.Services.AddSingleton<PermissionInitialiseServiceI, PermissionInitialiseService>();
 builder.Services.AddScoped<LoginServiceI, LoginService>();
 builder.Services.AddScoped<TokenServiceI, TokenService>();

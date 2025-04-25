@@ -4,6 +4,8 @@ global using Serilog;
 global using Backend.Base;
 global using Backend.Base.Token;
 global using Backend.Base.Entity;
+global using Backend.Base.Audit;
+global using Backend.Base.Audit.Ent;
 global using Backend.Base.Login;
 global using Backend.Base.Login.Ent;
 global using Backend.Base.Org;

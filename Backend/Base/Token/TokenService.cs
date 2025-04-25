@@ -17,10 +17,13 @@ namespace Backend.Base.Token
         private readonly IMemoryCache _memoryCache;
         private const int PAD_TOKEN = 5;
 
-        public TokenService(IMemoryCache memoryCache)
+        public TokenService(IServiceProvider serviceProvider,
+            IMemoryCache memoryCache)
+            : base(serviceProvider)
         {
             _memoryCache = memoryCache;
         }
+
 
         /// <summary>
         /// Login process creates this token

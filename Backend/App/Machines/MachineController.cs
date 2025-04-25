@@ -26,7 +26,7 @@ namespace Backend.App.Machines
         public async Task<IActionResult> Get()
         {
             var session = HttpContext.Items["session"] as SessionEnt;
-            var machines = await _machineService.GetMachines();
+            var machines = await _machineService.GetMachines(session);
             var list = new List<MachineDto>();
 
             foreach (var m in machines)
