@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Reflection;
 using System.Reflection.Metadata;
 using System.Security;
+using GC = Backend.GlobalConstants;
 
 namespace Backend.Base
 {
@@ -19,16 +20,19 @@ namespace Backend.Base
         private readonly TokenServiceI _tokenService;
         private readonly SessionServiceI _sessionService;
         private readonly PermissionServiceI _permissionService;
+        private readonly AuditServiceI _auditService;
 
         public InterceptorFilter(
             TokenServiceI tokenService,
             SessionServiceI sessionService,
-            PermissionServiceI permissionService)
+            PermissionServiceI permissionService,
+            AuditServiceI auditService)
         {
             _log = Serilog.Log.Logger;
             _tokenService = tokenService;
             _sessionService = sessionService;
             _permissionService = permissionService;
+            _auditService = auditService;   
         }
 
 
@@ -78,6 +82,20 @@ namespace Backend.Base
                     };
                     context.Result = new OkObjectResult(r);
                 }
+
+                //Audit action
+                var audit = methodInfo.GetCustomAttribute<AuditAtt>();
+                if (audit != null)
+                {
+                    switch (audit.AuditUserAction) 
+                    {
+                        case GC.AuditReadList:
+                            _auditService.ReadList(session, audit.EntityTypeId, null);
+                            break;
+                    }
+                }
+
+
             }
 
             if (_log.IsEnabled(LogEventLevel.Debug))

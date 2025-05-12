@@ -53,7 +53,6 @@ namespace Backend.Base.Permission
         /// <returns></returns>
         public async Task<List<PermissionCrudEnt>> LoadEffectivePermissions(SessionEnt session)
         {
-            _auditService.ReadList(session, GC.EntityPermission, null);
             return await LoadEffectivePermissionsInt(session.User.LoginId, session.Org.Id);
         }
 
@@ -129,8 +128,6 @@ namespace Backend.Base.Permission
         /// <returns></returns>
         public async Task<List<RolePermissionCrudEnt>> GetPermissions(SessionEnt session)
         {
-            _auditService.ReadList(session, GC.EntityPermission, null);
-
             var list = new List<RolePermissionCrudEnt>();
             try
             {

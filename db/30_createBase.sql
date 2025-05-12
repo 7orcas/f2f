@@ -122,7 +122,7 @@ CREATE TABLE base.audit (
     id                       INT                 PRIMARY KEY IDENTITY (1, 1) NOT NULL,
 	orgId                 INT                 NOT NULL,
 	source              INT                 NOT NULL,
-	entity                INT                 NOT NULL,
+	entityTypeId    INT                 NOT NULL,
 	entityId            INT                 NULL,
 	userId               INT                 NOT NULL,
 	created            DATETIME    NOT NULL DEFAULT GETDATE(),

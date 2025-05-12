@@ -29,8 +29,6 @@ namespace Backend.Base.Role
         /// <returns></returns>
         public async Task<List<UserRoleEnt>> GetUserRoles(SessionEnt session)
         {
-            _auditService.ReadList(session, GC.EntityRole, null);
-
             var list = new List<UserRoleEnt>();
             try
             {

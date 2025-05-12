@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Http.HttpResults;
+﻿using Backend.App.Machines;
+using Backend.Base.Entity;
+using Microsoft.AspNetCore.Http.HttpResults;
 using System.Collections.Generic;
 using GC = Backend.GlobalConstants;
 
@@ -7,47 +9,52 @@ namespace Backend.Base.Audit
     public class AuditService: AuditServiceI
     {
         protected readonly Serilog.ILogger _log;
+        private readonly EntityServiceI _entityService;
 
-        public AuditService() 
+        public AuditService(EntityServiceI entityService) 
         {
             _log = Log.Logger;
+            _entityService = entityService;
         }
 
         public async Task<List<AuditList>> GetEvents(SessionEnt session)
         {
-
-            ReadList(session, GC.EntityAudit, null);
-
             List<AuditList> list = new List<AuditList>();
             await Sql.Run(
-                    "SELECT * FROM base.Audit a",
+                    "SELECT a.*, z.xxx " +
+                    "FROM base.Audit a " +
+                    "LEFT JOIN base.zzz z ON z.id = a.userId ",
                     r => {
                         list.Add(new AuditList()
                         {
                             Id = Sql.GetId(r, "id"),
                             OrgId = Sql.GetId(r, "orgId"),
                             Source = Sql.GetInt(r, "source"),
-                            Entity = Sql.GetInt(r, "entity"),
-                            EntityId = Sql.GetInt(r, "entityId"),
+                            EntityTypeId = Sql.GetInt(r, "entityTypeId"),
+                            EntityId = Sql.GetIntNull(r, "entityId"),
                             UserId = Sql.GetInt(r, "userId"),
+                            User = Sql.GetString(r, "xxx"),
                             Created = Sql.GetDateTime(r, "created"),
                             Crud = Sql.GetString(r, "crud"),
                             Details = Sql.GetString(r, "details")
                         });
                     });
 
-
+            foreach (var a in list)
+            { 
+                a.EntityType = _entityService.GetEntityTypeName(a.EntityTypeId);
+            }
 
             return list;
         }
 
-        public void ReadEntity(SessionEnt session, int entity, int entityId)
+        public void ReadEntity(SessionEnt session, int entityTypeId, int entityId)
         {
             Task.Run(async () =>
             {
                 try
                 {
-                    LogAuditRecord(session, entity, entityId, GC.CrudRead, null);
+                    LogAuditRecord(session, entityTypeId, entityId, GC.CrudRead, null);
                 }
                 catch (Exception ex) 
                 { 
@@ -71,15 +78,15 @@ namespace Backend.Base.Audit
             });
         }
 
-        private async void LogAuditRecord(SessionEnt session, int entity, int? entityId, string crud, string details)
+        private async void LogAuditRecord(SessionEnt session, int entityTypeId, int? entityId, string crud, string details)
         {
             await Sql.Execute(
                     "INSERT INTO base.Audit " +
-                        "(orgId, source, entity, entityId, userId, crud, details) " +
+                        "(orgId, source, entityTypeId, entityId, userId, crud, details) " +
                     "VALUES (" + 
                         session.Org.Id + "," +
                         session.SourceApp + "," +
-                        entity + "," +
+                        entityTypeId + "," +
                         (entityId == null? "null" : entityId) + "," +
                         session.User.LoginId + "," +
                         "'" + crud + "'," +

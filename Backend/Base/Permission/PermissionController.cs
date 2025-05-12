@@ -17,15 +17,18 @@ namespace Backend.Base.Permission
         /// <summary>
         /// Constructor
         /// </summary>
+        /// <param name="ServiceProvider"></param>
         /// <param name="PermissionService"></param>
-        public PermissionController(PermissionInitialiseServiceI PermissionInitialiseService,
-            PermissionServiceI PermissionService)
+        public PermissionController(IServiceProvider serviceProvider,
+            PermissionInitialiseServiceI PermissionInitialiseService,
+            PermissionServiceI PermissionService) : base(serviceProvider)
         {
             _PermissionInitialiseService = PermissionInitialiseService;
             _PermissionService = PermissionService;
         }
 
         [CrudAtt(GC.CrudRead)]
+        [AuditAtt(GC.AuditReadList, GC.EntityTypePermission)]
         [HttpGet("list")]
         public async Task<IActionResult> Get()
         {
@@ -54,6 +57,7 @@ namespace Backend.Base.Permission
         }
 
         [CrudAtt(GC.CrudRead)]
+        [AuditAtt(GC.AuditReadList, GC.EntityTypePermissionEffect)]
         [HttpGet("listeffective")]
         public async Task<IActionResult> GetEffective()
         {

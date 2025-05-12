@@ -3,43 +3,48 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using GC = Backend.GlobalConstants;
 
-namespace Backend.Base.Role
+namespace Backend.Base.Audit
 {
     [Authorize]
-    [PermissionAtt("role")]
+    [PermissionAtt("audit")]
     [ApiController]
     [Route("api/[controller]")]
-    public class RoleController : BaseController
+    public class AuditController : BaseController
     {
-        private readonly RoleServiceI _RoleService;
 
         /// <summary>
         /// Constructor
         /// </summary>
-        /// <param name="RoleService"></param>
-        public RoleController(RoleServiceI RoleService)
+        /// <param name="ServiceProvider"></param>
+        /// <param name="AuditService"></param>
+        public AuditController(IServiceProvider serviceProvider,
+            AuditServiceI AuditService) : base(serviceProvider)
         {
-            _RoleService = RoleService;
         }
 
+
         [CrudAtt(GC.CrudRead)]
+        [AuditAtt(GC.AuditReadList, GC.EntityTypeAudit)]
         [HttpGet("list")]
         public async Task<IActionResult> Get()
         {
             var session = HttpContext.Items["session"] as SessionEnt;
-            var roles = await _RoleService.GetUserRoles(session);
-            var list = new List<UserRoleDto>();
+            var events = await _auditService.GetEvents(session);
+            var list = new List<AuditDto>();
 
-            foreach (var m in roles)
+            foreach (var e in events)
             {
-                list.Add(new UserRoleDto
+                list.Add(new AuditDto
                 {
-                    RoleId = m.RoleId,
-                    OrgId = m.OrgId,
-                    Code = m.Code,
-                    Description = m.Description,
-                    Updated = m.Updated,
-                    IsActive = m.IsActive,
+                    Id = e.Id,
+                    OrgId = e.OrgId,
+                    Source = e.Source,
+                    EntityType = e.EntityType,
+                    EntityId = e.EntityId,
+                    User = e.User,
+                    Created = e.Created,
+                    Crud = e.Crud,
+                    Details = e.Details,
                 });
             }
 

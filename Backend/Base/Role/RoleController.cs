@@ -16,13 +16,16 @@ namespace Backend.Base.Role
         /// <summary>
         /// Constructor
         /// </summary>
+        /// <param name="ServiceProvider"></param>
         /// <param name="RoleService"></param>
-        public RoleController(RoleServiceI RoleService)
+        public RoleController(IServiceProvider serviceProvider,
+            RoleServiceI RoleService) : base(serviceProvider)
         {
             _RoleService = RoleService;
         }
 
         [CrudAtt(GC.CrudRead)]
+        [AuditAtt(GC.AuditReadList, GC.EntityTypeRole)]
         [HttpGet("list")]
         public async Task<IActionResult> Get()
         {

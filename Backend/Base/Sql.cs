@@ -99,6 +99,10 @@ namespace Backend.Base
         {
             return (int)r[column];
         }
+        static public int? GetIntNull(SqlDataReader r, string column)
+        {
+            return r.IsDBNull(r.GetOrdinal(column)) ? null : (int)r[column];
+        }
 
         static public bool GetBoolean(SqlDataReader r, string column)
         {

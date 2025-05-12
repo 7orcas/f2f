@@ -4,26 +4,31 @@
     {
         public const int BaseOrgId = 0;
 
+        public const int AppClient        = 1; //defined in FrontendLogin as well
+        
         public const string CrudCreate   = "c";
         public const string CrudRead     = "r";
         public const string CrudUpdate   = "u";
         public const string CrudDelete   = "d";
         public const string CrudReadList = "l";
 
-        public const int AppClient        = 1; //defined in FrontendLogin as well
+        public const int AuditReadList   = 1;
+        public const int AuditReadEntity = 2;
 
+        //Entity Type Id
+        public const int EntityTypePermission       = 1;
+        public const int EntityTypePermissionEffect = 2;
+        public const int EntityTypeRole             = 3;
+        public const int EntityTypeAudit            = 4;
+        public const int EntityTypeMachine          = 101;
 
-        public const int EntityPermission = 1;
-        public const int EntityRole       = 2;
-        public const int EntityAudit      = 3;
-        public const int EntityMachine    = 101;
+        public static readonly object[] EntityTypes = {
+            EntityTypePermission,       "Permission",
+            EntityTypePermissionEffect, "PermissionEffective",
+            EntityTypeRole,             "Role",
+            EntityTypeAudit,            "Audit",
 
-        public static readonly object[] Entities = {
-            EntityPermission, "Permission",
-            EntityRole,       "Role",
-            EntityAudit,      "Audit",
-
-            EntityMachine,    "Machine",
+            EntityTypeMachine,          "Machine",
         };
 
     }

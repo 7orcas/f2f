@@ -15,13 +15,16 @@ namespace Backend.App.Machines
         /// <summary>
         /// Constructor
         /// </summary>
+        /// <param name="ServiceProvider"></param>
         /// <param name="MachineService"></param>
-        public MachineController(MachineServiceI machineService)
+        public MachineController(IServiceProvider serviceProvider,
+            MachineServiceI machineService) : base(serviceProvider) 
         {
             _machineService = machineService;
         }
 
         [CrudAtt(GC.CrudRead)]
+        [AuditAtt(GC.AuditReadList, GC.EntityTypeMachine)]
         [HttpGet("list")]
         public async Task<IActionResult> Get()
         {
