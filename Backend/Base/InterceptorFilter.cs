@@ -83,17 +83,11 @@ namespace Backend.Base
                     context.Result = new OkObjectResult(r);
                 }
 
-                //Audit action
-                var audit = methodInfo.GetCustomAttribute<AuditAtt>();
+                //Audit list action
+                var audit = methodInfo.GetCustomAttribute<AuditListAtt>();
                 if (audit != null)
-                {
-                    switch (audit.AuditUserAction) 
-                    {
-                        case GC.AuditReadList:
-                            _auditService.ReadList(session, audit.EntityTypeId, null);
-                            break;
-                    }
-                }
+                    _auditService.ReadList(session, audit.EntityTypeId, null);
+                
 
 
             }

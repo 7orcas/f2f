@@ -28,15 +28,19 @@ Welcome to your new app.
     {
         if (firstRender)
         {
-            //     SessionService.SetSessionValue("token", token);
-
             var result = await ProtectedSessionStore.GetAsync<string>("tokenX");
-            if (!result.Success && !string.IsNullOrEmpty(token))
+            if (//!result.Success && 
+                !string.IsNullOrEmpty(token) &&
+                token.StartsWith(LoginTokenDto.TOKEN_PREFIX))
+            {
+                token = token.Substring(LoginTokenDto.TOKEN_PREFIX_LENGTH);
                 await ProtectedSessionStore.SetAsync("tokenX", token);
-
-            // await TokenStorage.InitializeAsync(); // Enable interop after rendering
-            // if (!string.IsNullOrEmpty(token))
-            //     await TokenStorage.SetTokenAsync(token);
+            }
+            else
+            {
+                var x = 1;
+                x++;
+            }
         }
     }
 
@@ -59,7 +63,10 @@ Console.WriteLine("Index OnInitializedAsync called");
         var client = HttpClientFactory.CreateClient("BackendApi");
         var tokenResponse = await client.GetAsync("api/Token/token?key=" + tokenkey);
         token = await tokenResponse.Content.ReadAsStringAsync();
-        //StateHasChanged();
+        
+        // if (!string.IsNullOrEmpty(token) &&
+        //     token.StartsWith(LoginTokenDto.TOKEN_PREFIX))
+        //     StateHasChanged();
     }
 
 }

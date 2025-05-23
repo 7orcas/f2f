@@ -24,7 +24,7 @@ namespace Backend.App.Machines
         }
 
         [CrudAtt(GC.CrudRead)]
-        [AuditAtt(GC.AuditReadList, GC.EntityTypeMachine)]
+        [AuditListAtt(GC.EntityTypeMachine)]
         [HttpGet("list")]
         public async Task<IActionResult> Get()
         {

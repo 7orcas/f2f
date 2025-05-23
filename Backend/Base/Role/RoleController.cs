@@ -25,7 +25,7 @@ namespace Backend.Base.Role
         }
 
         [CrudAtt(GC.CrudRead)]
-        [AuditAtt(GC.AuditReadList, GC.EntityTypeRole)]
+        [AuditListAtt(GC.EntityTypeRole)]
         [HttpGet("list")]
         public async Task<IActionResult> Get()
         {

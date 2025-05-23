@@ -78,18 +78,55 @@ namespace Backend.Base.Audit
             });
         }
 
-        private async void LogAuditRecord(SessionEnt session, int entityTypeId, int? entityId, string crud, string details)
+        public void LogInOut(int sourceApp, int orgId, int loginId, int entityTypeId)
+        {
+            Task.Run(async () =>
+            {
+                try
+                {
+                    LogAuditRecord(sourceApp, orgId, loginId, entityTypeId, null, null, null);
+                }
+                catch (Exception ex)
+                {
+                    _log.Error("Audit Read:" + ex.Message);
+                }
+            });
+        }
+
+        private async void LogAuditRecord(SessionEnt session,
+            int entityTypeId,
+            int? entityId,
+            string crud,
+            string details)
+        {
+            LogAuditRecord(session.SourceApp,
+                session.Org.Id,
+                session.User.LoginId,
+                entityTypeId,
+                entityId,
+                crud,
+                details);
+        }
+
+        private async void LogAuditRecord(
+            int sourceApp,
+            int orgId,
+            int loginId,
+            int entityTypeId,
+            int? entityId, 
+            string crud, 
+            string details)
         {
             await Sql.Execute(
                     "INSERT INTO base.Audit " +
                         "(orgId, source, entityTypeId, entityId, userId, crud, details) " +
                     "VALUES (" + 
-                        session.Org.Id + "," +
-                        session.SourceApp + "," +
+                        orgId + "," +
+                        sourceApp + "," +
                         entityTypeId + "," +
                         (entityId == null? "null" : entityId) + "," +
-                        session.User.LoginId + "," +
-                        "'" + crud + "'," +
+                        loginId + "," +
+                        (crud == null ? "null" : "'" + crud + "'") + "," +
                         (details == null ? "null" : "'" + details + "'") + 
                         ")"
             );

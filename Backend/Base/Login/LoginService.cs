@@ -1,7 +1,5 @@
-﻿using Azure.Core;
-using Backend.Base.Entity;
-using Microsoft.Data.SqlClient;
-using Microsoft.Extensions.Caching.Memory;
+﻿using Microsoft.Data.SqlClient;
+using GC = Backend.GlobalConstants;
 
 namespace Backend.Base.Login
 {
@@ -97,7 +95,7 @@ namespace Backend.Base.Login
         }
 
 
-        public async Task<UserEnt> InitialiseLogin(LoginEnt l, OrgEnt org)
+        public async Task<UserEnt> InitialiseLogin(LoginEnt l, OrgEnt org, int sourceApp)
         {
             await SetAttempts(l.Id, 0);
             var permissions = await _permissionService.LoadEffectivePermissionsInt(l.Id, org.Id);
@@ -109,6 +107,7 @@ namespace Backend.Base.Login
                 Permissions = permissions,
             };
 
+            _auditService.LogInOut(sourceApp, org.Id, l.Id, GC.EntityTypeLogin);
             return user;
         }
 

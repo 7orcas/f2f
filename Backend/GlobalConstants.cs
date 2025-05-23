@@ -11,15 +11,14 @@
         public const string CrudUpdate   = "u";
         public const string CrudDelete   = "d";
         public const string CrudReadList = "l";
-
-        public const int AuditReadList   = 1;
-        public const int AuditReadEntity = 2;
-
+        
         //Entity Type Id
         public const int EntityTypePermission       = 1;
         public const int EntityTypePermissionEffect = 2;
         public const int EntityTypeRole             = 3;
         public const int EntityTypeAudit            = 4;
+        public const int EntityTypeLogin            = 5;
+        public const int EntityTypeLogout           = 6;
         public const int EntityTypeMachine          = 101;
 
         public static readonly object[] EntityTypes = {
@@ -27,6 +26,8 @@
             EntityTypePermissionEffect, "PermissionEffective",
             EntityTypeRole,             "Role",
             EntityTypeAudit,            "Audit",
+            EntityTypeLogin,            "Login",
+            EntityTypeLogout,           "Logout",
 
             EntityTypeMachine,          "Machine",
         };

@@ -1,5 +1,6 @@
 ﻿
 
+using Backend.Base.Entity;
 using Microsoft.AspNetCore.DataProtection.KeyManagement;
 using Microsoft.Extensions.Caching.Memory;
 
@@ -35,7 +36,21 @@ namespace Backend.Base.Session
             };
 
             _memoryCache.Set(Key(key), ses);
+            _log.Information("CreateSession, key=" + key + ", LoginId=" + user.LoginId + ", org nr=" + org.Nr);
             return ses;
+        }
+
+        public async Task RemoveSession(string key)
+        {
+            var ses = GetSession(key);
+            if (ses == null)
+            {
+                _log.Error("RemoveSession, no session, key=" + key);
+                return;
+            }
+
+            _log.Information("RemoveSession, key=" + key + ", LoginId=" + ses.User.LoginId + ", org nr=" + ses.Org.Nr);
+            _memoryCache.Remove(Key(key));
         }
 
         public SessionEnt? GetSession(string key)

@@ -4,7 +4,6 @@ namespace Backend.Base
 {
     public class Sql
     {
-
         static public async Task<bool> Run(string sqlString, Action<SqlDataReader> action, params SqlParameter[] parameters)
         {
             return await Task.Run(() =>
@@ -32,7 +31,17 @@ namespace Backend.Base
                 }
                 catch (Exception ex)
                 {
-                    Console.WriteLine(ex.Message); //TODO - LogMe
+                    Console.WriteLine(ex.Message);
+
+                    var p = "";
+                    for (int i = 0; parameters != null && i < parameters.Length; i++)
+                        p += (p.Length > 0 ? "," : "") + parameters[i].TypeName + ":" + parameters[i].Value.ToString();
+
+                    if (p.Length > 0) p = " p -> (" + p + ")";
+
+                    Log.Logger.Error(sqlString +
+                        p +
+                        " -> " + ex.Message);
                     throw;
                 }
                 finally
@@ -63,7 +72,8 @@ namespace Backend.Base
                 }
                 catch (Exception ex)
                 {
-                    Console.WriteLine(ex.Message); //TODO - LogMe
+                    Console.WriteLine(ex.Message); 
+                    Log.Logger.Error(sqlString + " -> " + ex.Message);
                     throw;
                 }
                 finally

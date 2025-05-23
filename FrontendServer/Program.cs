@@ -53,6 +53,7 @@ builder.Services.AddDistributedMemoryCache();
 builder.Services.AddScoped<ProtectedSessionStorage>();
 builder.Services.AddScoped<SessionTokenStorageService>();
 builder.Services.AddScoped<AuthorizationMessageHandler>();
+builder.Services.AddScoped<LogoutService>();
 builder.Services.AddScoped<PermissionService>();
 builder.Services.AddScoped<RoleService>();
 builder.Services.AddScoped<AuditService>();

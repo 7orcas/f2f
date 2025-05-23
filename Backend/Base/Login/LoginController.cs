@@ -44,7 +44,7 @@ namespace Backend.Base.Login
                     });
 
             var org = await _orgService.GetOrg(request.Org);
-            var user = await _loginService.InitialiseLogin(login, org);
+            var user = await _loginService.InitialiseLogin(login, org, request.SourceApplication);
             var session = await _sessionService.CreateSession(user, org, request.SourceApplication);
 
             var tv = new TokenValues {
@@ -67,8 +67,6 @@ namespace Backend.Base.Login
                 }
             };
             return Ok(r);
-            
-
         }
     }
 }

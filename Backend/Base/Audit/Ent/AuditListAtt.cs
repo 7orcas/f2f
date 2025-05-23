@@ -1,14 +1,12 @@
 ﻿namespace Backend.Base.Audit.Ent
 {
     [AttributeUsage (AttributeTargets.Method | AttributeTargets.Class, AllowMultiple = false)]
-    public class AuditAtt : Attribute
+    public class AuditListAtt : Attribute
     {
-        public int AuditUserAction { get; }
         public int EntityTypeId { get; }
 
-        public AuditAtt(int auditAction, int entityTypeId)
+        public AuditListAtt(int entityTypeId)
         {
-            AuditUserAction = auditAction;
             EntityTypeId = entityTypeId;
         }
     }

@@ -24,7 +24,7 @@ namespace Backend.Base.Audit
 
 
         [CrudAtt(GC.CrudRead)]
-        [AuditAtt(GC.AuditReadList, GC.EntityTypeAudit)]
+        [AuditListAtt(GC.EntityTypeAudit)]
         [HttpGet("list")]
         public async Task<IActionResult> Get()
         {

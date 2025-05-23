@@ -61,6 +61,7 @@ namespace Backend.Base.Token
         public TokenValues DecodeToken(string token)
         {
             token = token.Trim();
+            //token = token.Substring(TOKEN_PREFIX.Length);
             var tokenHandler = new JwtSecurityTokenHandler();
 
             TokenValues tv = new TokenValues();
@@ -118,14 +119,20 @@ namespace Backend.Base.Token
                 
                 _memoryCache.Remove(Key(key));
 
-                if (--calls >= 0)
+                if (--calls >= 1)
                 {
                     var cacheEntryOptions = new MemoryCacheEntryOptions
                     {
                         AbsoluteExpirationRelativeToNow = TimeSpan.FromSeconds(AppSettings.CacheExpirationGetSeconds) // Cache expiration
                     };
                     tokenX = calls.ToString().PadLeft(PAD_TOKEN, '0') + token;
+                    _log.Debug("GetToken - added key=" + key + ", tokenX=" + tokenX);
                     _memoryCache.Set(Key(key), tokenX, cacheEntryOptions);
+                    return token;
+                }
+                else if (calls == 0)
+                {
+                    _log.Debug("GetToken - last call key=" + key + ", tokenX=" + tokenX);
                     return token;
                 }
                 _log.Error("GetToken rejected, calls=" + calls + ", key = " + key);
