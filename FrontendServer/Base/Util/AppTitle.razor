@@ -1,0 +1,23 @@
+﻿
+<PageTitle>@Title</PageTitle>
+
+<div class="container">
+    <div class="title">@Title</div>
+    <div class="page-code">@PageCode</div>
+</div>
+<div class="subtitle">
+    @ChildContent
+</div>
+
+
+
+@code {
+    [Parameter]
+    public string Title { get; set; }
+
+    [Parameter]
+    public string PageCode { get; set; }
+
+    [Parameter]
+    public RenderFragment ChildContent { get; set; }
+}

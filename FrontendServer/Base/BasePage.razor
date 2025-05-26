@@ -1,0 +1,53 @@
+﻿@inject HttpClient HttpClient
+@inject NavigationManager NavigationManager
+@inject IHttpClientFactory HttpClientFactory
+@inject MachineService MachineService
+@using Newtonsoft.Json;
+
+@using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage
+@inject ProtectedSessionStorage ProtectedSessionStore
+
+
+@code {
+    public ErrorBoundary? errorBoundary;
+    public bool _isLoading = true;
+    public bool _isError = false;
+    public Exception? exception;
+    private string? _token;
+    public HttpClient _client;
+    public string? _errorMessage;
+
+    public async Task SetClient()
+    {
+        var store = await ProtectedSessionStore.GetAsync<string>("tokenX");
+        if (store.Success)
+            _token = store.Value;
+        else
+            NavigationManager.NavigateTo("https://localhost:7289", true);
+
+        _client = HttpClientFactory.CreateClient("AuthorizedClient");
+        _client.DefaultRequestHeaders.Authorization =
+            new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", _token);
+    }
+
+    public async Task<Result> RunLoad(Func<Task<Result>> action)
+    {
+        _isLoading = true;
+        try
+        {
+            return await action();
+        }
+        catch (Exception x)
+        {
+            exception = x;
+            _errorMessage = x.Message;
+            _isError = true;
+            return default;
+        }
+        finally
+        {
+            _isLoading = false;
+        }
+    }
+
+}

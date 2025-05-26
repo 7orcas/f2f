@@ -32,6 +32,11 @@ namespace Backend.Base
             return entity;
         }
 
+        public void DelaySeconds (int seconds)
+        {
+            System.Threading.Thread.Sleep(seconds * 1000); 
+        }
+
         public string? GetString(SqlDataReader r, string column)
         {
             return Sql.GetString(r, column);

@@ -1,0 +1,22 @@
+﻿.container {
+    display: flex;
+    justify-content: space-between;
+    padding: 0px;
+    margin-bottom: 5px;
+}
+
+.title {
+    font-weight: bold;
+    font-size: 25px;
+    margin-bottom: 5px;
+    color: blue;
+}
+
+.page-code {
+    font-size: 10px;
+    color: gray;
+}
+
+.subtitle {
+    margin-bottom: 5px;
+}

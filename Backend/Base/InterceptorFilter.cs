@@ -100,6 +100,18 @@ namespace Backend.Base
         public override void OnActionExecuted(ActionExecutedContext context)
         {
             // Intercept after the controller action executes
+            
+            if (context.Exception != null)
+            {
+                var r = new _ResponseDto
+                {
+                    Valid = false,
+                    ErrorMessage = context.Exception.Message,
+                    StatusCode = 500 
+                };
+                context.Result = new OkObjectResult(r);
+            }
+
         }
 
         private void Log(LogEventLevel level, string message, ActionExecutingContext context, string? sessionKey)
