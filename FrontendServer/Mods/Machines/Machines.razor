@@ -2,17 +2,6 @@
 @inherits BasePage
 @attribute [Authorize]
 
-@inject HttpClient HttpClient
-@inject NavigationManager NavigationManager
-@inject IHttpClientFactory HttpClientFactory
-@inject MachineService MachineService
-@using Newtonsoft.Json;
-
-
-@using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage
-@inject ProtectedSessionStorage ProtectedSessionStore
-
-
 <ErrorBoundary @ref="errorBoundary">
     <ChildContent>
 
@@ -75,50 +64,9 @@
     {
         if (firstRender)
         {
-            await SetClient();
-
-            Func<Task<Result>> lambda = async () =>
-            {
-                var r = await MachinesAsync();
-                return new Result { result = r.machines, message = r.message };
-            };
-
-            var result = await RunLoad(lambda);
-
-            machines = result.result as List<MachineDto>;
-            _errorMessage = result.message;
-            
-            _isError = machines == null || !string.IsNullOrEmpty(_errorMessage);
+            machines = await Call<List<MachineDto>>("api/Machine/list");
             StateHasChanged();
         }
     }
 
-    protected async Task<(List<MachineDto> machines, string message)> MachinesAsync()
-    {
-        var list = new List<MachineDto>();
-        var message = "";
-        var response = await _client.GetAsync("api/Machine/list");
-        try
-        {
-            var result = await response.Content.ReadAsStringAsync();
-            var responseDto = JsonConvert.DeserializeObject<_ResponseDto>(result);
-
-            if (responseDto.Valid)
-                list = JsonConvert.DeserializeObject<List<MachineDto>>(responseDto.Result.ToString());
-            else
-                message = responseDto.ErrorMessage;
-
-
-            return (list, message);
-        }
-        catch
-        {
-            var result = await response.Content.ReadAsStringAsync();
-            if (!string.IsNullOrEmpty(result))
-                return (list, result);
-
-            //ToDo label
-            return (list, "Opps, something went wrong?");
-        }
-    }
 }

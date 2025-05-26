@@ -13,7 +13,7 @@ namespace Backend.App.Machines
 
             List <Machine> machines = new List<Machine>();
             await Sql.Run(
-                    "SELECT * FROM app.Machine m",
+                    "SELECT * FROM app.MachineX m",
                     r => {
                         var m = ReadBaseEntity<Machine>(r);
                         m.StationPairs = GetInt(r, "stationPairs");

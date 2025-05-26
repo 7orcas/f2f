@@ -58,7 +58,7 @@ builder.Services.AddScoped<PermissionService>();
 builder.Services.AddScoped<RoleService>();
 builder.Services.AddScoped<AuditService>();
 
-builder.Services.AddScoped<MachineService>();
+//builder.Services.AddScoped<MachineService>();
 
 
 var app = builder.Build();

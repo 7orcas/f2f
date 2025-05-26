@@ -1,7 +1,6 @@
 ﻿@inject HttpClient HttpClient
 @inject NavigationManager NavigationManager
 @inject IHttpClientFactory HttpClientFactory
-@inject MachineService MachineService
 @using Newtonsoft.Json;
 
 @using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage
@@ -9,13 +8,13 @@
 
 
 @code {
-    public ErrorBoundary? errorBoundary;
     public bool _isLoading = true;
     public bool _isError = false;
-    public Exception? exception;
     private string? _token;
-    public HttpClient _client;
+    public HttpClient? _client;
     public string? _errorMessage;
+    public ErrorBoundary? errorBoundary;
+    public Exception? exception;
 
     public async Task SetClient()
     {
@@ -23,31 +22,71 @@
         if (store.Success)
             _token = store.Value;
         else
-            NavigationManager.NavigateTo("https://localhost:7289", true);
+            NavigationManager.NavigateTo("https://localhost:7289", true);  //ToDo Change me!
 
         _client = HttpClientFactory.CreateClient("AuthorizedClient");
         _client.DefaultRequestHeaders.Authorization =
             new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", _token);
     }
 
-    public async Task<Result> RunLoad(Func<Task<Result>> action)
+    // public async Task<Result> RunLoad(Func<Task<Result>> action)
+    // {
+    //     _isLoading = true;
+    //     try
+    //     {
+    //         return await action();
+    //     }
+    //     catch (Exception x)
+    //     {
+    //         exception = x;
+    //         _errorMessage = x.Message;
+    //         _isError = true;
+    //         return default;
+    //     }
+    //     finally
+    //     {
+    //         _isLoading = false;
+    //     }
+    // }
+
+    public async Task<T> Call<T>(string url)
     {
-        _isLoading = true;
+        await SetClient();
+
+        var response = await _client.GetAsync(url);
+
         try
         {
-            return await action();
-        }
-        catch (Exception x)
-        {
-            exception = x;
-            _errorMessage = x.Message;
-            _isError = true;
-            return default;
-        }
-        finally
-        {
+            response.EnsureSuccessStatusCode();
+            var r = await response.Content.ReadAsStringAsync();
+            var dto = JsonConvert.DeserializeObject<_ResponseDto>(r);
             _isLoading = false;
+
+            if (dto.Valid)
+                return JsonConvert.DeserializeObject<T>(dto.Result.ToString());
+
+            _errorMessage = dto.ErrorMessage;
         }
+        catch
+        {
+            try
+            {
+                var r = await response.Content.ReadAsStringAsync();
+                if (!string.IsNullOrEmpty(r))
+                    _errorMessage = r;
+                //ToDo label
+                else
+                    _errorMessage = "Opps, something went wrong";
+            }
+            catch(Exception ex)
+            {
+                _errorMessage = $"Exception occurred: {ex.Message}";
+            }
+        }
+
+        _isLoading = false;
+        _isError = true;
+        return default;
     }
 
 }
