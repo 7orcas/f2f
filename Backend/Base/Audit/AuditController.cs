@@ -1,5 +1,4 @@
-﻿using Backend.App.Machines;
-using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using GC = Backend.GlobalConstants;
 
@@ -16,9 +15,7 @@ namespace Backend.Base.Audit
         /// Constructor
         /// </summary>
         /// <param name="ServiceProvider"></param>
-        /// <param name="AuditService"></param>
-        public AuditController(IServiceProvider serviceProvider,
-            AuditServiceI AuditService) : base(serviceProvider)
+        public AuditController(IServiceProvider serviceProvider) : base(serviceProvider)
         {
         }
 

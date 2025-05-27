@@ -3,6 +3,7 @@
 @inject IHttpClientFactory HttpClientFactory
 @inject NavigationManager NavigationManager
 @inject SessionTokenStorageService TokenStorage
+@using Newtonsoft.Json;
 
 @using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage
 @inject ProtectedSessionStorage ProtectedSessionStore
@@ -35,12 +36,37 @@ Welcome to your new app.
             {
                 token = token.Substring(LoginTokenDto.TOKEN_PREFIX_LENGTH);
                 await ProtectedSessionStore.SetAsync("tokenX", token);
+            
+                var client = HttpClientFactory.CreateClient("AuthorizedClient");
+                client.DefaultRequestHeaders.Authorization =
+                    new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
+                var response = await client.GetAsync("api/Label/list/en");
+                var r = await response.Content.ReadAsStringAsync();
+                await ProtectedSessionStore.SetAsync("labels", r);
+
+                var dto = JsonConvert.DeserializeObject<_ResponseDto>(r);
+
+                if (dto.Valid)
+                {
+                    var list = JsonConvert.DeserializeObject<List<LangLabelDto>>(dto.Result.ToString());
+                    var d = new Dictionary<string, LangLabelDto>();
+                    foreach (var l in list)
+                        d.Add(l.Code, l);
+
+                    await localStorage.SetItemAsync("labelsX", labels);
+
+
+                    var jsonString = JsonSerializer.Serialize(d, new JsonSerializerOptions { WriteIndented = true });
+                    await ProtectedSessionStore.SetAsync("labels", JsonSerializer.Serialize(d));
+                }
+
             }
             else
             {
                 var x = 1;
                 x++;
             }
+
         }
     }
 

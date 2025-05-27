@@ -85,7 +85,7 @@ CREATE TABLE base.zzzRole
 	FOREIGN KEY (roleId)         REFERENCES base.role(id),
 	CONSTRAINT zzzRole_uq_zzz_role UNIQUE (zzzId, roleId)
 );
-CREATE TABLE base.languageCode
+CREATE TABLE base.langCode
 (
 	id         INT             PRIMARY KEY IDENTITY (1, 1) NOT NULL,
 	code       NVARCHAR (4)    NOT NULL,
@@ -94,7 +94,7 @@ CREATE TABLE base.languageCode
 	updated    DATETIME        NOT NULL DEFAULT GETDATE(),
 	isActive   BIT             NOT NULL DEFAULT 1
 );
-CREATE TABLE base.languageKey
+CREATE TABLE base.langKey
 (
 	id         INT             PRIMARY KEY IDENTITY (1, 1) NOT NULL,
 	pack       NVARCHAR (MAX)  NULL,
@@ -104,19 +104,19 @@ CREATE TABLE base.languageKey
 	updated    DATETIME        NOT NULL DEFAULT GETDATE(),
 	isActive   BIT             NOT NULL DEFAULT 1
 );
-CREATE TABLE base.languageLabel
+CREATE TABLE base.langLabel
 (
 	id             INT             PRIMARY KEY IDENTITY (1, 1) NOT NULL,
-	languageKeyId  INT             NOT NULL,
-    languageCode   NVARCHAR (4)    NOT NULL,
+	langKeyId  INT             NOT NULL,
+    langCode   NVARCHAR (4)    NOT NULL,
 	hardCodedNr    INT             NULL,
 	code           NVARCHAR (MAX)  NOT NULL,
 	tooltip        NVARCHAR (MAX)  NULL,
 	encoded        NVARCHAR (MAX)  NULL,
 	updated        DATETIME        NOT NULL DEFAULT GETDATE(),
 	isActive       BIT             NOT NULL DEFAULT 1,
-	FOREIGN KEY (languageKeyId) REFERENCES base.languageKey(id),
-	CONSTRAINT languageLabel_uq_code   UNIQUE (languageKeyId, languageCode, hardCodedNr)
+	FOREIGN KEY (langKeyId) REFERENCES base.langKey(id),
+	CONSTRAINT langLabel_uq_code   UNIQUE (langKeyId, langCode, hardCodedNr)
 );
 CREATE TABLE base.audit (
     id                       INT                 PRIMARY KEY IDENTITY (1, 1) NOT NULL,

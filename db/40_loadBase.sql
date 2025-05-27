@@ -14,7 +14,7 @@ INSERT INTO base.zzz (id, xxx, yyy, orgs) VALUES (2, 'user', 'password', '1,2,12
 SET IDENTITY_INSERT base.zzz OFF;
 
 SET IDENTITY_INSERT base.permission ON;
-INSERT INTO base.permission (id, code, descr) VALUES (10,  'lang',          'Language Labels');
+INSERT INTO base.permission (id, code, descr) VALUES (10,  'label',         'Language Labels');
 INSERT INTO base.permission (id, code, descr) VALUES (20,  'profs',         'Professionals');
 INSERT INTO base.permission (id, code, descr) VALUES (30,  'org',            'Organisations');
 INSERT INTO base.permission (id, code, descr) VALUES (40,  'perms',       'Permissions');
@@ -23,6 +23,7 @@ INSERT INTO base.permission (id, code, descr) VALUES (60,  'user',           'Us
 INSERT INTO base.permission (id, code, descr) VALUES (70,  'ref',              'References');
 INSERT INTO base.permission (id, code, descr) VALUES (80,  'machine',   'Machines');
 INSERT INTO base.permission (id, code, descr) VALUES (90,  'audit',         'Audit');
+--INSERT INTO base.permission (id, code, descr) VALUES (100,  'lang',         'Lang');
 SET IDENTITY_INSERT base.permission OFF;
 
 
@@ -49,6 +50,7 @@ INSERT INTO base.rolePermission (id, roleId, permissionId, crud) VALUES (9, 4, 8
 INSERT INTO base.rolePermission (id, roleId, permissionId, crud) VALUES (10, 5, 80, 'ur');
 INSERT INTO base.rolePermission (id, roleId, permissionId, crud) VALUES (11, 6, 80, 'd');
 INSERT INTO base.rolePermission (id, roleId, permissionId, crud) VALUES (12, 1, 90, 'r');
+--INSERT INTO base.rolePermission (id, roleId, permissionId, crud) VALUES (13, 1, 100, 'r');
 
 SET IDENTITY_INSERT base.rolePermission OFF;
 

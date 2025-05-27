@@ -15,6 +15,7 @@
     public string? _errorMessage;
     public ErrorBoundary? errorBoundary;
     public Exception? exception;
+    private Dictionary<string, LangLabelDto> _labels;
 
     public async Task SetClient()
     {
@@ -27,7 +28,30 @@
         _client = HttpClientFactory.CreateClient("AuthorizedClient");
         _client.DefaultRequestHeaders.Authorization =
             new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", _token);
+
     }
+
+    public async Task SetLabels()
+    {
+        var r = await ProtectedSessionStore.GetAsync<string>("labels");
+        var dto = JsonConvert.DeserializeObject<_ResponseDto>(r.Value);
+
+        if (dto.Valid)
+        {
+            var list = JsonConvert.DeserializeObject<List<LangLabelDto>>(dto.Result.ToString());
+            _labels = new Dictionary<string, LangLabelDto>();
+            foreach (var l in list)
+                _labels.Add(l.LabelCode, l);
+        }
+    }
+
+    public string GetLabel (string labelCode)
+    {
+        if (_labels.ContainsKey(labelCode))
+            return _labels[labelCode].Code;
+        return "?" + labelCode;
+    }
+
 
     // public async Task<Result> RunLoad(Func<Task<Result>> action)
     // {

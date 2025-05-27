@@ -1,0 +1,46 @@
+﻿
+.label {
+    padding: 0;
+    margin: 0;
+    border: none;
+    background-color: transparent; /* Optional: Makes the background transparent */
+    color: inherit; /* Optional: Inherits the text color from its parent */
+    font: inherit; /* Optional: Inherits the font from its parent */
+    cursor: default; 
+}
+
+.label-link {
+    padding: 0;
+    margin: 0;
+    border: none;
+    background-color: transparent; /* Optional: Makes the background transparent */
+    color: inherit; /* Optional: Inherits the text color from its parent */
+    font: inherit; /* Optional: Inherits the font from its parent */
+    cursor: pointer; 
+}
+
+.label-nokey {
+    color: red;
+    padding: 0;
+    margin: 0;
+    border: none;
+    background-color: transparent; /* Optional: Makes the background transparent */
+    cursor: pointer; /* Optional: Changes the cursor to a pointer */
+}
+
+[data-tooltip]:hover::after {
+    display: block;
+    position: absolute;
+    content: attr(data-tooltip);
+    border: 1px solid black;
+    background: #eee;
+    padding: .25em;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.5s ease-in-out, visibility 0.5s ease-in-out;
+}
+
+[data-tooltip]:hover::after {
+    opacity: 1;
+    visibility: visible;
+}

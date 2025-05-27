@@ -49,6 +49,8 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 
 //Base Services
 builder.Services.AddScoped<AuditServiceI, AuditService>();
+builder.Services.AddScoped<LabelServiceI, LabelService>();
+builder.Services.AddScoped<ConfigServiceI, ConfigService>();
 builder.Services.AddSingleton<PermissionInitialiseServiceI, PermissionInitialiseService>();
 builder.Services.AddScoped<LoginServiceI, LoginService>();
 builder.Services.AddScoped<TokenServiceI, TokenService>();

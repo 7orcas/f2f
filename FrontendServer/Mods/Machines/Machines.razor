@@ -21,6 +21,8 @@
         }
         else
         {
+            <div>@GetLabel("test1")</div>
+
             <table class="table">
                 <thead>
                     <tr>
@@ -64,7 +66,9 @@
     {
         if (firstRender)
         {
+            SetLabels();
             machines = await Call<List<MachineDto>>("api/Machine/list");
+
             StateHasChanged();
         }
     }

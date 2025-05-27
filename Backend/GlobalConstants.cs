@@ -19,6 +19,9 @@
         public const int EntityTypeAudit            = 4;
         public const int EntityTypeLogin            = 5;
         public const int EntityTypeLogout           = 6;
+        public const int EntityTypeLangCode         = 7;
+        public const int EntityTypeLangKey          = 8;
+        public const int EntityTypeLangLabel        = 9;
         public const int EntityTypeMachine          = 101;
 
         public static readonly object[] EntityTypes = {
@@ -28,6 +31,9 @@
             EntityTypeAudit,            "Audit",
             EntityTypeLogin,            "Login",
             EntityTypeLogout,           "Logout",
+            EntityTypeLangCode,         "LangCode",
+            EntityTypeLangKey,          "LangKey",
+            EntityTypeLangLabel,        "LangLabel",
 
             EntityTypeMachine,          "Machine",
         };

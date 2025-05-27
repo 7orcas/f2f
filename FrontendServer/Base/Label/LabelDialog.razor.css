@@ -1,0 +1,33 @@
+﻿
+.label-key {
+    display: flex;
+    align-items: center;
+    color: white;
+    font-weight: bold;
+    font-size: 20px;
+    background-color: red;
+}
+
+.label-langcode {
+    display: flex;
+    align-items: center;
+    margin-bottom: 20px;
+    font-weight: normal;
+    font-size: 10px;
+}
+
+.label-buttons {
+    margin-top: 5px;
+}
+
+.overlay-grid {
+    position: fixed;
+    width: 500px;
+    margin-top: 15px;
+    background-color: white;
+    z-index: 1000; /* Ensure it overlays other content */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
