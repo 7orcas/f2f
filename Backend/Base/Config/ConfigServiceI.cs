@@ -4,7 +4,6 @@ namespace Backend.Base.Config
 {
     public interface ConfigServiceI
     {
-        Task<AppConfig> GetAppConfig();
-        Task<AppConfig> GetAppConfig(string? langCode, int orgId);
+        Task<AppConfig> GetAppConfig(int userId, int OrgId, string? langCode);
     }
 }

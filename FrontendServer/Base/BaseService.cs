@@ -21,7 +21,7 @@ namespace FrontendServer.Base
 
             try
             {
-                var response = await client.GetAsync(url + "xxxxx");
+                var response = await client.GetAsync(url);
                 if (response.IsSuccessStatusCode)
                 {
                     var result = await response.Content.ReadAsStringAsync();
@@ -46,7 +46,7 @@ namespace FrontendServer.Base
 
         public void SetLabels()
         {
-           _labels = _Cache.GetLabels();
+           _labels = _Cache.GetLabels("en"); //ToDo
         }
 
         public string GetLabel(string labelCode)

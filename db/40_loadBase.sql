@@ -9,8 +9,8 @@ SET IDENTITY_INSERT base.org OFF;
 
 
 SET IDENTITY_INSERT base.zzz ON;
-INSERT INTO base.zzz (id, xxx, yyy, orgs) VALUES (1, '1', '1', '0,1,2');
-INSERT INTO base.zzz (id, xxx, yyy, orgs) VALUES (2, 'user', 'password', '1,2,12');
+INSERT INTO base.zzz (id, xxx, yyy, orgs,langCode) VALUES (1, '1', '1', '0,1,2','de');
+INSERT INTO base.zzz (id, xxx, yyy, orgs,langCode) VALUES (2, 'user', 'password', '1,2,12','en');
 SET IDENTITY_INSERT base.zzz OFF;
 
 SET IDENTITY_INSERT base.permission ON;
@@ -48,7 +48,7 @@ INSERT INTO base.rolePermission (id, roleId, permissionId, crud) VALUES (7, 1, 7
 INSERT INTO base.rolePermission (id, roleId, permissionId, crud) VALUES (8, 1, 80, 'cd');
 INSERT INTO base.rolePermission (id, roleId, permissionId, crud) VALUES (9, 4, 80, 'd');
 INSERT INTO base.rolePermission (id, roleId, permissionId, crud) VALUES (10, 5, 80, 'ur');
-INSERT INTO base.rolePermission (id, roleId, permissionId, crud) VALUES (11, 6, 80, 'd');
+INSERT INTO base.rolePermission (id, roleId, permissionId, crud) VALUES (11, 6, 80, 'rd');
 INSERT INTO base.rolePermission (id, roleId, permissionId, crud) VALUES (12, 1, 90, 'r');
 --INSERT INTO base.rolePermission (id, roleId, permissionId, crud) VALUES (13, 1, 100, 'r');
 

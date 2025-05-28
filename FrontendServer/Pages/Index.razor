@@ -1,4 +1,5 @@
 ﻿@page "/"
+@inherits BasePage
 @inject HttpClient HttpClient
 @inject IHttpClientFactory HttpClientFactory
 @inject NavigationManager NavigationManager
@@ -10,16 +11,28 @@
 @inject ProtectedSessionStorage ProtectedSessionStore
 
 
-<PageTitle>Index</PageTitle>
+@if (_isLoading)
+{
+    <Loading />
+}
+else @if (_isError)
+{
+    <AppError Message=@_errorMessage>
+        @exception
+    </AppError>
+}
+else
+{
+    <PageTitle>Index</PageTitle>
 
-<h1>Welcome to Blue.</h1>
+    <h1>Welcome to Blue.</h1>
 
-<p></p>
-<p></p>
-<p></p>
-<p>Token key: @tokenkey</p>
-<p>Token: @token</p>
-
+    <p></p>
+    <p></p>
+    <p></p>
+    <p>Token key: @tokenkey</p>
+    <p>Token: @token</p>
+}
 
 @code {
     private string tokenkey = string.Empty;
@@ -27,7 +40,8 @@
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        if (firstRender)
+        await Task.Delay(500); // Pause for half a second
+        if (firstRender && !_isError)
         {
             var result = await ProtectedSessionStore.GetAsync<string>(GC.TokenCacheKey);
             if (!string.IsNullOrEmpty(token) &&
@@ -38,18 +52,35 @@
                 var client = HttpClientFactory.CreateClient(GC.AuthorizedClientKey);
                 client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue(GC.BearerKey, token);
 
-                //Get Labels
-                var response = await client.GetAsync("api/Label/list/en");
-                var r = await response.Content.ReadAsStringAsync();
-                var dto = JsonConvert.DeserializeObject<_ResponseDto>(r);
-
-                if (dto.Valid)
+                //Get App Config
+                var cl = await client.GetAsync(GC.URL_config);
+                var cls = await cl.Content.ReadAsStringAsync();
+                var cdto = JsonConvert.DeserializeObject<_ResponseDto>(cls);
+                if (!cdto.Valid)
                 {
-                    var list = JsonConvert.DeserializeObject<List<LangLabelDto>>(dto.Result.ToString());
-                    var d = new Dictionary<string, LangLabelDto>();
-                    foreach (var l in list)
-                        d.Add(l.LabelCode, l);
-                    Cache.PutLabels(d);
+                    _isLoading = false;
+                    _isError = true;
+                    _errorMessage = new MarkupString("Missing Config");
+                    StateHasChanged();
+                    return;
+                }
+                var cjson = cdto.Result.ToString();
+                await ProtectedSessionStore.SetAsync(GC.ConfigCacheKey, cjson);
+                var config = JsonConvert.DeserializeObject<AppConfigDto>(cjson);
+
+
+                //Get Labels
+                var rl = await client.GetAsync(GC.URL_label_list + config.LangCode);
+                var rls = await rl.Content.ReadAsStringAsync();
+                var rdto = JsonConvert.DeserializeObject<_ResponseDto>(rls);
+
+                if (rdto.Valid)
+                {
+                    var labels = JsonConvert.DeserializeObject<List<LangLabelDto>>(rdto.Result.ToString());
+                    var dic = new Dictionary<string, LangLabelDto>();
+                    foreach (var l in labels)
+                        dic.Add(l.LabelCode, l);
+                    Cache.PutLabels(dic, config.LangCode);
                 }
 
             }
@@ -72,6 +103,7 @@
         {
             tokenkey = value;
         }
+        
         var client = HttpClientFactory.CreateClient(GC.UnAuthorizedClientKey);
         var tokenResponse = await client.GetAsync("api/Token/token?key=" + tokenkey);
         token = await tokenResponse.Content.ReadAsStringAsync();

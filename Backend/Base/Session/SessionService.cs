@@ -24,7 +24,7 @@ namespace Backend.Base.Session
             _memoryCache = memoryCache;
         }
 
-        public async Task<SessionEnt> CreateSession(UserEnt user, OrgEnt org, int sourceApp)
+        public async Task<SessionEnt> CreateSession(UserEnt user, OrgEnt org, AppConfig config, int sourceApp)
         {
             var key = user.Userid + "-" + Guid.NewGuid().ToString();
             var ses = new SessionEnt
@@ -32,6 +32,7 @@ namespace Backend.Base.Session
                 Key = key,
                 User = user,
                 Org = org,
+                Config = config,
                 SourceApp = sourceApp,
             };
 

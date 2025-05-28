@@ -14,5 +14,6 @@ namespace Common.DTO
         public string TokenKey { get; set; }
         public string Token { get; set; }
         public string MainUrl { get; set; }
+        public string LangCode { get; set; }
     }
 }

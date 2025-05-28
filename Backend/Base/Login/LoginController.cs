@@ -10,6 +10,7 @@ namespace Backend.Base.Login
         private readonly LoginServiceI _loginService;
         private readonly TokenServiceI _tokenService;
         private readonly OrgServiceI _orgService;
+        private readonly ConfigServiceI _configService;
         private readonly SessionServiceI _sessionService;
 
         /// <summary>
@@ -20,11 +21,13 @@ namespace Backend.Base.Login
             LoginServiceI loginService,
             TokenServiceI tokenService,
             OrgServiceI orgService,
+            ConfigServiceI configService,
             SessionServiceI sessionService)
         {
             _loginService = loginService;
             _tokenService = tokenService;
-            _orgService = orgService;   
+            _orgService = orgService;
+            _configService = configService;
             _sessionService = sessionService;
         }
 
@@ -43,9 +46,11 @@ namespace Backend.Base.Login
                         ErrorMessage = err.Message
                     });
 
+            var langCode = !string.IsNullOrEmpty(request.LangCode) ? request.LangCode : login.LangCode;
             var org = await _orgService.GetOrg(request.Org);
             var user = await _loginService.InitialiseLogin(login, org, request.SourceApplication);
-            var session = await _sessionService.CreateSession(user, org, request.SourceApplication);
+            var config = await _configService.GetAppConfig(login.Id, org.Id, langCode);
+            var session = await _sessionService.CreateSession(user, org, config, request.SourceApplication);
 
             var tv = new TokenValues {
                 Username = request.Username,
@@ -64,6 +69,7 @@ namespace Backend.Base.Login
                     TokenKey = keyX,
                     Token = tokenX,
                     MainUrl = AppSettings.MainClientUrl,
+                    LangCode = langCode,
                 }
             };
             return Ok(r);

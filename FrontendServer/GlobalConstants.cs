@@ -6,6 +6,7 @@
         
         public const string LabelCacheKey         = "kLabel";
         public const string TokenCacheKey         = "kToken";
+        public const string ConfigCacheKey        = "kConfig";
         public const string AuthorizedClientKey   = "kAC";
         public const string UnAuthorizedClientKey = "kUAC";
         public const string BearerKey             = "Bearer";
@@ -16,5 +17,7 @@
         public const string URL_perm_eff          = "api/Permission/listeffective";
         public const string URL_audit_list        = "api/Audit/list";
         public const string URL_role_list         = "api/Role/list";
+        public const string URL_config            = "api/Config/get";
+        public const string URL_label_list        = "api/Label/list/";
     }
 }

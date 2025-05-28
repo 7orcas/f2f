@@ -2,38 +2,30 @@
 using Backend.Base.Label.Ent;
 using Microsoft.Data.SqlClient;
 using System.Security.Cryptography;
+using GC = Backend.GlobalConstants;
 
 namespace Backend.Base.Config
 {
     public class ConfigService : BaseService, ConfigServiceI
     {
-        private AppConfig? _appConfig;
-
         public ConfigService(IServiceProvider serviceProvider) : base(serviceProvider)
         {
         }
 
-        public async Task<AppConfig> GetAppConfig()
+        public async Task<AppConfig> GetAppConfig(int userId, int OrgId, string? langCode)
         {
-            if (_appConfig != null) return _appConfig;
-            return await GetAppConfig(null, 0);
-        }
+            if (langCode == null) langCode = GC.LangCodeDefault;
 
-        public async Task<AppConfig> GetAppConfig(string? langCode, int OrgId)
-        {
-            if (_appConfig != null) return _appConfig;
-
-            if (langCode == null) langCode = "en";
-
-            _appConfig = new AppConfig()
+            var appConfig = new AppConfig()
             {
                 OrgId = OrgId,
                 LangCode = langCode,
                 IsLabelLink = true
             };
 
-            return _appConfig;
+            return appConfig;
         }
+
 
     }
 }

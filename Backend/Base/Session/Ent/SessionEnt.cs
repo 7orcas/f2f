@@ -15,6 +15,7 @@ namespace Backend.Base.Session.Ent
         public string Key { get; set; }
         public OrgEnt Org { get; set; }
         public UserEnt User { get; set; }
+        public AppConfig Config { get; set; }
         public int SourceApp {  get; set; }
 
         /// <summary>

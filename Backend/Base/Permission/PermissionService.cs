@@ -182,6 +182,8 @@ namespace Backend.Base.Permission
             if (perm == null) return true;
             if (session == null) return false;
 
+            if (crud != null && crud.Action == GC.CrudIgnore) return true;
+
             var ent = GetPermissionEnt(perm.Name);
             if (ent == null) return false;
 

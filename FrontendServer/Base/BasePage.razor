@@ -10,13 +10,14 @@
 
 
 @code {
-    public bool _isLoading = true;
+    public bool _isLoading = false;
     public bool _isError = false;
     private string? _token;
     public HttpClient? _client;
     public MarkupString? _errorMessage;
     public ErrorBoundary? errorBoundary;
     public Exception? exception;
+    public AppConfigDto _config;
     private Dictionary<string, LangLabelDto> _labels;
 
     public async Task<HttpClient> SetClient()
@@ -35,9 +36,18 @@
         return _client;
     }
 
-    public void SetLabels()
+    public async Task SetConfig()
     {
-        _labels = Cache.GetLabels();
+        if (_config != null) return;
+        var cjson = await ProtectedSessionStore.GetAsync<string>(GC.ConfigCacheKey);
+        _config = JsonConvert.DeserializeObject<AppConfigDto>(cjson.Value);
+    }
+
+    public async void SetLabels()
+    {
+        if (_config == null)
+            await SetConfig();
+        _labels = Cache.GetLabels(_config.LangCode);
     }
 
     public string GetLabel (string labelCode)
@@ -49,6 +59,8 @@
 
     public async Task<T> Call<T>(string url)
     {
+        _isLoading = true;
+
         await SetClient();
 
         var response = await _client.GetAsync(url);

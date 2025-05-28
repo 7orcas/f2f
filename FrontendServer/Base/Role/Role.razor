@@ -60,6 +60,7 @@ else
         if (firstRender)
         {
             await SetClient();
+            await SetConfig();
 
             var result = await RoleService.RolesAsync(_client);
             roles = result.roles;
@@ -69,5 +70,9 @@ else
             _isLoading = false;
             StateHasChanged();
         }
+    }
+    protected override async Task OnInitializedAsync()
+    {
+        _isLoading = true;
     }
 }

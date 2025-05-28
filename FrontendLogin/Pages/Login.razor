@@ -23,6 +23,10 @@
         <label>Org:</label>
         <InputNumber @bind-Value="loginRequest.Org" />
     </div>
+    <div>
+        <label>Language:</label>
+        <InputText @bind-Value="loginRequest.LangCode" />
+    </div>
     <button type="submit">Login</button>
 </EditForm>
 
@@ -32,7 +36,10 @@
 <p>@token</p>
 
 @code {
-    private LoginRequest loginRequest = new();
+    private LoginRequest loginRequest = new LoginRequest
+    {
+        LangCode = "en"    
+    };
     private string errorMessage = string.Empty;
     private string successMessage = string.Empty;
     private string tokenkey;
@@ -62,10 +69,7 @@
                     tokenkey = login.TokenKey;
                     token = login.Token;
 
-                    //client.DefaultRequestHeaders.Add("Authorization", "Bearer " + token.Token);
-
 //await TestPause();
-
 
                     NavigationManager.NavigateTo(login.MainUrl + "?tk=" + tokenkey, true);
                 }

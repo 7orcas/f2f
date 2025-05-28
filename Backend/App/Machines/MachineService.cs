@@ -13,7 +13,9 @@ namespace Backend.App.Machines
 
             List <Machine> machines = new List<Machine>();
             await Sql.Run(
-                    "SELECT * FROM app.Machine m",
+                    "SELECT * " +
+                    "FROM app.Machine m " +
+                    "WHERE m.orgId = " + session.Org.Id,
                     r => {
                         var m = ReadBaseEntity<Machine>(r);
                         m.StationPairs = GetInt(r, "stationPairs");

@@ -38,6 +38,7 @@ namespace Backend.Base.Login
                         l.Userid = GetString(r, "xxx");
                         l.Password = GetString(r, "yyy");
                         l.Orgs = GetString(r, "orgs");
+                        l.LangCode = GetString(r, "langCode");
                         l.Attempts = GetId(r, "attempts");
                         l.Lastlogin = GetDateTime(r, "lastlogin");
                         l.IsActive = GetBoolean(r, "isActive");

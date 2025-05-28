@@ -34,6 +34,7 @@ CREATE TABLE base.zzz
 	xxx            NVARCHAR (40)   NOT NULL UNIQUE,
 	yyy            NVARCHAR (100)  NOT NULL,
 	orgs           NVARCHAR (MAX)  NULL,
+	langCode       NVARCHAR (4)  NULL,
  	attempts       INT             NULL DEFAULT (0),
  	lastlogin      DATETIME        NOT NULL DEFAULT GETDATE(),
 	classification INT             NULL DEFAULT (0),
