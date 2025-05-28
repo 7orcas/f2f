@@ -5,8 +5,9 @@
 @inject NavigationManager NavigationManager
 @inject IHttpClientFactory HttpClientFactory
 @inject AuditService AuditService
-@using Newtonsoft.Json;
 
+@using GC = FrontendServer.GlobalConstants;
+@using Newtonsoft.Json;
 @using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage
 @inject ProtectedSessionStorage ProtectedSessionStore
 
@@ -94,7 +95,7 @@ Console.WriteLine("Role OnInitializedAsync called");
     {
         if (firstRender)
         {
-            var store = await ProtectedSessionStore.GetAsync<string>("tokenX");
+            var store = await ProtectedSessionStore.GetAsync<string>(GC.TokenCacheKey);
             if (store.Success)
                 token = store.Value;
             else

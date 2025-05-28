@@ -3,11 +3,11 @@
 namespace FrontendServer.Service
 {
 
-    public class SessionService
+    public class SessionServiceDELETE_ME
     {
         private readonly IHttpContextAccessor _httpContextAccessor;
 
-        public SessionService(IHttpContextAccessor httpContextAccessor)
+        public SessionServiceDELETE_ME(IHttpContextAccessor httpContextAccessor)
         {
             _httpContextAccessor = httpContextAccessor;
         }

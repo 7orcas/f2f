@@ -1,9 +1,12 @@
 using FrontendServer;
 using FrontendServer.Service;
+using GC = FrontendServer.GlobalConstants;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage;
 using Microsoft.AspNetCore.Components.Web;
 using System.Net;
+using FrontendServer.Base.Cache;
+
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -19,12 +22,12 @@ builder.Host.UseSerilog();
 LoadAppSettings(builder);
 
 // Add services to the container.
+builder.Services.AddMemoryCache();
 builder.Services.AddRazorPages();
-
 builder.Services.AddServerSideBlazor();
 
 //ToDo is the ConfigurePrimaryHttpMessageHandler required?
-builder.Services.AddHttpClient("BackendApi", client =>
+builder.Services.AddHttpClient(GC.UnAuthorizedClientKey, client =>
 {
     client.BaseAddress = new Uri(AppSettings.BackendApiBaseUri); 
 }).ConfigurePrimaryHttpMessageHandler(() =>
@@ -35,23 +38,19 @@ builder.Services.AddHttpClient("BackendApi", client =>
     return handler;
 });
 
-builder.Services.AddHttpClient("AuthorizedClient", client =>
+builder.Services.AddHttpClient(GC.AuthorizedClientKey, client =>
 {
     client.BaseAddress = new Uri(AppSettings.AuthorizedClientBaseUri); 
 }).AddHttpMessageHandler<AuthorizationMessageHandler>();
 
 
 // Add session services
-//builder.Services.AddRazorComponents();
-builder.Services.AddSession(); 
-//builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
-//builder.Services.AddScoped<SessionService>();
-
-
+builder.Services.AddSession();
+builder.Services.AddScoped<CacheService>();
 builder.Services.AddDistributedMemoryCache();
-
 builder.Services.AddScoped<ProtectedSessionStorage>();
-builder.Services.AddScoped<SessionTokenStorageService>();
+
+builder.Services.AddScoped<BaseService>();
 builder.Services.AddScoped<AuthorizationMessageHandler>();
 builder.Services.AddScoped<LogoutService>();
 builder.Services.AddScoped<PermissionService>();

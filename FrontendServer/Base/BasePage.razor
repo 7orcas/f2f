@@ -1,8 +1,10 @@
 ﻿@inject HttpClient HttpClient
 @inject NavigationManager NavigationManager
 @inject IHttpClientFactory HttpClientFactory
-@using Newtonsoft.Json;
+@inject CacheService Cache
 
+@using GC = FrontendServer.GlobalConstants;
+@using Newtonsoft.Json;
 @using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage
 @inject ProtectedSessionStorage ProtectedSessionStore
 
@@ -12,37 +14,30 @@
     public bool _isError = false;
     private string? _token;
     public HttpClient? _client;
-    public string? _errorMessage;
+    public MarkupString? _errorMessage;
     public ErrorBoundary? errorBoundary;
     public Exception? exception;
     private Dictionary<string, LangLabelDto> _labels;
 
-    public async Task SetClient()
+    public async Task<HttpClient> SetClient()
     {
-        var store = await ProtectedSessionStore.GetAsync<string>("tokenX");
+        var store = await ProtectedSessionStore.GetAsync<string>(GC.TokenCacheKey);
         if (store.Success)
             _token = store.Value;
         else
             NavigationManager.NavigateTo("https://localhost:7289", true);  //ToDo Change me!
 
-        _client = HttpClientFactory.CreateClient("AuthorizedClient");
+        _client = HttpClientFactory.CreateClient(GC.AuthorizedClientKey);
         _client.DefaultRequestHeaders.Authorization =
-            new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", _token);
+            new System.Net.Http.Headers.AuthenticationHeaderValue(GC.BearerKey, _token);
 
+        SetLabels();
+        return _client;
     }
 
-    public async Task SetLabels()
+    public void SetLabels()
     {
-        var r = await ProtectedSessionStore.GetAsync<string>("labels");
-        var dto = JsonConvert.DeserializeObject<_ResponseDto>(r.Value);
-
-        if (dto.Valid)
-        {
-            var list = JsonConvert.DeserializeObject<List<LangLabelDto>>(dto.Result.ToString());
-            _labels = new Dictionary<string, LangLabelDto>();
-            foreach (var l in list)
-                _labels.Add(l.LabelCode, l);
-        }
+        _labels = Cache.GetLabels();
     }
 
     public string GetLabel (string labelCode)
@@ -51,27 +46,6 @@
             return _labels[labelCode].Code;
         return "?" + labelCode;
     }
-
-
-    // public async Task<Result> RunLoad(Func<Task<Result>> action)
-    // {
-    //     _isLoading = true;
-    //     try
-    //     {
-    //         return await action();
-    //     }
-    //     catch (Exception x)
-    //     {
-    //         exception = x;
-    //         _errorMessage = x.Message;
-    //         _isError = true;
-    //         return default;
-    //     }
-    //     finally
-    //     {
-    //         _isLoading = false;
-    //     }
-    // }
 
     public async Task<T> Call<T>(string url)
     {
@@ -89,7 +63,7 @@
             if (dto.Valid)
                 return JsonConvert.DeserializeObject<T>(dto.Result.ToString());
 
-            _errorMessage = dto.ErrorMessage;
+            _errorMessage = new MarkupString(dto.ErrorMessage);
         }
         catch
         {
@@ -97,14 +71,14 @@
             {
                 var r = await response.Content.ReadAsStringAsync();
                 if (!string.IsNullOrEmpty(r))
-                    _errorMessage = r;
+                    _errorMessage = new MarkupString(r);
                 //ToDo label
                 else
-                    _errorMessage = "Opps, something went wrong";
+                    _errorMessage = new MarkupString("Opps, something went wrong");
             }
             catch(Exception ex)
             {
-                _errorMessage = $"Exception occurred: {ex.Message}";
+                _errorMessage = new MarkupString($"Exception occurred: {ex.Message}");
             }
         }
 

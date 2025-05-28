@@ -2,12 +2,12 @@
 
 namespace FrontendServer.Service
 {
-    public class SessionTokenStorageService
+    public class SessionTokenStorageServiceDELETE_ME
     {
         private readonly IJSRuntime _jsRuntime;
         private bool _isInitialized = false;
 
-        public SessionTokenStorageService(IJSRuntime jsRuntime)
+        public SessionTokenStorageServiceDELETE_ME(IJSRuntime jsRuntime)
         {
             _jsRuntime = jsRuntime;
         }

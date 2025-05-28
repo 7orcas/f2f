@@ -1,4 +1,5 @@
 ﻿@page "/role"
+@inherits BasePage
 @attribute [Authorize]
 
 @inject HttpClient HttpClient
@@ -19,7 +20,7 @@
 }
 else if (_isError)
 {
-    <div>@message</div>
+    <div>@_errorMessage</div>
 }        
 else
 {
@@ -53,71 +54,20 @@ else
 
 @code {
     private List<UserRoleDto>? roles;
-    private bool _isLoading = true;
-    private bool _isError = false;
-    private string message;
-    private string token;
-
-    private void ThrowException()
-    {
-        throw new InvalidOperationException("This is a test exception.");
-    }
-
-    private void Recover()
-    {
-        //        errorBoundary.Recover();
-    }
-
-    protected override async Task OnInitializedAsync()
-    {
-Console.WriteLine("Role OnInitializedAsync called");
-        /*
-        string token = null;
-        var result = await ProtectedSessionStore.GetAsync<string>("token");
-        if (result.Success)
-        token = result.Value;
-        */
-        // Func<Task> lambda = async () => machines = await MachineService.MachinesAsync(token);
-        // await Run(lambda);
-        // machines = await MachineService.MachinesAsync(token);
-        // _isLoading = false;
-
-    }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         if (firstRender)
         {
-            var store = await ProtectedSessionStore.GetAsync<string>("tokenX");
-            if (store.Success)
-                token = store.Value;
-            else
-                NavigationManager.NavigateTo("https://localhost:7289", true);
+            await SetClient();
 
-            var result = await RoleService.RolesAsync(token);
+            var result = await RoleService.RolesAsync(_client);
             roles = result.roles;
-            message = result.message;
+            _errorMessage = result.message;
 
-            _isError = !string.IsNullOrEmpty(message);
+            _isError = !string.IsNullOrEmpty(_errorMessage.ToString());
             _isLoading = false;
             StateHasChanged();
-        }
-    }
-
-    public async Task Run(Func<Task> action)
-    {
-        try
-        {
-            await action();
-        }
-        catch (Exception x)
-        {
-            //exception = x;
-            //_isError = true;
-        }
-        finally
-        {
-            _isLoading = false;
         }
     }
 }

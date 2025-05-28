@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using System.Net.Http;
 using Newtonsoft.Json;
-
+using GC = FrontendServer.GlobalConstants;
 
 namespace FrontendServer.Base.Logout
 {
@@ -18,12 +18,12 @@ namespace FrontendServer.Base.Logout
 
         public async Task LogoutAsync(string token)
         {
-            var client = _httpClientFactory.CreateClient("AuthorizedClient");
+            var client = _httpClientFactory.CreateClient(GC.AuthorizedClientKey);
 
             client.DefaultRequestHeaders.Authorization =
-                new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
+                new System.Net.Http.Headers.AuthenticationHeaderValue(GC.BearerKey, token);
 
-            var response = await client.PostAsync("api/Logout/logout", null);
+            var response = await client.PostAsync(GC.URL_logout, null);
         }
 
     }

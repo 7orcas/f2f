@@ -1,9 +1,9 @@
 using System.Collections.Generic;
 using System.Net.Http;
 using Newtonsoft.Json;
+using GC = FrontendServer.GlobalConstants;
 
-
-namespace FrontendServer.Base.Persmission
+namespace FrontendServer.Base.Permission
 {
 
     //May not need this
@@ -20,18 +20,18 @@ namespace FrontendServer.Base.Persmission
 
         public async Task<(List<RolePermissionDto> permissions, string message)> PermissionsAsync(string token)
         {
-            var client = _httpClientFactory.CreateClient("AuthorizedClient");
+            var client = _httpClientFactory.CreateClient(GC.AuthorizedClientKey);
 
             //var tokenResponse = await client.GetAsync("api/Token");
             //var token = await tokenResponse.Content.ReadAsStringAsync();
 
             client.DefaultRequestHeaders.Authorization =
-                new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
+                new System.Net.Http.Headers.AuthenticationHeaderValue(GC.BearerKey, token);
 
             var list = new List<RolePermissionDto>();
             var message = "";
 
-            var response = await client.GetAsync("api/Permission/list");
+            var response = await client.GetAsync(GC.URL_perm_list);
             if (response.IsSuccessStatusCode)
             {
                 var result = await response.Content.ReadAsStringAsync();
@@ -63,18 +63,18 @@ namespace FrontendServer.Base.Persmission
 
         public async Task<(List<PermissionDto> permissions, string message)> PermissionEffectiveAsync(string token)
         {
-            var client = _httpClientFactory.CreateClient("AuthorizedClient");
+            var client = _httpClientFactory.CreateClient(GC.AuthorizedClientKey);
 
             //var tokenResponse = await client.GetAsync("api/Token");
             //var token = await tokenResponse.Content.ReadAsStringAsync();
 
             client.DefaultRequestHeaders.Authorization =
-                new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
+                new System.Net.Http.Headers.AuthenticationHeaderValue(GC.BearerKey, token);
 
             var list = new List<PermissionDto>();
             var message = "";
 
-            var response = await client.GetAsync("api/Permission/listeffective");
+            var response = await client.GetAsync(GC.URL_perm_eff);
             if (response.IsSuccessStatusCode)
             {
                 var result = await response.Content.ReadAsStringAsync();
