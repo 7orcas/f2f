@@ -99,4 +99,26 @@
         return default;
     }
 
+    public MarkupString AppendMarkupString(MarkupString m, string s)
+    {
+        if (string.IsNullOrEmpty(m.ToString()))
+            return new MarkupString(s);
+
+        return new MarkupString(m.ToString() + "<br>" + s);
+    }
+
+    public async void PutCacheString(string key, string s)
+    {
+        if (_config == null)
+            await SetConfig();
+        Cache.PutString(key + "-" + _config.UniqueSessionId, s);
+    }
+
+    public async Task<string?> GetCacheString(string key)
+    {
+        if (_config == null)
+            await SetConfig();
+        return Cache.GetString(key + "-" + _config.UniqueSessionId);
+    }
+
 }

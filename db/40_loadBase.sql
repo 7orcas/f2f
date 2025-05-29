@@ -10,7 +10,7 @@ SET IDENTITY_INSERT base.org OFF;
 
 SET IDENTITY_INSERT base.zzz ON;
 INSERT INTO base.zzz (id, xxx, yyy, orgs,langCode) VALUES (1, '1', '1', '0,1,2','de');
-INSERT INTO base.zzz (id, xxx, yyy, orgs,langCode) VALUES (2, 'user', 'password', '1,2,12','en');
+INSERT INTO base.zzz (id, xxx, yyy, orgs,langCode) VALUES (2, 'user', 'xx123', '1,2,12','en');
 SET IDENTITY_INSERT base.zzz OFF;
 
 SET IDENTITY_INSERT base.permission ON;

@@ -103,6 +103,20 @@
     {
         loginRequest.Org = 1;
         test = await LoginService.LoginAsync();
+
+        // Parse the query string
+        var uri = NavigationManager.ToAbsoluteUri(NavigationManager.Uri);
+        var query = Microsoft.AspNetCore.WebUtilities.QueryHelpers.ParseQuery(uri.Query);
+
+        // Get a specific query parameter value
+        if (query.TryGetValue("u", out var user))
+            loginRequest.Username = user;
+        if (query.TryGetValue("p", out var pw))
+            loginRequest.Password = pw;
+        if (query.TryGetValue("o", out var org))
+            loginRequest.Org = int.Parse(org);
+        if (query.TryGetValue("l", out var langCode))
+            loginRequest.LangCode = langCode;
     }
 
 }

@@ -12,5 +12,7 @@ namespace Common.DTO
         public int OrgId { get; set; }
         public string OrgDescription { get; set; }
         public string LangCode { get; set; }
+        public int UniqueUserId { get; set; }
+        public int UniqueSessionId { get; set; }
     }
 }

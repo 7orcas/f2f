@@ -46,6 +46,8 @@ namespace Backend.Base.Config
                     OrgId = appConfig.OrgId,
                     OrgDescription = session.Org.Description,
                     LangCode = appConfig.LangCode,
+                    UniqueUserId = session.User.LoginId + 987123564,
+                    UniqueSessionId = UniqueSessionId.GetId(),
                 }
             };
 
