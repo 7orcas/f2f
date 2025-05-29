@@ -1,5 +1,6 @@
 ﻿@inject NavigationManager Navigation
 @inject LogoutService LogoutService
+@using GC = FrontendServer.GlobalConstants;
 
 @using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage
 @inject ProtectedSessionStorage ProtectedSessionStore
@@ -68,11 +69,8 @@
 
     private async Task Logout()
     {
-        var store = await ProtectedSessionStore.GetAsync<string>("tokenX");
-
-        // Remove tokenX from ProtectedSessionStore
-        await ProtectedSessionStore.DeleteAsync("tokenX");
-
+        var store = await ProtectedSessionStore.GetAsync<string>(GC.TokenCacheKey);
+        await ProtectedSessionStore.DeleteAsync(GC.TokenCacheKey);
         LogoutService.LogoutAsync(store.Value);
         Navigation.NavigateTo("https://localhost:7289", forceLoad: true);
     }

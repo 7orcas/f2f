@@ -52,5 +52,10 @@ namespace FrontendServer.Base.Cache
             return null;
         }
 
+        public void RemoveString(string key)
+        {
+            _cache.Remove(key);
+        }
+
     }
 }

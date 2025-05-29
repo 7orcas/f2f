@@ -52,131 +52,98 @@ else
     private string tokenkey = string.Empty;
     private string token = string.Empty;
     private UserParameters userParameters;
-    
+
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        await Task.Delay(500); // Pause for half a second
-
+        //await Task.Delay(100); // Pause to make it work
 
         if (firstRender && !_isError)
         {
-            if (!string.IsNullOrEmpty(token)) return;
-
-            var loggedin = await ProtectedSessionStore.GetAsync<string>(GC.LoggedInCacheKey);
-            // if (loggedin.Success)
-            //     return;
-
-            // hasVisited = await JS.InvokeAsync<bool>("localStorage.getItem", "hasVisited") == true;
-            // await JS.InvokeVoidAsync("localStorage.setItem", "hasVisited", true);
-
-
-            // Parse the query string
-            var uri = NavigationManager.ToAbsoluteUri(NavigationManager.Uri);
-            var query = Microsoft.AspNetCore.WebUtilities.QueryHelpers.ParseQuery(uri.Query);
-
-            // Get a specific query parameter value
-            if (query.TryGetValue("tk", out var value))
+            //Already loged in?
+            var result = await ProtectedSessionStore.GetAsync<string>(GC.TokenCacheKey);
+            if (result.Success)
             {
-                tokenkey = value;
+                var up = await GetCacheString("UP");
+                userParameters = JsonConvert.DeserializeObject<UserParameters>(up);
+                _isLoading = false;
+                StateHasChanged();
+                return;
             }
 
+
+            // Get the token key to use to get the actual token
+            var uri = NavigationManager.ToAbsoluteUri(NavigationManager.Uri);
+            var query = Microsoft.AspNetCore.WebUtilities.QueryHelpers.ParseQuery(uri.Query);
+            if (query.TryGetValue("tk", out var value))
+                tokenkey = value;
+            //Must be logged out
+            else
+            {
+                _isLoading = false;
+                _isError = false;
+                StateHasChanged();
+                return;
+            }
+
+            userParameters = new UserParameters();
+            userParameters.tokenkey = tokenkey;
+
+            //Get the token
             var clientU = HttpClientFactory.CreateClient(GC.UnAuthorizedClientKey);
             var tokenResponse = await clientU.GetAsync("api/Token/token?key=" + tokenkey);
             token = await tokenResponse.Content.ReadAsStringAsync();
+            token = token.Substring(LoginTokenDto.TOKEN_PREFIX_LENGTH);
+            await ProtectedSessionStore.SetAsync(GC.TokenCacheKey, token);
+            var client = HttpClientFactory.CreateClient(GC.AuthorizedClientKey);
+            client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue(GC.BearerKey, token);
+            userParameters.token = token;
 
-
-            var result = await ProtectedSessionStore.GetAsync<string>(GC.TokenCacheKey);
-            if (!string.IsNullOrEmpty(token) &&
-                token.StartsWith(LoginTokenDto.TOKEN_PREFIX))
+            //Get App Config
+            var cl = await client.GetAsync(GC.URL_config);
+            userParameters.loaded = AppendMarkupString(userParameters.loaded, GC.URL_config);
+            var cls = await cl.Content.ReadAsStringAsync();
+            var cdto = JsonConvert.DeserializeObject<_ResponseDto>(cls);
+            if (!cdto.Valid)
             {
-                await ProtectedSessionStore.SetAsync(GC.LoggedInCacheKey, "logged in");
-
-                userParameters = new UserParameters()
-                    {
-                        tokenkey = tokenkey
-                    };
-
-
-                token = token.Substring(LoginTokenDto.TOKEN_PREFIX_LENGTH);
-                await ProtectedSessionStore.SetAsync(GC.TokenCacheKey, token);
-                var client = HttpClientFactory.CreateClient(GC.AuthorizedClientKey);
-                client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue(GC.BearerKey, token);
-                userParameters.token = token;
-
-                //Get App Config
-                var cl = await client.GetAsync(GC.URL_config);
-                userParameters.loaded = AppendMarkupString(userParameters.loaded, GC.URL_config);
-                var cls = await cl.Content.ReadAsStringAsync();
-                var cdto = JsonConvert.DeserializeObject<_ResponseDto>(cls);
-                if (!cdto.Valid)
-                {
-                    _isLoading = false;
-                    _isError = true;
-                    _errorMessage = new MarkupString("Missing Config");
-                    StateHasChanged();
-                    return;
-                }
-                var cjson = cdto.Result.ToString();
-                await ProtectedSessionStore.SetAsync(GC.ConfigCacheKey, cjson);
-                var config = JsonConvert.DeserializeObject<AppConfigDto>(cjson);
-                userParameters.Add(config);
-
-                //Get Labels
-                if (!Cache.HasLabels(config.LangCode))
-                {
-                    var url = GC.URL_label_list + config.LangCode;
-                    var rl = await client.GetAsync(url);
-                    userParameters.loaded = AppendMarkupString(userParameters.loaded, url);
-                    var rls = await rl.Content.ReadAsStringAsync();
-                    var rdto = JsonConvert.DeserializeObject<_ResponseDto>(rls);
-
-                    if (rdto.Valid)
-                    {
-                        var labels = JsonConvert.DeserializeObject<List<LangLabelDto>>(rdto.Result.ToString());
-                        var dic = new Dictionary<string, LangLabelDto>();
-                        foreach (var l in labels)
-                            dic.Add(l.LabelCode, l);
-                        Cache.PutLabels(dic, config.LangCode);
-                    }
-                }
-
-                PutCacheString("UP", sysJ.JsonSerializer.Serialize(userParameters));
+                _isLoading = false;
+                _isError = true;
+                _errorMessage = new MarkupString("Missing Config");
                 StateHasChanged();
+                return;
             }
-        }
-        else
-        {
-            var up = GetCacheString("UP");
+            var cjson = cdto.Result.ToString();
+            await ProtectedSessionStore.SetAsync(GC.ConfigCacheKey, cjson);
+            var config = JsonConvert.DeserializeObject<AppConfigDto>(cjson);
+            userParameters.Add(config);
 
+            //Get Labels
+            if (!Cache.HasLabels(config.LangCode))
+            {
+                var url = GC.URL_label_list + config.LangCode;
+                var rl = await client.GetAsync(url);
+                userParameters.loaded = AppendMarkupString(userParameters.loaded, url);
+                var rls = await rl.Content.ReadAsStringAsync();
+                var rdto = JsonConvert.DeserializeObject<_ResponseDto>(rls);
+
+                if (rdto.Valid)
+                {
+                    var labels = JsonConvert.DeserializeObject<List<LangLabelDto>>(rdto.Result.ToString());
+                    var dic = new Dictionary<string, LangLabelDto>();
+                    foreach (var l in labels)
+                        dic.Add(l.LabelCode, l);
+                    Cache.PutLabels(dic, config.LangCode);
+                }
+            }
+
+            PutCacheString("UP", sysJ.JsonSerializer.Serialize(userParameters));
+            _isLoading = false;
+            StateHasChanged();
         }
     }
 
-    private bool hasVisited;
     protected override async Task OnInitializedAsync()
     {
-        // if (!string.IsNullOrEmpty(token)) return;
-
-        // // var loggedin = await ProtectedSessionStore.GetAsync<string>(GC.LoggedInCacheKey);
-        // // if (loggedin.Success)
-        // //     return;
-        
-        // hasVisited = await JS.InvokeAsync<bool>("localStorage.getItem", "hasVisited") == true;
-        // await JS.InvokeVoidAsync("localStorage.setItem", "hasVisited", true);
-
-
-        // // Parse the query string
-        // var uri = NavigationManager.ToAbsoluteUri(NavigationManager.Uri);
-        // var query = Microsoft.AspNetCore.WebUtilities.QueryHelpers.ParseQuery(uri.Query);
-
-        // // Get a specific query parameter value
-        // if (query.TryGetValue("tk", out var value))
-        // {
-        //     tokenkey = value;
-        // }
-
-        // var client = HttpClientFactory.CreateClient(GC.UnAuthorizedClientKey);
-        // var tokenResponse = await client.GetAsync("api/Token/token?key=" + tokenkey);
-        // token = await tokenResponse.Content.ReadAsStringAsync();
+        _isLoading = true;
     }
 
     public class UserParameters
