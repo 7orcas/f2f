@@ -8,7 +8,6 @@ LoadAppSettings(builder);
 // Add services to the container.
 builder.Services.AddRazorPages();
 builder.Services.AddServerSideBlazor();
-builder.Services.AddSingleton<LoginService>();
 
 builder.Services.AddHttpClient("BackendApi", client =>
 {

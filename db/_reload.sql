@@ -4,7 +4,7 @@
 :r 30_createBase.sql
 :r 35_createApp.sql
 :r 40_loadBase.sql
-:r 41_loadLabels.sql
+:r 42_importLabels.sql
 :r 45_loadApp.sql
 
 

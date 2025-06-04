@@ -1,5 +1,4 @@
 using FrontendServer;
-using FrontendServer.Service;
 using GC = FrontendServer.GlobalConstants;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage;
@@ -7,9 +6,7 @@ using Microsoft.AspNetCore.Components.Web;
 using System.Net;
 using FrontendServer.Base.Cache;
 
-
 var builder = WebApplication.CreateBuilder(args);
-
 
 // Add Serilog configuration
 // Set up Serilog to use appsettings.json
@@ -40,8 +37,8 @@ builder.Services.AddHttpClient(GC.UnAuthorizedClientKey, client =>
 
 builder.Services.AddHttpClient(GC.AuthorizedClientKey, client =>
 {
-    client.BaseAddress = new Uri(AppSettings.AuthorizedClientBaseUri); 
-}).AddHttpMessageHandler<AuthorizationMessageHandler>();
+    client.BaseAddress = new Uri(AppSettings.AuthorizedClientBaseUri);
+}); //.AddHttpMessageHandler<AuthorizationMessageHandler>();
 
 
 // Add session services
@@ -51,7 +48,7 @@ builder.Services.AddDistributedMemoryCache();
 builder.Services.AddScoped<ProtectedSessionStorage>();
 
 builder.Services.AddScoped<BaseService>();
-builder.Services.AddScoped<AuthorizationMessageHandler>();
+//builder.Services.AddScoped<AuthorizationMessageHandler>();
 builder.Services.AddScoped<LogoutService>();
 builder.Services.AddScoped<PermissionService>();
 builder.Services.AddScoped<RoleService>();

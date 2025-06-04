@@ -2,7 +2,6 @@
 @inject HttpClient HttpClient
 @inject NavigationManager NavigationManager
 @inject IHttpClientFactory HttpClientFactory
-@inject LoginService LoginService
 @using Newtonsoft.Json;
 @using GC = FrontendLogin.GlobalConstants;
 
@@ -44,8 +43,8 @@
     private string successMessage = string.Empty;
     private string tokenkey;
     private string token;
-    private string test;
-
+    private bool auto = false;
+    
     private async Task HandleLogin()
     {
         try
@@ -69,7 +68,7 @@
                     tokenkey = login.TokenKey;
                     token = login.Token;
 
-//await TestPause();
+                    //await TestPause();
 
                     NavigationManager.NavigateTo(login.MainUrl + "?tk=" + tokenkey, true);
                 }
@@ -82,9 +81,7 @@
             }
             else
             {
-                errorMessage = "Invalid username or password + "
-                    + test;
-
+                errorMessage = "Invalid username or password + ";
             }
         }
         catch (Exception ex)
@@ -98,25 +95,60 @@
         await Task.Delay(3000);
     }
 
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (auto)
+            HandleLogin();
+    }
 
     protected override async Task OnInitializedAsync()
     {
         loginRequest.Org = 1;
-        test = await LoginService.LoginAsync();
 
-        // Parse the query string
+        // Parse the URL query string
         var uri = NavigationManager.ToAbsoluteUri(NavigationManager.Uri);
         var query = Microsoft.AspNetCore.WebUtilities.QueryHelpers.ParseQuery(uri.Query);
 
         // Get a specific query parameter value
         if (query.TryGetValue("u", out var user))
-            loginRequest.Username = user;
+            loginRequest.Username = user.ToString();
         if (query.TryGetValue("p", out var pw))
-            loginRequest.Password = pw;
+            loginRequest.Password = pw.ToString();
         if (query.TryGetValue("o", out var org))
-            loginRequest.Org = int.Parse(org);
+            loginRequest.Org = int.Parse(org.ToString());
         if (query.TryGetValue("l", out var langCode))
-            loginRequest.LangCode = langCode;
+            loginRequest.LangCode = langCode.ToString();
+        if (query.TryGetValue("auto", out var autoX))
+            auto = autoX.ToString().Trim().StartsWith("t");
+
+        if (!loginRequest.IsPopulated())
+            getEnvironmentVariables();
     }
 
+    /**
+     * Passed in parameters via launchSettings.json
+     * For DEVELOPMENT ONLY
+     */
+    private void getEnvironmentVariables()
+    {
+        var dev = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
+        if (string.IsNullOrEmpty(dev)
+            || !dev.Equals("Development"))
+            return;
+
+        var user = Environment.GetEnvironmentVariable("USER");
+        loginRequest.Username = user.ToString();
+
+        var pw = Environment.GetEnvironmentVariable("PASSWORD");
+        loginRequest.Password = pw.ToString();
+
+        var org = Environment.GetEnvironmentVariable("ORG");
+        loginRequest.Org = int.Parse(org.ToString());
+
+        var langCode = Environment.GetEnvironmentVariable("LANGCODE");
+        loginRequest.LangCode = langCode.ToString();
+        
+        var autoValue = Environment.GetEnvironmentVariable("AUTO");
+        auto = autoValue?.Trim().ToLower() == "true";
+    }
 }
