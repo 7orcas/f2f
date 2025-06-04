@@ -48,6 +48,14 @@ namespace Backend.Base.Config
                     LangCode = appConfig.LangCode,
                     UniqueUserId = session.User.LoginId + 987123564,
                     UniqueSessionId = UniqueSessionId.GetId(),
+
+                    Label = new LabelConfigDto
+                    {
+                        ShowLink = true,
+                        ShowModal = true,
+                        ShowNoKey = true,
+                        ShowTooltip = true,
+                    },
                 }
             };
 

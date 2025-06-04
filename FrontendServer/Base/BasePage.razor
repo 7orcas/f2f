@@ -17,7 +17,7 @@
     public MarkupString? _errorMessage;
     public ErrorBoundary? errorBoundary;
     public Exception? exception;
-    public AppConfigDto _config;
+    private AppConfigDto _config;
     private Dictionary<string, LangLabelDto> _labels;
 
     public async Task<HttpClient> SetClient()
@@ -43,6 +43,12 @@
         _config = JsonConvert.DeserializeObject<AppConfigDto>(cjson.Value);
     }
 
+    public async Task<AppConfigDto> GetConfig()
+    {
+        await SetConfig();
+        return _config;
+    }
+
     public async void SetLabels()
     {
         if (_config == null)
@@ -52,9 +58,17 @@
 
     public string GetLabel (string labelCode)
     {
-        if (_labels.ContainsKey(labelCode))
+        SetLabels();
+        if (_labels != null && _labels.ContainsKey(labelCode))
             return _labels[labelCode].Code;
         return "?" + labelCode;
+    }
+
+    public string? GetTooltip(string labelCode)
+    {
+        if (_labels != null && _labels.ContainsKey(labelCode))
+            return _labels[labelCode].Tooltip;
+        return null;
     }
 
     public async Task<T> Call<T>(string url)

@@ -3,6 +3,7 @@ using GC = FrontendServer.GlobalConstants;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage;
 using Microsoft.AspNetCore.Components.Web;
+using MudBlazor.Services;
 using System.Net;
 using FrontendServer.Base.Cache;
 
@@ -22,6 +23,7 @@ LoadAppSettings(builder);
 builder.Services.AddMemoryCache();
 builder.Services.AddRazorPages();
 builder.Services.AddServerSideBlazor();
+builder.Services.AddMudServices();
 
 //ToDo is the ConfigurePrimaryHttpMessageHandler required?
 builder.Services.AddHttpClient(GC.UnAuthorizedClientKey, client =>

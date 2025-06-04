@@ -14,5 +14,16 @@ namespace Common.DTO
         public string LangCode { get; set; }
         public int UniqueUserId { get; set; }
         public int UniqueSessionId { get; set; }
+
+        public LabelConfigDto Label {  get; set; }
     }
+
+    public class LabelConfigDto 
+    { 
+        public bool ShowLink  { get; set; } = false;
+        public bool ShowNoKey  { get; set; } = false;
+        public bool ShowModal  { get; set; } = false;
+        public bool ShowTooltip  { get; set; } = false;
+    }
+
 }

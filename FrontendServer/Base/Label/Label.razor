@@ -1,6 +1,5 @@
 ﻿@inherits BasePage
 
-
 @InitialiseLabel()
 
 <div>
@@ -26,7 +25,7 @@
 
 
 @code {
-    //private AppConfig? appConfig;
+    private AppConfigDto? appConfig;
 
     [Parameter]
     public string Key { get; set; }
@@ -38,14 +37,15 @@
 
     protected override async Task OnInitializedAsync()
     {
-        //appConfig = clientState.appConfig;
+        appConfig = await GetConfig();
     }
 
     private string InitialiseLabel()
     {
-        // _showLink = appConfig?.IsLabelLink ?? false;
-        // _showNoKey = _showLink && (!labelMgr?.IsLabel(Key) ?? false);
-        // _showTooltip = labelMgr?.IsTooltip(Key) ?? false;
+        _showLink = appConfig?.Label.ShowLink ?? false;
+        _showNoKey = appConfig?.Label.ShowNoKey ?? false;
+        _showTooltip = appConfig?.Label.ShowTooltip ?? false;
+        _showModal = appConfig?.Label.ShowModal ?? false;
         return "";
     }
 
@@ -53,23 +53,19 @@
     {
         return
             (_showNoKey ? "[" : "")
-            // + labelMgr?.GetLabel(Key)
+            + GetLabel(Key)
             + (_showNoKey ? "]" : "")
             ;
     }
 
     private string ShowLabelText()
     {
-        // if (labelMgr == null) return "No labelMgr";
-        // if (!labelMgr.IsLabel(Key)) return "No Key";
-        // return labelMgr.GetLabel(Key);
-        return "?";
+        return GetLabel(Key);
     }
 
     private string? ShowToolTip()
     {
-        //return labelMgr?.GetTooltip(Key);
-        return "tt";
+        return GetTooltip(Key);
     }
 
     private string GetClass()
