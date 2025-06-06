@@ -43,8 +43,9 @@
     private string successMessage = string.Empty;
     private string tokenkey;
     private string token;
-    private bool auto = false;
-    
+    private bool autoLogin = false;
+    private string autoOpen = string.Empty;
+
     private async Task HandleLogin()
     {
         try
@@ -70,7 +71,10 @@
 
                     //await TestPause();
 
-                    NavigationManager.NavigateTo(login.MainUrl + "?tk=" + tokenkey, true);
+                    NavigationManager.NavigateTo(login.MainUrl 
+                        + "?tk=" + tokenkey
+                        + (string.IsNullOrEmpty(autoOpen)? "" : "&open=" + autoOpen),
+                        true);
                 }
                 else
                 {
@@ -97,7 +101,7 @@
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        if (auto)
+        if (autoLogin)
             HandleLogin();
     }
 
@@ -119,7 +123,9 @@
         if (query.TryGetValue("l", out var langCode))
             loginRequest.LangCode = langCode.ToString();
         if (query.TryGetValue("auto", out var autoX))
-            auto = autoX.ToString().Trim().StartsWith("t");
+            autoLogin = autoX.ToString().Trim().StartsWith("t");
+        if (query.TryGetValue("open", out var openX))
+            autoOpen = openX.ToString();
 
         if (!loginRequest.IsPopulated())
             getEnvironmentVariables();
@@ -147,8 +153,11 @@
 
         var langCode = Environment.GetEnvironmentVariable("LANGCODE");
         loginRequest.LangCode = langCode.ToString();
-        
+
         var autoValue = Environment.GetEnvironmentVariable("AUTO");
-        auto = autoValue?.Trim().ToLower() == "true";
+        autoLogin = autoValue?.Trim().ToLower() == "true";
+
+        var openValue = Environment.GetEnvironmentVariable("OPEN");
+        autoOpen = openValue?.ToString();
     }
 }

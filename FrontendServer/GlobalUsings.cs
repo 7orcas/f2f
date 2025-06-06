@@ -9,4 +9,9 @@ global using FrontendServer.Base.Permission;
 global using FrontendServer.Base.Role;
 global using FrontendServer.Base.Audit;
 global using FrontendServer.Base.Logout;
+
+
+global using FrontendServer.Mods;
 global using FrontendServer.Mods.Machines;
+
+

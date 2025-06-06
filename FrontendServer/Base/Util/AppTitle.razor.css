@@ -1,8 +1,8 @@
-﻿.container {
+﻿.title-container {
     display: flex;
-    justify-content: space-between;
-    padding: 0px;
-    margin-bottom: 5px;
+    justify-content: space-between; /* Places one item on the left and one on the right */
+    align-items: center; /* Ensures vertical alignment */
+    width: 100%; /* Ensures it takes up the full width */
 }
 
 .title {

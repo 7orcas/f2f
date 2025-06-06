@@ -51,6 +51,7 @@ else
 @code {
     private string tokenkey = string.Empty;
     private string token = string.Empty;
+    private string autoOpen = string.Empty;
     private UserParameters userParameters;
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
@@ -138,6 +139,14 @@ else
             PutCacheString("UP", sysJ.JsonSerializer.Serialize(userParameters));
             _isLoading = false;
             StateHasChanged();
+
+            //Is there an auto open?
+            if (query.TryGetValue("open", out var autoOpenX))
+            {
+                if (ModPageRoutes.IsRoute(autoOpenX))
+                    NavigationManager.NavigateTo(ModPageRoutes.GetRoute(autoOpenX));
+            }
+
         }
     }
 

@@ -28,7 +28,8 @@
         "PASSWORD": "xx123",
         "ORG": "1",
         "LANGCODE": "en",
-        "AUTO": "true"
+        "AUTO": "true",
+        "OPEN": "m01"
       }
     },
     "IIS Express": {
