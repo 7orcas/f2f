@@ -11,7 +11,7 @@ global using FrontendServer.Base.Audit;
 global using FrontendServer.Base.Logout;
 
 
-global using FrontendServer.Mods;
-global using FrontendServer.Mods.Machines;
+global using FrontendServer.Application;
+global using FrontendServer.Application.Machines;
 
 

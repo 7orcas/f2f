@@ -1,11 +1,11 @@
-﻿namespace FrontendServer.Mods
+﻿namespace FrontendServer.Application
 {
     public class ModPageRoutes
     {
         static Dictionary<string, string> PageCodeDic; //page code, route
 
         //Routes
-        public const string RouteMachines = "/machines";
+        public const string RouteMachines = "machines";
 
         //Page Codes
         public const string PageMachines = "m01";
