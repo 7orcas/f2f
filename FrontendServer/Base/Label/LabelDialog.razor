@@ -1,5 +1,9 @@
-﻿<!--
-<div class="overlay-grid">
+﻿@inherits BasePage
+
+<div class="overlay-grid" style="background-color: darkslateblue;  border: 1px solid yellow;">
+    
+       
+
 <MudGrid>
     <MudItem xs="12" >
         <MudPaper Class="pa-4" style="background-color: #f2f2f2;  border: 1px solid black;">
@@ -8,26 +12,30 @@
                         &nbsp;@GetLabel("Code"):&nbsp;
                     <div>@LangKey</div>
                 </div>
+
                 <div class="label-langcode">
                         &nbsp;@GetLabel("Language"):&nbsp;
-                    <div>@clientState.appConfig.LangCode</div>
+                        <div>@_langCode</div>
                 </div>
 
-                <MudTextField T="string" Label="Label" AutoGrow="true" @ref="labelField" @bind-Value="_label" Required="true" RequiredError="Label is required!" />
-                <MudTextField T="string" Label="Tooltip" AutoGrow="true" @ref="tooltipField" @bind-Value="_tooltip" />
-                -- Yet to be worked out how to do this??
-                <MudTextField T="string" Label="Org" @ref="orgField" @bind-Value="_org" />
-                --
+                    <MudTextField T="string" Label="Label" OnBlur="@OnBlu" @ref="labelField" @bind-Value="_label" Required="true" RequiredError="Label is required!" />
+                    <MudTextField T="string" Label="Tooltip" OnBlur="@OnBlu" @ref="tooltipField" @bind-Value="_tooltip" />
+                    <MudTextField T="string" Label="Org" OnBlur="@OnBlu" @ref="orgField" @bind-Value="_org" />
+                
                 <div class="d-flex align-right label-buttons">
-                        <MudButton Variant="Variant.Filled" Color="Color.Primary" Disabled="@(!success)" Class="ml-auto" OnClick="Save">@GetLabel("Save")</MudButton>
+                        <MudButton Variant="Variant.Filled" Color="Color.Primary" Disabled="@(!success)" Class="ml-auto" OnClick="Save">@GetLabel("SaveRecord")</MudButton>
                         <MudButton Variant="Variant.Filled" Color="Color.Secondary" OnClick="ChangeParameter" style="margin-left: 10px">@GetLabel("Cancel")</MudButton>
                 </div>
+                <!--
+                    -->
             </MudForm>
         </MudPaper>
     </MudItem>
 </MudGrid>
+        
+    
+
 </div>
--->
 
 @code {
     [Parameter] public string LangKey { get; set; }
@@ -36,17 +44,15 @@
     //  [Inject] protected ClientState clientState { get; set; }
 
     bool success;
+    string _langCode;
     string _label;
     string _tooltip;
     string _org;
 
-    // MudForm form;
-    // MudTextField<string> labelField;
-    // MudTextField<string> tooltipField;
-    // MudTextField<string> orgField;
-
-    // LabelManager? labelMgr;
-    // LangLabel langLabel;
+    MudForm form;
+    MudTextField<string> labelField;
+    MudTextField<string> tooltipField;
+    MudTextField<string> orgField;
 
     protected override async Task OnInitializedAsync()
     {
@@ -56,15 +62,18 @@
 
     protected override void OnAfterRender(bool firstRender)
     {
-        // if (firstRender && langLabel != null)
-        // {
-        //     _label = langLabel.Description;
-        //     _tooltip = langLabel.Tooltip;
-        //     if (langLabel._OrgId != null)
-        //         _org = langLabel._OrgId.ToString();
+        if (firstRender)
+        {
+            _langCode = GetLanguageCode();
+            _label = GetLabel(LangKey);
+            _tooltip = "_tooltip";
+            _org = "_org";
+            // _tooltip = langLabel.Tooltip;
+            // if (langLabel._OrgId != null)
+            //     _org = langLabel._OrgId.ToString();
 
-        //     StateHasChanged(); // Ensure the component re-renders to reflect the updated value
-        // }
+            StateHasChanged(); // Ensure the component re-renders to reflect the updated value
+        }
     }
 
     private async Task ChangeParameter()
@@ -73,51 +82,51 @@
         await OnParameterChanged.InvokeAsync(newValue);
     }
 
+    private void OnBlu()
+    {
+        
+    }
+
     private async Task Save()
     {
-        // await form.Validate();
-        // if (success)
-        // {
-        //     int? org = null;
-        //     try
-        //     {
-        //         org = int.Parse(orgField.Value);
-        //         if (org == 0) org = null;
-        //     }
-        //     catch
-        //     {
-        //         org = null;
-        //     }
+        await form.Validate();
+        if (success)
+        {
+            int? org = null;
+            try
+            {
+                org = int.Parse(orgField.Value);
+                if (org == 0) org = null;
+            }
+            catch
+            {
+                org = null;
+            }
 
-        //     var tt = tooltipField.Value;
-        //     if (string.IsNullOrEmpty(tt))
-        //         tt = null;
+            var tt = tooltipField.Value;
+            if (string.IsNullOrEmpty(tt))
+                tt = null;
 
-        //     LangLabel label = new LangLabel
-        //     {
-        //         Id = langLabel != null ? langLabel.Id : 0,
-        //         LangCode = clientState.appConfig.LangCode,
-        //         Code = LangKey,
-        //         Description = labelField.Value,
-        //         Tooltip = tt,
-        //         _OrgId = org
-        //     };
+            // LangLabel label = new LangLabel
+            // {
+            //     Id = langLabel != null ? langLabel.Id : 0,
+            //     LangCode = clientState.appConfig.LangCode,
+            //     Code = LangKey,
+            //     Description = labelField.Value,
+            //     Tooltip = tt,
+            //     _OrgId = org
+            // };
 
-        //     var result = labelService.SaveLabel(label);
-        //     clientState.labelMgr.UpdateLabel(label);
-        // }
-        // else
-        // {
-        //     Console.WriteLine("Form is invalid.");
-        // }
+            // var result = labelService.SaveLabel(label);
+            // clientState.labelMgr.UpdateLabel(label);
+        }
+        else
+        {
+            Console.WriteLine("Form is invalid.");
+        }
         ChangeParameter();
     }
 
-    private string GetLabel(string code)
-    {
-        // if (labelMgr == null) return code;
-        // return labelMgr.GetLabel(code);
-        return code;
-    }
+    
 
 }

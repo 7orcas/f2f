@@ -51,10 +51,9 @@ namespace Backend.Base.Config
 
                     Label = new LabelConfigDto
                     {
-                        ShowLink = true,
-                        ShowModal = true,
                         ShowNoKey = true,
                         ShowTooltip = true,
+                        ShowLink = true,
                     },
                 }
             };

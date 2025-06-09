@@ -21,17 +21,18 @@ namespace Backend.Base.Label
         }
 
         /// <summary>
-        /// Gets an appointment
+        /// Gets the passed in langKeyCode's labels
+        /// The returned DTO objects contain minimal data
         /// </summary>
         /// <param name="langCode"></param>
         /// <returns></returns>
         [CrudAtt(GC.CrudRead)]
         [AuditListAtt(GC.EntityTypeLangLabel)]
-        [HttpGet("list/{code}")]
-        public async Task<IActionResult> Get(string code)
+        [HttpGet("clientlist/{langKeyCode}")]
+        public async Task<IActionResult> Get(string langKeyCode)
         {
             var session = HttpContext.Items["session"] as SessionEnt;
-            var labels = await _labelService.GetLabels(code);
+            var labels = await _labelService.GetLanguageLabelList(langKeyCode);
             var list = new List<LangLabelDto>();
 
             foreach (var e in labels)
@@ -39,13 +40,9 @@ namespace Backend.Base.Label
                 list.Add(new LangLabelDto
                 {
                     Id = e.Id,
-                    LangKeyId = e.LangKeyId,
-                    HardCodedNr = e.HardCodedNr,
-                    LabelCode = e.LabelCode,
-                    Code = e.Code,
-                    Tooltip = e.Tooltip,
-                    Updated = e.Updated,
-                    IsActive = e.IsActive
+                    LangKeyCode = e.LangKeyCode,
+                    Label = e.Code,
+                    Tooltip = e.Tooltip
                 });
             }
 
@@ -53,6 +50,39 @@ namespace Backend.Base.Label
             {
                 SuccessMessage = "Ok",
                 Result = list
+            };
+            return Ok(r);
+        }
+
+        /// <summary>
+        /// Gets the passed in langId's label
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        [CrudAtt(GC.CrudRead)]
+        [AuditListAtt(GC.EntityTypeLangLabel)]
+        [HttpGet("{id}")]
+        public async Task<IActionResult> Get(int id)
+        {
+            var session = HttpContext.Items["session"] as SessionEnt;
+            var l = await _labelService.GetLanguageLabel(id);
+
+            var dto = new LangLabelDto
+            {
+                Id = l.Id,
+                LangKeyId = l.LangKeyId,
+                HardCodedNr = l.HardCodedNr,
+                LangCode = l.LangCode,
+                Label = l.Code,
+                Tooltip = l.Tooltip,
+                Updated = l.Updated,
+                IsActive = l.IsActive
+            };
+
+            var r = new _ResponseDto
+            {
+                SuccessMessage = "Ok",
+                Result = dto
             };
             return Ok(r);
         }

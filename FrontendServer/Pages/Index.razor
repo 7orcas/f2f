@@ -120,7 +120,7 @@ else
             //Get Labels
             if (!Cache.HasLabels(config.LangCode))
             {
-                var url = GC.URL_label_list + config.LangCode;
+                var url = GC.URL_label_clientlist + config.LangCode;
                 var rl = await client.GetAsync(url);
                 userParameters.loaded = AppendMarkupString(userParameters.loaded, url);
                 var rls = await rl.Content.ReadAsStringAsync();
@@ -131,8 +131,8 @@ else
                     var labels = JsonConvert.DeserializeObject<List<LangLabelDto>>(rdto.Result.ToString());
                     var dic = new Dictionary<string, LangLabelDto>();
                     foreach (var l in labels)
-                        dic.Add(l.LabelCode, l);
-                    Cache.PutLabels(dic, config.LangCode);
+                        dic.Add(l.LangKeyCode, l);
+                    Cache.PutLabels(config.LangCode, dic);
                 }
             }
 

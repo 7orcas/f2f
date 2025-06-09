@@ -1,9 +1,10 @@
 ﻿@inherits BasePage
+@inject IDialogService DialogService
 
 @InitialiseLabel()
 
 <div>
-    @if (_showTooltip)
+    @if (@IsShowToolTip())
     {
         <div data-tooltip="@ShowToolTip()">
             <button class="@GetClass()" @onclick="OpenDialog">@ShowLabel()</button>
@@ -14,11 +15,12 @@
         <button class="@GetClass()" @onclick="OpenDialog">@ShowLabel()</button>
     }
 
-    @if (_showModal)
+    @if (_showDialog)
     {
         <LabelDialog 
             LangKey="@Key"
-            OnParameterChanged="HandleShowChanged" />
+            OnParameterChanged="HandleShowChanged" 
+            />
     }
 
 </div>
@@ -30,10 +32,10 @@
     [Parameter]
     public string Key { get; set; }
 
-    private bool _showLink = false;
     private bool _showNoKey = false;
-    private bool _showModal = false;
     private bool _showTooltip = false;
+    private bool _showLink = false;
+    private bool _showDialog = false;
 
     protected override async Task OnInitializedAsync()
     {
@@ -42,25 +44,25 @@
 
     private string InitialiseLabel()
     {
-        _showLink = appConfig?.Label.ShowLink ?? false;
         _showNoKey = appConfig?.Label.ShowNoKey ?? false;
         _showTooltip = appConfig?.Label.ShowTooltip ?? false;
-        _showModal = appConfig?.Label.ShowModal ?? false;
+        _showLink = appConfig?.Label.ShowLink ?? false;
         return "";
     }
 
     private string ShowLabel()
     {
+        if (IsLabel(Key)) return GetLabel(Key);
         return
             (_showNoKey ? "[" : "")
-            + GetLabel(Key)
+            + Key
             + (_showNoKey ? "]" : "")
             ;
     }
 
-    private string ShowLabelText()
+    private bool IsShowToolTip()
     {
-        return GetLabel(Key);
+        return IsTooltip(Key);
     }
 
     private string? ShowToolTip()
@@ -68,21 +70,31 @@
         return GetTooltip(Key);
     }
 
+    private bool IsShowDialogLink()
+    {
+        return _showLink && IsLabel(Key);
+    }
+
     private string GetClass()
     {
-        if (_showNoKey) return "label-nokey";
-        if (_showLink) return "label-link";
+        var l = IsLabel(Key);
+        if (!l && _showNoKey) return "label-nokey";
+        if (!l && _showLink) return "label-link";
         return "label";
     }
 
     private void OpenDialog()
     {
-        if (_showModal) _showModal = false;
-        else _showModal = _showLink;
+        if (_showDialog) _showDialog = false;
+        else _showDialog = _showLink;
+        // var options = new DialogOptions { CloseOnEscapeKey = true };
+
+        // DialogService.ShowAsync<LabelDialog>("Simple Dialog", options);
+
     }
 
     private void HandleShowChanged(string newValue)
     {
-        _showModal = false;
+        _showDialog = false;
     }
 }

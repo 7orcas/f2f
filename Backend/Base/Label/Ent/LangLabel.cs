@@ -13,7 +13,7 @@ namespace Backend.Base.Label.Ent
         public int LangKeyId { set; get; }
 
         /// <summary>
-        /// Language code of label.
+        /// Language code of label (eg 'en').
         /// </summary>
         public string LangCode { get; set; }
 
@@ -23,7 +23,7 @@ namespace Backend.Base.Label.Ent
         public int? HardCodedNr { get; set; }
 
         /// <summary>
-        /// Label code.
+        /// Label label.
         /// </summary>
         public string Code { get; set; }
                 
@@ -49,6 +49,6 @@ namespace Backend.Base.Label.Ent
          * Indicates this label has been loaded with this lang code
          */
         [NotMapped]
-        public string? LabelCode { get; set; }
+        public string? LangKeyCode { get; set; }
     }
 }

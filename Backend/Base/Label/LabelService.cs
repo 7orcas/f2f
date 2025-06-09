@@ -1,5 +1,6 @@
 ﻿using Backend.Base.Label.Ent;
 using Microsoft.Data.SqlClient;
+using System.Collections.Generic;
 
 namespace Backend.Base.Label
 {
@@ -9,20 +10,51 @@ namespace Backend.Base.Label
         {
         }
 
-        public async Task<List<LangLabel>> GetLabels(string langCode)
+        /*
+         * Get language list for passed in language code (eg 'en')
+         */
+        public async Task<List<LangLabel>> GetLanguageLabelList(string langKeyCode)
         {
-            return await GetLabelList(langCode, null);
+            return await GetLabelList(null, langKeyCode, null);
         }
 
-        private async Task<List<LangLabel>> GetLabelList(string langCode, int? hardCodedNr)
+        /*
+         * Get language label for passed in language code id
+         */
+        public async Task<LangLabel> GetLanguageLabel(int id)
+        {
+            List <LangLabel> list = await GetLabelList(id, null, null);
+            if (list.Count == 1) return list[0];
+            return null;
+        }
+
+        public async Task<List<LangLabel>> GetAllLanguageLabels()
+        {
+            return await GetLabelList(null, null, null);
+        }
+
+
+        private async Task<List<LangLabel>> GetLabelList(int? id, string? langKeyCode, int? hardCodedNr)
         {
             string sql = "SELECT l.id, l.langKeyId, l.langCode, k.code AS kCode, l.hardCodedNr, l.code, l.tooltip, l.updated, l.isActive " +
                             "FROM base.langLabel l " +
-                            "INNER JOIN base.langKey k ON k.id = l.langKeyId " + 
-                            "WHERE l.langCode = '" + langCode + "' ";
+                            "INNER JOIN base.langKey k ON k.id = l.langKeyId ";
+            string sqlWhere = "";
+
+
+            if (id != null)
+                sqlWhere = "WHERE l.id = " + id + " ";
+            else if (!string.IsNullOrEmpty(langKeyCode))
+                sqlWhere = "WHERE l.langCode = '" + langKeyCode + "' ";
+
+            sqlWhere += (sqlWhere.Length > 0 ? "AND " : "WHERE ");
 
             if (hardCodedNr.HasValue) 
-                sql += "AND l.hardCodedNr = " + hardCodedNr;
+                sqlWhere += "l.hardCodedNr = " + hardCodedNr;
+            else
+                sqlWhere += "l.hardCodedNr IS NULL";
+
+            sql += sqlWhere;
 
             //Step 1: get labels for passed in lang code and org
             var list = new List<LangLabel>();
@@ -32,8 +64,8 @@ namespace Backend.Base.Label
                         {
                             Id = Sql.GetId(r, "id"),
                             LangKeyId = Sql.GetId(r, "langKeyId"),
+                            LangKeyCode = Sql.GetString(r, "kCode"),
                             LangCode = Sql.GetString(r, "langCode"),
-                            LabelCode = Sql.GetString(r, "kCode"),
                             HardCodedNr = Sql.GetIntNull(r, "hardCodedNr"),
                             Code = Sql.GetString(r, "code"),
                             Tooltip = Sql.GetString(r, "tooltip"),
@@ -45,6 +77,8 @@ namespace Backend.Base.Label
 
             return list;
         }
+
+       
 
         public async Task<bool> SaveLabel(LangLabel label)
         {

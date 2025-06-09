@@ -57,7 +57,7 @@ namespace FrontendServer.Base
         public string GetLabel(string labelCode, string fallBack)
         {
             if (_labels.ContainsKey(labelCode))
-                return _labels[labelCode].Code;
+                return _labels[labelCode].Label;
             return "?" + fallBack;
         }
 

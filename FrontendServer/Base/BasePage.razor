@@ -35,41 +35,8 @@
         SetLabels();
         return _client;
     }
-
-    public async Task SetConfig()
-    {
-        if (_config != null) return;
-        var cjson = await ProtectedSessionStore.GetAsync<string>(GC.ConfigCacheKey);
-        _config = JsonConvert.DeserializeObject<AppConfigDto>(cjson.Value);
-    }
-
-    public async Task<AppConfigDto> GetConfig()
-    {
-        await SetConfig();
-        return _config;
-    }
-
-    public async void SetLabels()
-    {
-        if (_config == null)
-            await SetConfig();
-        _labels = Cache.GetLabels(_config.LangCode);
-    }
-
-    public string GetLabel (string labelCode)
-    {
-        SetLabels();
-        if (_labels != null && _labels.ContainsKey(labelCode))
-            return _labels[labelCode].Code;
-        return "?" + labelCode;
-    }
-
-    public string? GetTooltip(string labelCode)
-    {
-        if (_labels != null && _labels.ContainsKey(labelCode))
-            return _labels[labelCode].Tooltip;
-        return null;
-    }
+        
+    
 
     public async Task<T> Call<T>(string url)
     {

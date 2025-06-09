@@ -24,7 +24,7 @@ namespace FrontendServer.Base.Cache
             return false;
         }
 
-        public void PutLabels(Dictionary<string, LangLabelDto> labels, string langCode)
+        public void PutLabels(string langCode, Dictionary<string, LangLabelDto> labels)
         {
             _cache.Set(LabelKey(langCode), labels);
         }

@@ -20,10 +20,9 @@ namespace Common.DTO
 
     public class LabelConfigDto 
     { 
-        public bool ShowLink  { get; set; } = false;
         public bool ShowNoKey  { get; set; } = false;
-        public bool ShowModal  { get; set; } = false;
         public bool ShowTooltip  { get; set; } = false;
+        public bool ShowLink  { get; set; } = false;
     }
 
 }
