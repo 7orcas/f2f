@@ -5,14 +5,14 @@
         static Dictionary<string, string> PageCodeDic; //page code, route
 
         //Routes
-        public const string RouteMachines = "machines";
+        public const string MachinesRoute = "machines";
 
         //Page Codes
-        public const string PageMachines = "m01";
+        public const string MachinesPageCode = "m01";
         
 
         private static readonly string[] PageCodeRoutes = {
-            PageMachines,       RouteMachines,
+            MachinesPageCode,       MachinesRoute,
         };
 
 

@@ -21,28 +21,28 @@ namespace Backend.Base.Label
         }
 
         /// <summary>
-        /// Gets the passed in langKeyCode's labels
+        /// Gets the passed in langCode's labels
         /// The returned DTO objects contain minimal data
         /// </summary>
         /// <param name="langCode"></param>
         /// <returns></returns>
         [CrudAtt(GC.CrudRead)]
-        [AuditListAtt(GC.EntityTypeLangLabel)]
-        [HttpGet("clientlist/{langKeyCode}")]
-        public async Task<IActionResult> Get(string langKeyCode)
+        [AuditListAtt(GC.EntityTypeLangLabelList)]
+        [HttpGet("clientlist/{langCode}")]
+        public async Task<IActionResult> GetLabelList(string langCode)
         {
             var session = HttpContext.Items["session"] as SessionEnt;
-            var labels = await _labelService.GetLanguageLabelList(langKeyCode);
+            var labels = await _labelService.GetLanguageLabelList(langCode);
             var list = new List<LangLabelDto>();
 
-            foreach (var e in labels)
+            foreach (var l in labels)
             {
                 list.Add(new LangLabelDto
                 {
-                    Id = e.Id,
-                    LangKeyCode = e.LangKeyCode,
-                    Label = e.Code,
-                    Tooltip = e.Tooltip
+                    Id = l.Id,
+                    LangKeyCode = l.LangKeyCode,
+                    Label = l.Code,
+                    Tooltip = l.Tooltip
                 });
             }
 
@@ -55,34 +55,81 @@ namespace Backend.Base.Label
         }
 
         /// <summary>
-        /// Gets the passed in langId's label
+        /// Gets related language values the passed in label key code
         /// </summary>
-        /// <param name="id"></param>
+        /// <param name="LangKeyCode"></param>
         /// <returns></returns>
         [CrudAtt(GC.CrudRead)]
-        [AuditListAtt(GC.EntityTypeLangLabel)]
-        [HttpGet("{id}")]
-        public async Task<IActionResult> Get(int id)
+        [AuditListAtt(GC.EntityTypeLangLabelRelated)]
+        [HttpGet("relatedlist/{LangKeyCode}")]
+        public async Task<IActionResult> GetRelatedLabels(string langKeyCode)
         {
             var session = HttpContext.Items["session"] as SessionEnt;
-            var l = await _labelService.GetLanguageLabel(id);
+            var langs = session.Config.Languages;
+            var langCodes = new List<string>();
+            foreach (var lc in langs)
+                if (lc.IsReadable)
+                    langCodes.Add(lc.LangCode);
+            
+            if (langCodes.Count == 0)
+                return Ok(new _ResponseDto
+                    {
+                        Valid = false,
+                        StatusCode = 401,
+                        ErrorMessage = "Language admin not configured",
+                    });
+            langCodes.Sort();
 
-            var dto = new LangLabelDto
+            var key = await _labelService.GetLanguageKey(langKeyCode);
+            var labels = await _labelService.GetRelatedLabels(langKeyCode, langCodes);
+            var list = new List<LangLabelDto>();
+
+            foreach (var lc in langCodes)
             {
-                Id = l.Id,
-                LangKeyId = l.LangKeyId,
-                HardCodedNr = l.HardCodedNr,
-                LangCode = l.LangCode,
-                Label = l.Code,
-                Tooltip = l.Tooltip,
-                Updated = l.Updated,
-                IsActive = l.IsActive
-            };
+                var dto = null as LangLabelDto;
+                foreach (var l in labels)
+                    if (l.LangCode == lc)
+                    {
+                        dto = new LangLabelDto
+                        {
+                            Id = l.Id,
+                            LangKeyId = l.LangKeyId,
+                            HardCodedNr = l.HardCodedNr,
+                            LangCode = l.LangCode,
+                            Label = l.Code,
+                            Tooltip = l.Tooltip,
+                            Updated = l.Updated,
+                            IsActive = l.IsActive
+                        };
+                        break;
+                    }
+
+                if (dto == null)
+                    dto = new LangLabelDto
+                    {
+                        Id = GC.NewRecordId,
+                        LangKeyId = key.Id,
+                        LangCode = lc,
+                    };
+                list.Add(dto);
+            }
+
+
+            //Put default language at top
+            var listX = new List<LangLabelDto>();
+            listX.Add(list.Find(l => l.LangCode == session.Config.LangCode));
+
+            foreach (var l in list)
+            {
+                if (l.LangCode != session.Config.LangCode)
+                    listX.Add(l);
+            }
+
 
             var r = new _ResponseDto
             {
                 SuccessMessage = "Ok",
-                Result = dto
+                Result = listX
             };
             return Ok(r);
         }

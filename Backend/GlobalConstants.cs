@@ -2,7 +2,8 @@
 {
     public class GlobalConstants
     {
-        public const int BaseOrgId = 0;
+        public const int BaseOrgId   = 0;
+        public const int NewRecordId = -9;
 
         public const int AppClient          = 1; //defined in FrontendLogin as well
         public const string LangCodeDefault = "en";
@@ -23,7 +24,8 @@
         public const int EntityTypeLogout           = 6;
         public const int EntityTypeLangCode         = 7;
         public const int EntityTypeLangKey          = 8;
-        public const int EntityTypeLangLabel        = 9;
+        public const int EntityTypeLangLabelList    = 9;
+        public const int EntityTypeLangLabelRelated = 10;
         public const int EntityTypeConfig           = 11;
 
         public const int EntityTypeMachine          = 101;
@@ -37,7 +39,8 @@
             EntityTypeLogout,           "Logout",
             EntityTypeLangCode,         "LangCode",
             EntityTypeLangKey,          "LangKey",
-            EntityTypeLangLabel,        "LangLabel",
+            EntityTypeLangLabelList,    "LangLabelList",
+            EntityTypeLangLabelRelated, "LangLabelRelated",
             EntityTypeConfig,           "Config",
 
             EntityTypeMachine,          "Machine",

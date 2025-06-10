@@ -49,7 +49,7 @@ namespace Backend.Base.Login
             var langCode = !string.IsNullOrEmpty(request.LangCode) ? request.LangCode : login.LangCode;
             var org = await _orgService.GetOrg(request.Org);
             var user = await _loginService.InitialiseLogin(login, org, request.SourceApplication);
-            var config = await _configService.GetAppConfig(login.Id, org.Id, langCode);
+            var config = await _configService.GetAppConfig(user, org, langCode);
             var session = await _sessionService.CreateSession(user, org, config, request.SourceApplication);
 
             var tv = new TokenValues {

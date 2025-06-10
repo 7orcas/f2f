@@ -118,9 +118,9 @@ else
             userParameters.Add(config);
 
             //Get Labels
-            if (!Cache.HasLabels(config.LangCode))
+            if (!Cache.HasLabels(config.Label.LangCode))
             {
-                var url = GC.URL_label_clientlist + config.LangCode;
+                var url = GC.URL_label_clientlist + config.Label.LangCode;
                 var rl = await client.GetAsync(url);
                 userParameters.loaded = AppendMarkupString(userParameters.loaded, url);
                 var rls = await rl.Content.ReadAsStringAsync();
@@ -132,7 +132,7 @@ else
                     var dic = new Dictionary<string, LangLabelDto>();
                     foreach (var l in labels)
                         dic.Add(l.LangKeyCode, l);
-                    Cache.PutLabels(config.LangCode, dic);
+                    Cache.PutLabels(config.Label.LangCode, dic);
                 }
             }
 
@@ -168,7 +168,7 @@ else
         public void Add(AppConfigDto config)
         {
             org = config.OrgDescription;
-            lang = config.LangCode;
+            lang = config.Label.LangCode;
             userId = config.UniqueUserId.ToString();
             sessionId = config.UniqueSessionId.ToString();
         }

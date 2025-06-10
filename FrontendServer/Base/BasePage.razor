@@ -12,6 +12,7 @@
 @code {
     public bool _isLoading = false;
     public bool _isError = false;
+    public string? _pageCode;
     private string? _token;
     public HttpClient? _client;
     public MarkupString? _errorMessage;
@@ -19,6 +20,12 @@
     public Exception? exception;
     private AppConfigDto _config;
     private Dictionary<string, LangLabelDto> _labels;
+
+    public async Task InitialiseBasePage()
+    {
+        await SetConfig();
+        await SetLabels();
+    }
 
     public async Task<HttpClient> SetClient()
     {
@@ -35,8 +42,6 @@
         SetLabels();
         return _client;
     }
-        
-    
 
     public async Task<T> Call<T>(string url)
     {

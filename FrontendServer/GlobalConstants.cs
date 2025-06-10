@@ -19,6 +19,6 @@
         public const string URL_role_list         = "api/Role/list";
         public const string URL_config            = "api/Config/get";
         public const string URL_label_clientlist  = "api/Label/clientlist/";
-        public const string URL_label_ent         = "api/Label/";
+        public const string URL_label_relatedlist = "api/Label/relatedlist/";
     }
 }

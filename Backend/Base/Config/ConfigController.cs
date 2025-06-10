@@ -30,30 +30,40 @@ namespace Backend.Base.Config
         public async Task<IActionResult> Get()
         {
             var session = HttpContext.Items["session"] as SessionEnt;
-            var appConfig = null as AppConfig;
+            var appConfig = session.Config;
 
-            if (session.Config != null)
-                appConfig = session.Config;
-            else
-                appConfig = await _ConfigService.GetAppConfig(session.User.LoginId, session.Org.Id, session.Config.LangCode);
-
+            var langs = new List<LanguageConfigDto>();
+            var multiLang = 0;
+            for (int i=0; appConfig.Languages != null && i < appConfig.Languages.Count; i++)
+            {
+                var l = appConfig.Languages[i];
+                multiLang += l.IsReadable ? 1 : 0;
+                langs.Add(new LanguageConfigDto {
+                    LangCode = l.LangCode,
+                    IsCreateable = l.IsCreateable,
+                    IsReadable = l.IsReadable,
+                    IsUpdateable = l.IsUpdateable,
+                });
+            }
+            
             var r = new _ResponseDto
             {
                 SuccessMessage = "Config Ok",
                 Result = new AppConfigDto
                 {
-                    IsLabelLink = appConfig.IsLabelLink,
                     OrgId = appConfig.OrgId,
                     OrgDescription = session.Org.Description,
-                    LangCode = appConfig.LangCode,
                     UniqueUserId = session.User.LoginId + 987123564,
                     UniqueSessionId = UniqueSessionId.GetId(),
 
+                    Languages = langs.ToArray(),
                     Label = new LabelConfigDto
                     {
+                        LangCode = appConfig.LangCode,
                         ShowNoKey = true,
                         ShowTooltip = true,
-                        ShowLink = true,
+                        ShowLink = langs.Count > 0,
+                        IsMultiLangView = multiLang > 0,
                     },
                 }
             };

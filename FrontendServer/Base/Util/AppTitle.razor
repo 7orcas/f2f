@@ -1,8 +1,9 @@
-﻿
-<PageTitle>@Title</PageTitle>
+﻿@inherits BasePage
+
+<PageTitle>@title</PageTitle>
 
 <div class="title-container">
-    <div class="title">@Title</div>
+    <div class="title"><Label Key=@TitleKey></Label></div>
     <div class="page-code">@PageCode</div>
 </div>
 <div class="subtitle">
@@ -12,12 +13,18 @@
 
 
 @code {
-    [Parameter]
-    public string Title { get; set; }
+    [Parameter] public string TitleKey { get; set; }
+    [Parameter] public string PageCode { get; set; }
+    [Parameter] public RenderFragment ChildContent { get; set; }
 
-    [Parameter]
-    public string PageCode { get; set; }
+    private string title;
 
-    [Parameter]
-    public RenderFragment ChildContent { get; set; }
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender){
+            await InitialiseBasePage();
+            title = GetLabel(TitleKey);
+            StateHasChanged();
+        }
+    }
 }

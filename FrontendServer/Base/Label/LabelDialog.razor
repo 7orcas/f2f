@@ -1,79 +1,124 @@
 ﻿@inherits BasePage
 
-<div class="overlay-grid" style="background-color: darkslateblue;  border: 1px solid yellow;">
-    
-       
-
-<MudGrid>
-    <MudItem xs="12" >
-        <MudPaper Class="pa-4" style="background-color: #f2f2f2;  border: 1px solid black;">
-            <MudForm @ref="form" @bind-IsValid="@success">
-                <div class="label-key">
-                        &nbsp;@GetLabel("Code"):&nbsp;
-                    <div>@LangKey</div>
-                </div>
-
-                <div class="label-langcode">
-                        &nbsp;@GetLabel("Language"):&nbsp;
-                        <div>@_langCode</div>
-                </div>
-
-                    <MudTextField T="string" Label="Label" OnBlur="@OnBlu" @ref="labelField" @bind-Value="_label" Required="true" RequiredError="Label is required!" />
-                    <MudTextField T="string" Label="Tooltip" OnBlur="@OnBlu" @ref="tooltipField" @bind-Value="_tooltip" />
-                    <MudTextField T="string" Label="Org" OnBlur="@OnBlu" @ref="orgField" @bind-Value="_org" />
+@using GC = FrontendServer.GlobalConstants;
+ 
+@if (_isLoading || _isError)
+{
+    <LoadingWithError 
+        IsLoading=@_isLoading
+        IsError=@_isError
+        Message=@_errorMessage>
+        @exception
+    </LoadingWithError>
+}
+else
+{
+    <div class="overlay-grid">
+        <MudGrid>
+            <MudItem xs="12" >
+                <MudPaper Class="pa-4" style="background-color: #f2f2f2;  border: 1px solid black;">
+                    <MudForm @ref="form" @bind-IsValid="@success">
                 
-                <div class="d-flex align-right label-buttons">
-                        <MudButton Variant="Variant.Filled" Color="Color.Primary" Disabled="@(!success)" Class="ml-auto" OnClick="Save">@GetLabel("SaveRecord")</MudButton>
-                        <MudButton Variant="Variant.Filled" Color="Color.Secondary" OnClick="ChangeParameter" style="margin-left: 10px">@GetLabel("Cancel")</MudButton>
-                </div>
-                <!--
-                    -->
-            </MudForm>
-        </MudPaper>
-    </MudItem>
-</MudGrid>
-        
-    
+                        <div class="label-key">
+                            &nbsp;@GetLabel("Code"):&nbsp;
+                            <div>@LangKey</div>
+                        </div>
+                
+                        @if (@IsMultiLanguageView())
+                        {
+                            <MudTable Items="@labels" Hover="true" Striped="true">
+                                <HeaderContent>
+                                    <MudTh>@_lLangCode</MudTh>
+                                    <MudTh>@_lLabel</MudTh>
+                                    <MudTh>@_lTooltip</MudTh>
+                                    <MudTh>@_lNumber</MudTh>
+                                </HeaderContent>
+                                <RowTemplate>
+                                    <MudTd>@context.LangCode</MudTd>
+                                    <MudTd>@context.Label</MudTd>
+                                    <MudTd>@context.Tooltip</MudTd>
+                                    <MudTd>@context.HardCodedNr</MudTd>
+                                </RowTemplate>
+                            </MudTable>
+                        }
+                        else
+                        {
+                            <div class="label-langcode">
+                                &nbsp;@GetLabel("Language"):&nbsp;
+                                <div>@_langCode</div>
+                            </div>
 
-</div>
+                            <MudTextField T="string" Label="@_lLabel" OnBlur="@OnBlu" @ref="labelField" @bind-Value="_label" Required="true" RequiredError="Label is required!" />
+                            <MudTextField T="string" Label="@_tooltip" OnBlur="@OnBlu" @ref="tooltipField" @bind-Value="_tooltip" />
+                            <MudTextField T="int" Label="@_lNumber" OnBlur="@OnBlu" @ref="numberField" @bind-Value="_number" />
+                        }
+                
+                        <div class="d-flex align-right label-buttons">
+                                <MudButton Variant="Variant.Filled" Color="Color.Primary" Disabled="@(!success)" Class="ml-auto" OnClick="Save">@GetLabel("SaveRecord")</MudButton>
+                                <MudButton Variant="Variant.Filled" Color="Color.Secondary" OnClick="ChangeParameter" style="margin-left: 10px">@GetLabel("Cancel")</MudButton>
+                        </div>
+                
+                    </MudForm>
+                </MudPaper>
+            </MudItem>
+        </MudGrid>
+    </div>
+}
+
 
 @code {
     [Parameter] public string LangKey { get; set; }
     [Parameter] public EventCallback<string> OnParameterChanged { get; set; }
 
-    //  [Inject] protected ClientState clientState { get; set; }
+    private AppConfigDto? appConfig;
+    private List<LangLabelDto>? labels;
+    //Single label
+    private string _langCode;
+    private string _label;
+    private string _tooltip;
+    private int _number;
+    private bool success  = true;
 
-    bool success;
-    string _langCode;
-    string _label;
-    string _tooltip;
-    string _org;
+    //Headings
+    private string _lLangCode;
+    private string _lLabel;
+    private string _lTooltip;
+    private string _lNumber;
 
     MudForm form;
     MudTextField<string> labelField;
     MudTextField<string> tooltipField;
-    MudTextField<string> orgField;
+    MudTextField<int> numberField;
 
-    protected override async Task OnInitializedAsync()
-    {
-        // labelMgr = clientState.labelMgr;
-        // langLabel = labelMgr.GetLabelObject(LangKey);
-    }
-
-    protected override void OnAfterRender(bool firstRender)
+    protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         if (firstRender)
         {
-            _langCode = GetLanguageCode();
-            _label = GetLabel(LangKey);
-            _tooltip = "_tooltip";
-            _org = "_org";
-            // _tooltip = langLabel.Tooltip;
-            // if (langLabel._OrgId != null)
-            //     _org = langLabel._OrgId.ToString();
+            await InitialiseBasePage();
+            appConfig = await GetConfig();
 
-            StateHasChanged(); // Ensure the component re-renders to reflect the updated value
+            _lLangCode = GetLabel("LangCode");
+            _lLabel = GetLabel("Label");
+            _lTooltip = GetLabel("Tooltip");
+            _lNumber = GetLabel("Org");
+
+            labels = await Call<List<LangLabelDto>>(GC.URL_label_relatedlist + LangKey);
+
+            if (labels != null && labels.Count == 1)
+            {
+                _langCode = labels[0].LangCode;
+                _label = labels[0].Label;
+                _tooltip = labels[0].Tooltip;
+                _number = labels[0].HardCodedNr.HasValue ? labels[0].HardCodedNr.Value : 0;
+            }
+
+            StateHasChanged();
         }
+    }
+
+    private bool IsMultiLanguageView()
+    {
+        return appConfig != null && appConfig.Label.IsMultiLangView;
     }
 
     private async Task ChangeParameter()
@@ -95,7 +140,7 @@
             int? org = null;
             try
             {
-                org = int.Parse(orgField.Value);
+                org = numberField.Value;
                 if (org == 0) org = null;
             }
             catch
@@ -127,6 +172,9 @@
         ChangeParameter();
     }
 
-    
+    protected override async Task OnInitializedAsync()
+    {
+        _isLoading = true;
+    }
 
 }

@@ -5,7 +5,7 @@ namespace FrontendServer.Base
 {
     public partial class BasePage
     {
-        public async Task SetConfig()
+        protected async Task SetConfig()
         {
             if (_config != null) return;
             var cjson = await ProtectedSessionStore.GetAsync<string>(GC.ConfigCacheKey);
@@ -14,15 +14,13 @@ namespace FrontendServer.Base
 
         public async Task<AppConfigDto> GetConfig()
         {
-            await SetConfig();
             return _config;
         }
         
         public string GetLanguageCode()
         {
-            SetConfig();
             if (_config == null) return "?";
-            return _config.LangCode;
+            return _config.Label.LangCode;
         }
 
 

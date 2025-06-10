@@ -12,20 +12,49 @@ namespace Backend.Base.Config
         {
         }
 
-        public async Task<AppConfig> GetAppConfig(int userId, int OrgId, string? langCode)
+        public async Task<AppConfig> GetAppConfig(UserEnt user, OrgEnt org, string? langCode)
         {
             if (langCode == null) langCode = GC.LangCodeDefault;
 
             var appConfig = new AppConfig()
             {
-                OrgId = OrgId,
+                OrgId = org.Id,
                 LangCode = langCode,
-                IsLabelLink = true
             };
+
+            if (user.IsAdmin || user.IsService)
+                appConfig.Languages = await GetClientLanguages(user, org, langCode);
 
             return appConfig;
         }
 
+
+        /**
+        * Get list of language codes the client is able to view / edit
+        * ToDo: logic for flags
+        */
+        private async Task<List<LanguageConfig>> GetClientLanguages(UserEnt user, OrgEnt org, string langCode)
+        {
+            var langList = new List<LanguageConfig>();
+            
+            await Sql.Run(
+                    "SELECT * FROM base.langCode ",
+                    r => {
+                        var l = new LanguageConfig();
+                        l.LangCode = GetString(r, "code");
+                        langList.Add(l);
+                    }
+                );
+
+            foreach (var l in langList)
+            {
+                l.IsCreateable = user.IsService;
+                l.IsReadable = true;
+                l.IsUpdateable = user.IsService || l.LangCode.Equals(langCode);
+            }
+
+            return langList;
+        }
 
     }
 }

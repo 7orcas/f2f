@@ -1,29 +1,28 @@
-﻿@attribute [Route(ModPageRoutes.RouteMachines)]
+﻿@attribute [Route(ModPageRoutes.MachinesRoute)]
 @inherits BasePage
 @attribute [Authorize]
 
 <ErrorBoundary @ref="errorBoundary">
     <ChildContent>
 
-        <AppTitle title="Machines" PageCode="m01">
-            Direct Soling machines
+        <AppTitle TitleKey="Machines" PageCode=@_pageCode>
+            <Label Key="Home"></Label>
         </AppTitle>
 
-        @if (_isLoading)
+        @if (_isLoading || _isError)
         {
-            <Loading/>
-        }
-        else @if (_isError)
-        {
-            <AppError Message=@_errorMessage>
+            <LoadingWithError 
+                IsLoading=@_isLoading
+                IsError=@_isError
+                Message=@_errorMessage>
                 @exception
-            </AppError>
+            </LoadingWithError>
         }
         else
         {
             <Label Key="AddRecordXX"></Label>
             <Label Key="AddRecord"></Label>
-
+            
             <table class="table">
                 <thead>
                     <tr>
@@ -52,11 +51,7 @@
 
 @code {
     private List<MachineDto>? machines;
-
-    // private void ThrowException()
-    // {
-    //     throw new InvalidOperationException("This is a test exception.");
-    // }
+  
 
     private void Recover()
     {
@@ -67,7 +62,8 @@
     {
         if (firstRender)
         {
-            SetLabels();
+            await InitialiseBasePage();
+            _pageCode = ModPageRoutes.MachinesPageCode;
             machines = await Call<List<MachineDto>>("api/Machine/list");
 
             StateHasChanged();

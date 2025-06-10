@@ -1,8 +1,6 @@
 ﻿@inherits BasePage
 @inject IDialogService DialogService
 
-@InitialiseLabel()
-
 <div>
     @if (@IsShowToolTip())
     {
@@ -37,17 +35,18 @@
     private bool _showLink = false;
     private bool _showDialog = false;
 
-    protected override async Task OnInitializedAsync()
+    protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        appConfig = await GetConfig();
-    }
-
-    private string InitialiseLabel()
-    {
-        _showNoKey = appConfig?.Label.ShowNoKey ?? false;
-        _showTooltip = appConfig?.Label.ShowTooltip ?? false;
-        _showLink = appConfig?.Label.ShowLink ?? false;
-        return "";
+        if (firstRender)
+        {
+            await InitialiseBasePage();
+            appConfig = await GetConfig();
+            _showNoKey = appConfig?.Label.ShowNoKey ?? false;
+            _showTooltip = appConfig?.Label.ShowTooltip ?? false;
+            _showLink = appConfig?.Label.ShowLink ?? false;
+            
+            StateHasChanged();
+        }
     }
 
     private string ShowLabel()

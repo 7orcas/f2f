@@ -4,9 +4,11 @@ namespace Backend.Base.Label
 {
     public interface LabelServiceI
     {
-        Task<List<LangLabel>> GetLanguageLabelList(string langKeyCode);
-        Task<LangLabel> GetLanguageLabel(int id);
+        Task<List<LangLabel>> GetLanguageLabelList(string langCode);
+        Task<List<LangLabel>> GetRelatedLabels(string langKeyCode, List<string> langCodes);
         Task<List<LangLabel>> GetAllLanguageLabels();
+        Task<LangLabel> GetLanguageLabel(int id);
+        Task<LangKey> GetLanguageKey(string langKeyCode);
         Task<bool> SaveLabel(LangLabel label);
     }
 }

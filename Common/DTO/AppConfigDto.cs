@@ -8,21 +8,30 @@ namespace Common.DTO
 {
     public class AppConfigDto
     {
-        public bool IsLabelLink { get; set; }
         public int OrgId { get; set; }
         public string OrgDescription { get; set; }
-        public string LangCode { get; set; }
         public int UniqueUserId { get; set; }
         public int UniqueSessionId { get; set; }
-
+        public LanguageConfigDto[] Languages { get; set; }
         public LabelConfigDto Label {  get; set; }
     }
 
     public class LabelConfigDto 
     { 
+        //Current language code
+        public string LangCode { get; set; }
         public bool ShowNoKey  { get; set; } = false;
         public bool ShowTooltip  { get; set; } = false;
         public bool ShowLink  { get; set; } = false;
+        public bool IsMultiLangView { get; set; } = false;
+    }
+
+    public class LanguageConfigDto
+    {
+        public string LangCode { get; set; }
+        public bool IsCreateable { get; set; } = false;
+        public bool IsReadable { get; set; } = false;
+        public bool IsUpdateable { get; set; } = false;
     }
 
 }

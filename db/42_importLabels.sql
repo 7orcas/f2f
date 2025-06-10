@@ -1,5 +1,12 @@
+﻿DELETE FROM base.langCode;
 DELETE FROM base.langLabel;
 DELETE FROM base.langKey;
+
+INSERT INTO base.langCode (code,descr) VALUES ('en','English');
+INSERT INTO base.langCode (code,descr) VALUES ('de','Deutsch');
+INSERT INTO base.langCode (code,descr) VALUES ('it','Italian');
+INSERT INTO base.langCode (code,descr) VALUES ('es',N'Español');
+INSERT INTO base.langCode (code,descr) VALUES ('ma','Maori');
 
 INSERT INTO base.langKey (code)
 	SELECT DISTINCT Code FROM zImportLabels;
@@ -19,6 +26,8 @@ UPDATE zzLangLabel SET langKeyId =
 
 INSERT INTO base.langLabel (langKeyId,langCode,code,tooltip)
 	SELECT DISTINCT langKeyId,langCode,code,tooltip FROM zzLangLabel;
+
+UPDATE base.langLabel SET Tooltip = null WHERE Tooltip = 'NULL';
 
 DROP TABLE IF EXISTS zzLangLabel;
 

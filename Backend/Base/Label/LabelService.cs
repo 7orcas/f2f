@@ -1,6 +1,7 @@
 ﻿using Backend.Base.Label.Ent;
 using Microsoft.Data.SqlClient;
 using System.Collections.Generic;
+using System.Diagnostics;
 
 namespace Backend.Base.Label
 {
@@ -13,9 +14,9 @@ namespace Backend.Base.Label
         /*
          * Get language list for passed in language code (eg 'en')
          */
-        public async Task<List<LangLabel>> GetLanguageLabelList(string langKeyCode)
+        public async Task<List<LangLabel>> GetLanguageLabelList(string langCode)
         {
-            return await GetLabelList(null, langKeyCode, null);
+            return await GetLabelList(null, langCode, null, null, null);
         }
 
         /*
@@ -23,38 +24,83 @@ namespace Backend.Base.Label
          */
         public async Task<LangLabel> GetLanguageLabel(int id)
         {
-            List <LangLabel> list = await GetLabelList(id, null, null);
+            List <LangLabel> list = await GetLabelList(id, null, null, null, null);
             if (list.Count == 1) return list[0];
             return null;
         }
 
         public async Task<List<LangLabel>> GetAllLanguageLabels()
         {
-            return await GetLabelList(null, null, null);
+            return await GetLabelList(null, null, null, null, null);
+        }
+
+        /**
+         * Return related labels, ie for a given label key get all languages
+         */
+        public async Task<List<LangLabel>> GetRelatedLabels(string langKeyCode, List<string> langCodes)
+        {
+            return await GetLabelList(null, null, langKeyCode, langCodes, null);
+        }
+
+        /*
+         * Get language key for passed in language key code 
+         */
+        public async Task<LangKey> GetLanguageKey(string langKeyCode)
+        {
+            var k = null as LangKey;
+            await Sql.Run(
+                   "SELECT * FROM base.langKey WHERE code = @langKeyCode",
+                   r => {
+                       k = new LangKey {
+                           Id = GetId(r, "id"),
+                           Pack = GetString(r, "pack"),
+                           Code = GetString(r, "code"),
+                           Description = GetString(r, "descr"),
+                           Updated = GetDateTime(r, "updated"),
+                           IsActive = GetBoolean(r, "isActive"),
+                       };
+                   },
+                   new SqlParameter("@langKeyCode", langKeyCode)
+               );
+
+            return k;
         }
 
 
-        private async Task<List<LangLabel>> GetLabelList(int? id, string? langKeyCode, int? hardCodedNr)
+        private async Task<List<LangLabel>> GetLabelList(
+            int? id, 
+            string? langCode,
+            string? langKeyCode,
+            List<string> langCodes,
+            int? hardCodedNr)
         {
             string sql = "SELECT l.id, l.langKeyId, l.langCode, k.code AS kCode, l.hardCodedNr, l.code, l.tooltip, l.updated, l.isActive " +
                             "FROM base.langLabel l " +
                             "INNER JOIN base.langKey k ON k.id = l.langKeyId ";
-            string sqlWhere = "";
 
+            string sqlWhere = "";
 
             if (id != null)
                 sqlWhere = "WHERE l.id = " + id + " ";
-            else if (!string.IsNullOrEmpty(langKeyCode))
-                sqlWhere = "WHERE l.langCode = '" + langKeyCode + "' ";
-
-            sqlWhere += (sqlWhere.Length > 0 ? "AND " : "WHERE ");
-
-            if (hardCodedNr.HasValue) 
-                sqlWhere += "l.hardCodedNr = " + hardCodedNr;
             else
-                sqlWhere += "l.hardCodedNr IS NULL";
+            {
+                sqlWhere = "WHERE l.hardCodedNr " + (hardCodedNr.HasValue ? " = " + hardCodedNr : " IS NULL") + " ";
 
+                if (!string.IsNullOrEmpty(langCode))
+                    sqlWhere = "WHERE l.langCode = '" + langCode + "' ";
+
+                else if (langCodes  != null)
+                    for (int i = 0; i < langCodes.Count; i++)
+                        sqlWhere += (i==0?"WHERE ":"AND ") + "l.langCode = '" + langCodes[i] + "' ";
+
+                if (!string.IsNullOrEmpty(langKeyCode))
+                    sqlWhere = "AND k.code = '" + langKeyCode + "' ";
+
+            }
             sql += sqlWhere;
+
+            //TESTING
+            //sql += " and k.code = 'Machines' ";
 
             //Step 1: get labels for passed in lang code and org
             var list = new List<LangLabel>();
