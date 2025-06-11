@@ -4,6 +4,14 @@ using Microsoft.Data.SqlClient;
 using System.Security.Cryptography;
 using GC = Backend.GlobalConstants;
 
+/// <summary>
+/// Organisational and User configurations
+/// Controls processing and client displays
+/// Created: 
+/// [*Licence*]
+/// Author: John Stewart
+/// </summary>
+
 namespace Backend.Base.Config
 {
     public class ConfigService : BaseService, ConfigServiceI

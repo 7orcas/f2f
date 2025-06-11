@@ -4,6 +4,16 @@ using Microsoft.AspNetCore.Http.HttpResults;
 using System.Collections.Generic;
 using GC = Backend.GlobalConstants;
 
+/// <summary>
+/// Audit of:
+/// - all transactions in db
+/// - logins / outs events
+/// - no permission events
+/// Created: June 2025
+/// [*Licence*]
+/// Author: John Stewart
+/// </summary>
+
 namespace Backend.Base.Audit
 {
     public class AuditService: AuditServiceI
