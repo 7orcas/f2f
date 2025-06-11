@@ -13,77 +13,130 @@
 }
 else
 {
-    <div class="overlay-grid">
-        <MudGrid>
-            <MudItem xs="12" >
-                <MudPaper Class="pa-4" style="background-color: #f2f2f2;  border: 1px solid black;">
-                    <MudForm @ref="form" @bind-IsValid="@success">
+    <MudDialog Style="min-width: 850px; width: 80%;">
+        <DialogContent>
+            <MudGrid>
+                <MudItem xs="12" >
+                    <MudPaper Class="pa-4" style="background-color: #f2f2f2;  border: 1px solid black;">
+                        <MudForm @ref="form" @bind-IsValid="@success">
                 
-                        <div class="label-key">
-                            &nbsp;@GetLabel("Code"):&nbsp;
-                            <div>@LangKey</div>
-                        </div>
-                
-                        @if (@IsMultiLanguageView())
-                        {
-                            <MudTable Items="@labels" Hover="true" Striped="true">
-                                <HeaderContent>
-                                    <MudTh>@_lLangCode</MudTh>
-                                    <MudTh>@_lLabel</MudTh>
-                                    <MudTh>@_lTooltip</MudTh>
-                                    <MudTh>@_lNumber</MudTh>
-                                </HeaderContent>
-                                <RowTemplate>
-                                    <MudTd>@context.LangCode</MudTd>
-                                    <MudTd>@context.Label</MudTd>
-                                    <MudTd>@context.Tooltip</MudTd>
-                                    <MudTd>@context.HardCodedNr</MudTd>
-                                </RowTemplate>
-                            </MudTable>
-                        }
-                        else
-                        {
-                            <div class="label-langcode">
-                                &nbsp;@GetLabel("Language"):&nbsp;
-                                <div>@_langCode</div>
+                            <div class="label-key">
+                                &nbsp;@GetLabel("Code"):&nbsp;
+                                <div>@LangKey</div>
                             </div>
+                
+                            @if (@IsMultiLanguageView())
+                            {
+                                <MudTable 
+                                    Items="@labels" 
+                                    Hover="true"
+                                    ReadOnly="@ronly"
+                                    CanCancelEdit="@canCancelEdit"
+                                    Striped="true">
 
-                            <MudTextField T="string" Label="@_lLabel" OnBlur="@OnBlu" @ref="labelField" @bind-Value="_label" Required="true" RequiredError="Label is required!" />
-                            <MudTextField T="string" Label="@_tooltip" OnBlur="@OnBlu" @ref="tooltipField" @bind-Value="_tooltip" />
-                            <MudTextField T="int" Label="@_lNumber" OnBlur="@OnBlu" @ref="numberField" @bind-Value="_number" />
-                        }
+                                    <ColGroup>
+                                        <col style="width: 80px;" />
+                                        <col style="width: 300px;" />
+                                        <col style="width: 400px;" />
+                                        <col style="width: 80px;" />
+                                    </ColGroup>
+
+                                    <HeaderContent>
+                                        <MudTh>@_lLangCode</MudTh>
+                                        <MudTh>@_lLabel</MudTh>
+                                        <MudTh>@_lTooltip</MudTh>
+                                        <MudTh>@_lNumber</MudTh>
+                                    </HeaderContent>
+                                    <RowTemplate>
+                                        <MudTd DataLabel="LangCode">@context.LangCode</MudTd>
+                                        <MudTd DataLabel="Label">@context.Label</MudTd>
+                                        <MudTd DataLabel="ToolTip">@context.Tooltip</MudTd>
+                                        <MudTd DataLabel="Nr">@context.HardCodedNr</MudTd>
+                                    </RowTemplate>
+                                    <RowEditingTemplate>
+                                        <MudTd DataLabel="LangCode">@context.LangCode</MudTd>
+                                        <MudTd DataLabel="Label">
+                                            @if (context.IsUpdateable)
+                                            {
+                                                <MudTextField @bind-Value="context.Label" Required />
+                                            }
+                                            else
+                                            {
+                                                @context.Label
+                                            }
+                                        </MudTd>
+                                        <MudTd DataLabel="ToolTip">
+                                            @if (context.IsUpdateable)
+                                            {
+                                                <MudTextField @bind-Value="context.Tooltip"/>
+                                            }
+                                            else
+                                            {
+                                                @context.Label
+                                            }
+                                        </MudTd>
+                                        <MudTd DataLabel="Nr">
+                                            @if (context.IsUpdateable)
+                                            {
+                                                <MudTextField @bind-Value="context.HardCodedNr" />
+                                            }
+                                            else
+                                            {
+                                                @context.Label
+                                            }
+                                        </MudTd>
+                                    </RowEditingTemplate>
+                                </MudTable>
+                            }
+                            else
+                            {
+                                <div class="label-langcode">
+                                    &nbsp;@GetLabel("Language"):&nbsp;
+                                    <div>@_langCode</div>
+                                </div>
+
+                                <MudTextField T="string" Label="@_lLabel" OnBlur="@OnBlu" @ref="labelField" @bind-Value="_label" Required="true" RequiredError="Label is required!" />
+                                <MudTextField T="string" Label="@_tooltip" OnBlur="@OnBlu" @ref="tooltipField" @bind-Value="_tooltip" />
+                                <MudTextField T="int" Label="@_lNumber" OnBlur="@OnBlu" @ref="numberField" @bind-Value="_number" />
+                            }
                 
-                        <div class="d-flex align-right label-buttons">
-                                <MudButton Variant="Variant.Filled" Color="Color.Primary" Disabled="@(!success)" Class="ml-auto" OnClick="Save">@GetLabel("SaveRecord")</MudButton>
-                                <MudButton Variant="Variant.Filled" Color="Color.Secondary" OnClick="ChangeParameter" style="margin-left: 10px">@GetLabel("Cancel")</MudButton>
-                        </div>
+                            <div class="d-flex align-right label-buttons">
+                                    <MudButton Variant="Variant.Filled" Color="Color.Primary" Disabled="@(!success)" Class="ml-auto" OnClick="Save">@GetLabel("SaveRecord")</MudButton>
+                                    <MudButton Variant="Variant.Filled" Color="Color.Secondary" OnClick="@CloseDialog" style="margin-left: 10px">@GetLabel("Cancel")</MudButton>
+                            </div>
                 
-                    </MudForm>
-                </MudPaper>
-            </MudItem>
-        </MudGrid>
-    </div>
+                        </MudForm>
+                    </MudPaper>
+                </MudItem>
+            </MudGrid>
+        </DialogContent>
+    </MudDialog>
 }
 
 
 @code {
     [Parameter] public string LangKey { get; set; }
-    [Parameter] public EventCallback<string> OnParameterChanged { get; set; }
-
+    [CascadingParameter] private IMudDialogInstance? MudDialog { get; set; }
+    
     private AppConfigDto? appConfig;
     private List<LangLabelDto>? labels;
+
+    //Table parameters
+    private bool ronly = false;
+    private bool canCancelEdit = true;
+
     //Single label
-    private string _langCode;
-    private string _label;
-    private string _tooltip;
+    private string? _langCode;
+    private string? _label;
+    private string? _tooltip;
     private int _number;
     private bool success  = true;
 
     //Headings
-    private string _lLangCode;
-    private string _lLabel;
-    private string _lTooltip;
-    private string _lNumber;
+    private string? _lLangCode;
+    private string? _lLabel;
+    private string? _lTooltip;
+    private string? _lNumber;
 
     MudForm form;
     MudTextField<string> labelField;
@@ -96,7 +149,7 @@ else
         {
             await InitialiseBasePage();
             appConfig = await GetConfig();
-
+            
             _lLangCode = GetLabel("LangCode");
             _lLabel = GetLabel("Label");
             _lTooltip = GetLabel("Tooltip");
@@ -116,16 +169,10 @@ else
         }
     }
 
-    private bool IsMultiLanguageView()
-    {
-        return appConfig != null && appConfig.Label.IsMultiLangView;
-    }
-
-    private async Task ChangeParameter()
-    {
-        var newValue = "close";
-        await OnParameterChanged.InvokeAsync(newValue);
-    }
+    protected override async Task OnInitializedAsync() => _isLoading = true;
+    private bool IsMultiLanguageView() => appConfig != null && appConfig.Label.IsMultiLangView;
+    private void CloseDialog() => MudDialog.Close();
+    
 
     private void OnBlu()
     {
@@ -168,13 +215,6 @@ else
         else
         {
             Console.WriteLine("Form is invalid.");
-        }
-        ChangeParameter();
+        }   
     }
-
-    protected override async Task OnInitializedAsync()
-    {
-        _isLoading = true;
-    }
-
 }

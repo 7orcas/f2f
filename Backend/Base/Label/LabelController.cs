@@ -84,11 +84,11 @@ namespace Backend.Base.Label
             var labels = await _labelService.GetRelatedLabels(langKeyCode, langCodes);
             var list = new List<LangLabelDto>();
 
-            foreach (var lc in langCodes)
+            foreach (var lang in langs)
             {
                 var dto = null as LangLabelDto;
                 foreach (var l in labels)
-                    if (l.LangCode == lc)
+                    if (l.LangCode == lang.LangCode)
                     {
                         dto = new LangLabelDto
                         {
@@ -99,7 +99,7 @@ namespace Backend.Base.Label
                             Label = l.Code,
                             Tooltip = l.Tooltip,
                             Updated = l.Updated,
-                            IsActive = l.IsActive
+                            IsUpdateable = lang.IsUpdateable,
                         };
                         break;
                     }
@@ -108,8 +108,9 @@ namespace Backend.Base.Label
                     dto = new LangLabelDto
                     {
                         Id = GC.NewRecordId,
-                        LangKeyId = key.Id,
-                        LangCode = lc,
+                        LangKeyId = key != null? key.Id : GC.NewRecordId,
+                        LangCode = lang.LangCode,
+                        IsUpdateable = lang.IsCreateable,
                     };
                 list.Add(dto);
             }

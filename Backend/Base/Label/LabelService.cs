@@ -52,12 +52,11 @@ namespace Backend.Base.Label
                    "SELECT * FROM base.langKey WHERE code = @langKeyCode",
                    r => {
                        k = new LangKey {
-                           Id = GetId(r, "id"),
+                           Id = GetId(r),
                            Pack = GetString(r, "pack"),
-                           Code = GetString(r, "code"),
-                           Description = GetString(r, "descr"),
-                           Updated = GetDateTime(r, "updated"),
-                           IsActive = GetBoolean(r, "isActive"),
+                           Code = GetCode(r),
+                           Description = GetDescription(r),
+                           Updated = GetUpdated(r),
                        };
                    },
                    new SqlParameter("@langKeyCode", langKeyCode)
@@ -74,7 +73,7 @@ namespace Backend.Base.Label
             List<string> langCodes,
             int? hardCodedNr)
         {
-            string sql = "SELECT l.id, l.langKeyId, l.langCode, k.code AS kCode, l.hardCodedNr, l.code, l.tooltip, l.updated, l.isActive " +
+            string sql = "SELECT l.id, l.langKeyId, l.langCode, k.code AS kCode, l.hardCodedNr, l.code, l.tooltip, l.updated " +
                             "FROM base.langLabel l " +
                             "INNER JOIN base.langKey k ON k.id = l.langKeyId ";
 
@@ -108,15 +107,14 @@ namespace Backend.Base.Label
                     r => {
                         list.Add(new LangLabel()
                         {
-                            Id = Sql.GetId(r, "id"),
-                            LangKeyId = Sql.GetId(r, "langKeyId"),
-                            LangKeyCode = Sql.GetString(r, "kCode"),
-                            LangCode = Sql.GetString(r, "langCode"),
+                            Id = GetId(r),
+                            LangKeyId = GetId(r, "langKeyId"),
+                            LangKeyCode = GetString(r, "kCode"),
+                            LangCode = GetString(r, "langCode"),
                             HardCodedNr = Sql.GetIntNull(r, "hardCodedNr"),
-                            Code = Sql.GetString(r, "code"),
-                            Tooltip = Sql.GetString(r, "tooltip"),
-                            Updated = Sql.GetDateTime(r, "updated"),
-                            IsActive = Sql.GetBoolean(r, "isActive")
+                            Code = GetCode(r),
+                            Tooltip = GetString(r, "tooltip"),
+                            Updated = GetUpdated(r)
                         });
                     }
             );

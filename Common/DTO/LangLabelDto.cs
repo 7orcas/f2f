@@ -16,6 +16,7 @@ namespace Common.DTO
         public string Label { get; set; }
         public string? Tooltip { get; set; }
         public DateTime Updated { get; set; }
-        public bool IsActive { get; set; }
+                
+        public bool IsUpdateable { get; set; } = false;
     }
 }

@@ -37,10 +37,6 @@ namespace Backend.Base.Label.Ent
         /// </summary>
         public DateTime Updated { get; set; }
 
-        /// <summary>
-        /// Is language code active
-        /// </summary>
-        public bool IsActive { get; set; }
 
         /// <summary>
         /// Language code of label.

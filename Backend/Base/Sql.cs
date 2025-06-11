@@ -1,4 +1,5 @@
 ﻿using Microsoft.Data.SqlClient;
+using System.Reflection.Metadata;
 
 namespace Backend.Base
 {
@@ -83,6 +84,13 @@ namespace Backend.Base
 
                 return true;
             });
+        }
+
+        static public string TestActive(string? table)
+        {
+            return " " + 
+                (!string.IsNullOrEmpty(table)? table + "." : "") +
+                "isActive = 1 ";
         }
 
         static public bool ValidateParameter(string parameter)

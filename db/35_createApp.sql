@@ -7,6 +7,7 @@ CREATE TABLE app.machineGroup (
 	descr                  NVARCHAR (MAX)  NULL,
 	encoded                NVARCHAR (MAX)  NULL,
 	updated                DATETIME        NOT NULL DEFAULT GETDATE(),
+	isActive    BIT             NOT NULL DEFAULT 1
 	FOREIGN KEY (orgId)    REFERENCES      base.org(id)
 );
 CREATE TABLE app.machine (
@@ -19,6 +20,7 @@ CREATE TABLE app.machine (
 	descr                  NVARCHAR (MAX)  NULL,
 	encoded                NVARCHAR (MAX)  NULL,
 	updated                DATETIME        NOT NULL DEFAULT GETDATE(),
+	isActive    BIT             NOT NULL DEFAULT 1
 	FOREIGN KEY (orgId)    REFERENCES      base.org(id),
 	FOREIGN KEY (machineGroupId) REFERENCES app.machineGroup(id)
 );

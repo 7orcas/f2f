@@ -9,7 +9,7 @@ namespace Backend.App.Machines
 
         public async Task<List<Machine>> GetMachines(SessionEnt session)
         {
-DelaySeconds(1); //TESTING
+//DelaySeconds(1); //TESTING
 
             List <Machine> machines = new List<Machine>();
             await Sql.Run(

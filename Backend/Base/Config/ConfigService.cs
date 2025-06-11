@@ -22,7 +22,7 @@ namespace Backend.Base.Config
                 LangCode = langCode,
             };
 
-            if (user.IsAdmin || user.IsService)
+            if (user.IsAdminLanguage || user.IsService)
                 appConfig.Languages = await GetClientLanguages(user, org, langCode);
 
             return appConfig;
@@ -38,10 +38,12 @@ namespace Backend.Base.Config
             var langList = new List<LanguageConfig>();
             
             await Sql.Run(
-                    "SELECT * FROM base.langCode ",
+                    "SELECT * " +
+                    "FROM base.langCode " +
+                    "WHERE" + TestActive(),
                     r => {
                         var l = new LanguageConfig();
-                        l.LangCode = GetString(r, "code");
+                        l.LangCode = GetCode(r);
                         langList.Add(l);
                     }
                 );

@@ -13,14 +13,6 @@
         <button class="@GetClass()" @onclick="OpenDialog">@ShowLabel()</button>
     }
 
-    @if (_showDialog)
-    {
-        <LabelDialog 
-            LangKey="@Key"
-            OnParameterChanged="HandleShowChanged" 
-            />
-    }
-
 </div>
 
 
@@ -33,8 +25,7 @@
     private bool _showNoKey = false;
     private bool _showTooltip = false;
     private bool _showLink = false;
-    private bool _showDialog = false;
-
+    
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         if (firstRender)
@@ -59,21 +50,10 @@
             ;
     }
 
-    private bool IsShowToolTip()
-    {
-        return IsTooltip(Key);
-    }
-
-    private string? ShowToolTip()
-    {
-        return GetTooltip(Key);
-    }
-
-    private bool IsShowDialogLink()
-    {
-        return _showLink && IsLabel(Key);
-    }
-
+    private bool IsShowToolTip() => IsTooltip(Key);
+    private string? ShowToolTip() => GetTooltip(Key);
+    private bool IsShowDialogLink() => _showLink && IsLabel(Key);
+    
     private string GetClass()
     {
         var l = IsLabel(Key);
@@ -82,18 +62,20 @@
         return "label";
     }
 
-    private void OpenDialog()
+    private Task OpenDialog()
     {
-        if (_showDialog) _showDialog = false;
-        else _showDialog = _showLink;
-        // var options = new DialogOptions { CloseOnEscapeKey = true };
+        var options = new DialogOptions 
+            { 
+                CloseOnEscapeKey = true,
+                Position = DialogPosition.TopCenter,
+                MaxWidth = MaxWidth.Medium
+            };
+        var parameters = new DialogParameters
+            {
+                { "LangKey", Key }
+            };
 
-        // DialogService.ShowAsync<LabelDialog>("Simple Dialog", options);
-
-    }
-
-    private void HandleShowChanged(string newValue)
-    {
-        _showDialog = false;
+        var title = GetLabel("LabelEdit");
+        return DialogService.ShowAsync<LabelDialog>(title, parameters, options);
     }
 }

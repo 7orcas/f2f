@@ -103,7 +103,6 @@ CREATE TABLE base.langKey
 	descr      NVARCHAR (MAX)  NULL,
 	encoded    NVARCHAR (MAX)  NULL,
 	updated    DATETIME        NOT NULL DEFAULT GETDATE(),
-	isActive   BIT             NOT NULL DEFAULT 1
 );
 CREATE TABLE base.langLabel
 (
@@ -115,7 +114,6 @@ CREATE TABLE base.langLabel
 	tooltip        NVARCHAR (MAX)  NULL,
 	encoded        NVARCHAR (MAX)  NULL,
 	updated        DATETIME        NOT NULL DEFAULT GETDATE(),
-	isActive       BIT             NOT NULL DEFAULT 1,
 	FOREIGN KEY (langKeyId) REFERENCES base.langKey(id),
 	CONSTRAINT langLabel_uq_code   UNIQUE (langKeyId, langCode, hardCodedNr)
 );

@@ -7,6 +7,15 @@ INSERT INTO base.langCode (code,descr) VALUES ('de','Deutsch');
 INSERT INTO base.langCode (code,descr) VALUES ('it','Italian');
 INSERT INTO base.langCode (code,descr) VALUES ('es',N'Español');
 INSERT INTO base.langCode (code,descr) VALUES ('ma','Maori');
+--TESTING
+insert into base.langCode (code,descr) select 'c1', 'xxx'
+insert into base.langCode (code,descr) select 'c2', 'xxx'
+insert into base.langCode (code,descr,isActive) select 'c3', 'xxx', 0
+insert into base.langCode (code,descr) select 'c4', 'xxx'
+insert into base.langCode (code,descr) select 'c5', 'xxx'
+insert into base.langCode (code,descr) select 'c6', 'xxx'
+insert into base.langCode (code,descr) select 'c7', 'xxx'
+insert into base.langCode (code,descr) select 'c8', 'xxx'
 
 INSERT INTO base.langKey (code)
 	SELECT DISTINCT Code FROM zImportLabels;

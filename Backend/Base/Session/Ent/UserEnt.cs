@@ -17,6 +17,7 @@ namespace Backend.Base.Session.Ent
         public List<PermissionCrudEnt> Permissions { get; set; }
 
         public bool IsAdmin { get; set; } = true; //ToDo move to db
-        public bool IsService { get; set; } = false; //ToDo move to login
+        public bool IsAdminLanguage { get; set; } = true; //ToDo move to db
+        public bool IsService { get; set; } = true; //ToDo move to login
     }
 }
