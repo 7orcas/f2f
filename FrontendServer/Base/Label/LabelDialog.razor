@@ -170,7 +170,7 @@ else
     }
 
     protected override async Task OnInitializedAsync() => _isLoading = true;
-    private bool IsMultiLanguageView() => appConfig != null && appConfig.Label.IsMultiLangView;
+    private bool IsMultiLanguageView() => appConfig != null && appConfig.Languages.Count() > 1;
     private void CloseDialog() => MudDialog.Close();
     
 

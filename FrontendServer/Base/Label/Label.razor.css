@@ -3,29 +3,26 @@
     padding: 0;
     margin: 0;
     border: none;
-    background-color: transparent; /* Optional: Makes the background transparent */
-    color: inherit; /* Optional: Inherits the text color from its parent */
-    font: inherit; /* Optional: Inherits the font from its parent */
-    cursor: default; 
+    background-color: transparent;
+    color: inherit;
+    font: inherit;
 }
 
 .label-link {
-    padding: 0;
-    margin: 0;
-    border: none;
-    background-color: transparent; /* Optional: Makes the background transparent */
-    color: inherit; /* Optional: Inherits the text color from its parent */
-    font: inherit; /* Optional: Inherits the font from its parent */
-    cursor: pointer; 
+    text-decoration: underline dotted !important;
+    cursor: pointer !important;
 }
 
-.label-nokey {
+.label-no-link {
+    cursor: default !important;
+}
+
+.label-no-key {
     color: red;
     padding: 0;
     margin: 0;
     border: none;
-    background-color: transparent; /* Optional: Makes the background transparent */
-    cursor: pointer; /* Optional: Changes the cursor to a pointer */
+    background-color: transparent;
 }
 
 [data-tooltip]:hover::after {

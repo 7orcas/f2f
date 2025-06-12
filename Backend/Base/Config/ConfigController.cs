@@ -4,6 +4,14 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using GC = Backend.GlobalConstants;
 
+/// <summary>
+/// Configuration is a combination of the org config and the user settings.
+/// It can be used by the client to configuration options and functionality.
+/// Created: May 2025
+/// [*Licence*]
+/// Author: John Stewart
+/// </summary>
+
 namespace Backend.Base.Config
 {
     [Authorize]
@@ -25,24 +33,32 @@ namespace Backend.Base.Config
             _ConfigService = ConfigService;
         }
 
+        /// <summary>
+        /// Get client config
+        /// </summary>
+        /// <returns></returns>
         [CrudAtt(GC.CrudIgnore)]
         [HttpGet("get")]
-        public async Task<IActionResult> Get()
+        public async Task<IActionResult> GetClientConfig()
         {
             var session = HttpContext.Items["session"] as SessionEnt;
             var appConfig = session.Config;
+            var langCodeCurrent = appConfig.LangCode;
+            var isAdminLanguage = appConfig.Languages != null;
 
+            //isAdminLanguage = false; //testing
             var langs = new List<LanguageConfigDto>();
             var multiLang = 0;
-            for (int i=0; appConfig.Languages != null && i < appConfig.Languages.Count; i++)
+            for (int i=0; isAdminLanguage && i < appConfig.Languages.Count; i++)
             {
                 var l = appConfig.Languages[i];
-                multiLang += l.IsReadable ? 1 : 0;
+                if (!l.IsReadable) continue;
+
+                multiLang++;
                 langs.Add(new LanguageConfigDto {
                     LangCode = l.LangCode,
-                    IsCreateable = l.IsCreateable,
-                    IsReadable = l.IsReadable,
-                    IsUpdateable = l.IsUpdateable,
+                    //Only service or translator permission can update non-default language codes
+                    IsUpdateable = l.IsCreateable || (l.IsUpdateable && l.LangCode.Equals(langCodeCurrent))
                 });
             }
             
@@ -59,18 +75,14 @@ namespace Backend.Base.Config
                     Languages = langs.ToArray(),
                     Label = new LabelConfigDto
                     {
-                        LangCode = appConfig.LangCode,
-                        ShowNoKey = true,
+                        LangCode = langCodeCurrent,
                         ShowTooltip = true,
-                        ShowLink = langs.Count > 0,
-                        IsMultiLangView = multiLang > 0,
+                        HighlightNoKey = isAdminLanguage, //ToDo turn on/off
+                        IsAdminLanguage = isAdminLanguage, //ToDo turn on/off
                     },
                 }
             };
-
             return Ok(r);
         }
-
-
     }
 }

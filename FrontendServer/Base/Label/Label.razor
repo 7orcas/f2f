@@ -2,68 +2,78 @@
 @inject IDialogService DialogService
 
 <div>
-    @if (@IsShowToolTip())
+    @if (!isAdminLanguage)
     {
-        <div data-tooltip="@ShowToolTip()">
-            <button class="@GetClass()" @onclick="OpenDialog">@ShowLabel()</button>
-        </div>
+        @if (@IsShowToolTip())
+        {
+            <div data-tooltip="@ShowToolTip()">
+                <div class="@GetClass()">@ShowLabel()</div>
+            </div>
+        }
+        else
+        {
+            <div class="@GetClass()">@ShowLabel()</div>
+        }
     }
     else 
     {
-        <button class="@GetClass()" @onclick="OpenDialog">@ShowLabel()</button>
+        @if (@IsShowToolTip())
+        {
+            <div data-tooltip="@ShowToolTip()">
+                <button class="@GetClass()" @onclick="OpenDialog">@ShowLabel()</button>
+            </div>
+        }
+        else
+        {
+            <button class="@GetClass()" @onclick="OpenDialog">@ShowLabel()</button>
+        }
     }
-
 </div>
 
 
 @code {
-    private AppConfigDto? appConfig;
 
-    [Parameter]
-    public string Key { get; set; }
+    [Parameter] public string Key { get; set; }
 
-    private bool _showNoKey = false;
-    private bool _showTooltip = false;
-    private bool _showLink = false;
-    
+    private bool showTooltip = false;
+    private bool highlightNoKey = false;
+    private bool isAdminLanguage = false;
+
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         if (firstRender)
         {
             await InitialiseBasePage();
-            appConfig = await GetConfig();
-            _showNoKey = appConfig?.Label.ShowNoKey ?? false;
-            _showTooltip = appConfig?.Label.ShowTooltip ?? false;
-            _showLink = appConfig?.Label.ShowLink ?? false;
-            
+            var appConfig = await GetConfig();
+            showTooltip = appConfig?.Label.ShowTooltip ?? false;
+            highlightNoKey = !IsLabel(Key) && (appConfig?.Label.HighlightNoKey ?? false);
+            isAdminLanguage = appConfig?.Label.IsAdminLanguage ?? false;
+
             StateHasChanged();
         }
     }
 
     private string ShowLabel()
     {
-        if (IsLabel(Key)) return GetLabel(Key);
-        return
-            (_showNoKey ? "[" : "")
-            + Key
-            + (_showNoKey ? "]" : "")
-            ;
+        if (highlightNoKey) return "[" + Key + "]";
+        return GetLabelNoHighlight(Key);
     }
 
     private bool IsShowToolTip() => IsTooltip(Key);
-    private string? ShowToolTip() => GetTooltip(Key);
-    private bool IsShowDialogLink() => _showLink && IsLabel(Key);
-    
+    private string? ShowToolTip() => showTooltip? GetTooltip(Key) : null;
+
     private string GetClass()
     {
-        var l = IsLabel(Key);
-        if (!l && _showNoKey) return "label-nokey";
-        if (!l && _showLink) return "label-link";
-        return "label";
+        string css = isAdminLanguage ? "label-link" : "label-no-link";
+        if (highlightNoKey) css += " label-no-key";
+        else css += " label";
+        return css;
     }
 
     private Task OpenDialog()
     {
+        if (!isAdminLanguage) return Task.CompletedTask;
+
         var options = new DialogOptions 
             { 
                 CloseOnEscapeKey = true,

@@ -15,6 +15,13 @@
             return "?" + labelCode;
         }
 
+        public string GetLabelNoHighlight(string labelCode)
+        {
+            if (_labels != null && _labels.ContainsKey(labelCode))
+                return _labels[labelCode].Label;
+            return labelCode;
+        }
+
         public string? GetTooltip(string labelCode)
         {
             if (_labels != null && _labels.ContainsKey(labelCode))
