@@ -11,7 +11,7 @@ namespace Backend.Base.Config
 {
     public interface OrgConfigInitialiseServiceI
     {
-        void InitialiseOrgConfigs();
+        Task InitialiseOrgConfigs();
       
     }
 }

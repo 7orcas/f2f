@@ -11,7 +11,11 @@ public abstract partial class BaseService
     public BaseService(IServiceProvider serviceProvider) 
     { 
         _log = Log.Logger;
-        
+
+        //for testing
+        if (serviceProvider == null) 
+            return;
+
         // Create a scoped service provider
         using var scope = serviceProvider.CreateScope();
         _auditService = scope.ServiceProvider.GetRequiredService<AuditServiceI>();

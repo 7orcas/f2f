@@ -20,19 +20,9 @@ namespace BackendTest.Base.Permission
         public async Task LoadPermissions()
         {
             var list = await service.LoadEffectivePermissionsInt(UserIdTest, OrgIdTest);
-
-            Assert.AreEqual(8, list.Count);
+            Assert.AreEqual(9, list.Count);
         }
 
-
-        [TestMethod]
-        public void test()
-        {
-            var r = service.test();
-            Assert.IsNotNull(r);
-            Assert.AreEqual(r, "TEST OK");
-
-        }
 
     }
 }

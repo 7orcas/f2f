@@ -192,11 +192,5 @@ namespace Backend.Base.Permission
 
             return userCrud.IndexOf(crud.Action) != -1;
         }
-
-
-        public string test()
-        {
-            return "TEST OK";
-        }
     }
 }

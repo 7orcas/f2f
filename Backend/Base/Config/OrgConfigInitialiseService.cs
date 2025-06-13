@@ -32,7 +32,7 @@ namespace Backend.Base.Config
         /// Load all orgainsational configurations and cache 
         /// </summary>
         /// <returns></returns>
-        public async void InitialiseOrgConfigs()
+        public async Task InitialiseOrgConfigs()
         {
             var orgs = new List<OrgEnt>();
             await Sql.Run(
@@ -80,6 +80,7 @@ namespace Backend.Base.Config
                 {
                     OrgId = org.Id,
                     LangCodeDefault = org.LangCode,
+                    IsLangCodeEditable = org.IsLangCodeEditable,
                     Languages = lConfigs
                 };
 
@@ -97,7 +98,7 @@ namespace Backend.Base.Config
             {
                 LangCode = langCode,
                 IsActive = lc.IsActive,
-                IsUpdateable = org.LangCodeEditable,
+                IsUpdateable = org.IsLangCodeEditable,
             };
         }
     }

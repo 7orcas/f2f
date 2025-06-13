@@ -16,7 +16,7 @@ namespace Backend.Base.Org.Ent
         {
             var o = Decode<OrgEnt>();
             Languages = Get(o.Languages, Languages);
-            LangCodeEditable = Get(o.LangCodeEditable, LangCodeEditable);
+            IsLangCodeEditable = Get(o.IsLangCodeEditable, IsLangCodeEditable);
         }
 
         /// <summary>
@@ -29,7 +29,7 @@ namespace Backend.Base.Org.Ent
         /// Language code labels can be editied.
         /// </summary>
         [NotMapped]
-        public bool LangCodeEditable { get; set; } = false;
+        public bool IsLangCodeEditable { get; set; } = false;
 
     }
 }

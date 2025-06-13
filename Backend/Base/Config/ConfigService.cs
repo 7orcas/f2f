@@ -84,7 +84,8 @@ namespace Backend.Base.Config
             var langList = new List<LanguageConfig>();
 
             if (!user.IsLanguageAdmin()) return langList;
-            
+            if (!user.IsService && !orgConfig.IsLangCodeEditable) return langList;
+
             foreach (var cl in orgConfig.Languages)
             {
                 var up = user.IsService;
