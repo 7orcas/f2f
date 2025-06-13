@@ -1,18 +1,16 @@
-﻿
-
-using Backend.Base.Entity;
-using Microsoft.AspNetCore.DataProtection.KeyManagement;
+﻿using GC = Backend.GlobalConstants;
 using Microsoft.Extensions.Caching.Memory;
+
+/// <summary>
+/// Create and manage sessions containing relevant objects for the logged in user
+/// Note a user can have multiple sessions open
+/// Created: April 2025
+/// [*Licence*]
+/// Author: John Stewart
+/// </summary>
 
 namespace Backend.Base.Session
 {
-    /// <summary>
-    /// Create and manage sessions containing relevant objects for the logged in user
-    /// Note a user can have multiple sessions open
-    /// </summary>
-    /// <author>John Stewart</author>
-    /// <created>April 5, 2025</created>
-    /// <license>**Licence**</license>
     public class SessionService: BaseService, SessionServiceI
     {
         private readonly IMemoryCache _memoryCache;
@@ -24,7 +22,7 @@ namespace Backend.Base.Session
             _memoryCache = memoryCache;
         }
 
-        public async Task<SessionEnt> CreateSession(UserEnt user, OrgEnt org, AppConfig config, int sourceApp)
+        public async Task<SessionEnt> CreateSession(UserEnt user, OrgEnt org, UserConfig userConfig, int sourceApp)
         {
             var key = user.Userid + "-" + Guid.NewGuid().ToString();
             var ses = new SessionEnt
@@ -32,7 +30,7 @@ namespace Backend.Base.Session
                 Key = key,
                 User = user,
                 Org = org,
-                Config = config,
+                UserConfig = userConfig,
                 SourceApp = sourceApp,
             };
 
@@ -65,7 +63,7 @@ namespace Backend.Base.Session
 
         private string Key(string key)
         {
-            return "SessionService_" + key;
+            return GC.CacheKeySessionPrefix + key;
         }
 
     }

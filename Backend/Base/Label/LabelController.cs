@@ -65,20 +65,19 @@ namespace Backend.Base.Label
         public async Task<IActionResult> GetRelatedLabels(string langKeyCode)
         {
             var session = HttpContext.Items["session"] as SessionEnt;
-            var langs = session.Config.Languages;
-            var langCodes = new List<string>();
-            foreach (var lc in langs)
-                if (lc.IsReadable)
-                    langCodes.Add(lc.LangCode);
+            var langs = session.UserConfig.Languages;
             
-            if (langCodes.Count == 0)
+            if (langs.Count == 0)
                 return Ok(new _ResponseDto
                     {
                         Valid = false,
                         StatusCode = 401,
                         ErrorMessage = "Language admin not configured",
                     });
-            langCodes.Sort();
+            
+            var langCodes = new List<string>();
+            foreach (var lc in langs)
+                langCodes.Add(lc.LangCode);
 
             var key = await _labelService.GetLanguageKey(langKeyCode);
             var labels = await _labelService.GetRelatedLabels(langKeyCode, langCodes);
@@ -94,7 +93,7 @@ namespace Backend.Base.Label
                         {
                             Id = l.Id,
                             LangKeyId = l.LangKeyId,
-                            HardCodedNr = l.HardCodedNr,
+                            Variant = l.Variant,
                             LangCode = l.LangCode,
                             Label = l.Code,
                             Tooltip = l.Tooltip,
@@ -110,27 +109,15 @@ namespace Backend.Base.Label
                         Id = GC.NewRecordId,
                         LangKeyId = key != null? key.Id : GC.NewRecordId,
                         LangCode = lang.LangCode,
-                        IsUpdateable = lang.IsCreateable,
+                        IsUpdateable = lang.IsUpdateable,
                     };
                 list.Add(dto);
             }
 
-
-            //Put default language at top
-            var listX = new List<LangLabelDto>();
-            listX.Add(list.Find(l => l.LangCode == session.Config.LangCode));
-
-            foreach (var l in list)
-            {
-                if (l.LangCode != session.Config.LangCode)
-                    listX.Add(l);
-            }
-
-
             var r = new _ResponseDto
             {
                 SuccessMessage = "Ok",
-                Result = listX
+                Result = list
             };
             return Ok(r);
         }

@@ -5,5 +5,10 @@ namespace Backend.App.Machines.Ent
     {
         public int StationPairs { get; set; }
 
+        public override void Decode()
+        {
+
+        }
+
     }
 }

@@ -20,20 +20,22 @@ CREATE TABLE cntrl.token (
 
 CREATE TABLE base.org (
     id          INT             PRIMARY KEY IDENTITY (1, 1) NOT NULL,
-	nr          INT             NOT NULL,
+	nr          INT             NOT NULL  UNIQUE,
 	hardCodedNr INT             NOT NULL DEFAULT (0),
 	code        NVARCHAR (100)  NOT NULL,
 	descr       NVARCHAR (MAX)  NOT NULL,
 	encoded     NVARCHAR (MAX)  NULL,
 	updated     DATETIME        NOT NULL DEFAULT GETDATE(),
-	isActive    BIT             NOT NULL DEFAULT 1
+	isActive    BIT             NOT NULL DEFAULT 1,
+	langCode  NVARCHAR (4)    NULL,
+	langLabelVariant  INT             NULL
 );
 CREATE TABLE base.zzz
 (
 	id             INT             PRIMARY KEY IDENTITY (10000, 1) NOT NULL,
 	xxx            NVARCHAR (40)   NOT NULL UNIQUE,
 	yyy            NVARCHAR (100)  NOT NULL,
-	orgs           NVARCHAR (MAX)  NULL,
+	orgs           NVARCHAR (MAX) NOT  NULL,
 	langCode       NVARCHAR (4)  NULL,
  	attempts       INT             NULL DEFAULT (0),
  	lastlogin      DATETIME        NOT NULL DEFAULT GETDATE(),
@@ -109,13 +111,13 @@ CREATE TABLE base.langLabel
 	id             INT             PRIMARY KEY IDENTITY (1, 1) NOT NULL,
 	langKeyId  INT             NOT NULL,
     langCode   NVARCHAR (4)    NOT NULL,
-	hardCodedNr    INT             NULL,
+	variant    INT             NULL,
 	code           NVARCHAR (MAX)  NOT NULL,
 	tooltip        NVARCHAR (MAX)  NULL,
 	encoded        NVARCHAR (MAX)  NULL,
 	updated        DATETIME        NOT NULL DEFAULT GETDATE(),
 	FOREIGN KEY (langKeyId) REFERENCES base.langKey(id),
-	CONSTRAINT langLabel_uq_code   UNIQUE (langKeyId, langCode, hardCodedNr)
+	CONSTRAINT langLabel_uq_code   UNIQUE (langKeyId, langCode, variant)
 );
 CREATE TABLE base.audit (
     id                       INT                 PRIMARY KEY IDENTITY (1, 1) NOT NULL,

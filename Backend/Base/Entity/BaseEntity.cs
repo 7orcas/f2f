@@ -1,6 +1,14 @@
-﻿namespace Backend.Base.Entity
+﻿
+/// <summary>
+/// Base entity for application entities
+/// Created: March 2025
+/// [*Licence*]
+/// Author: John Stewart
+/// </summary>
+
+namespace Backend.Base.Entity
 {
-    public class BaseEntity : Encode
+    public abstract class BaseEntity : Encode
     {
         public int Id { get; set; }
         public int OrgId { get; set; }
@@ -10,5 +18,5 @@
         public bool IsActive { get; set; }
 
         public BaseEntity() { }
-    }
+    }        
 }

@@ -53,7 +53,7 @@ namespace Backend.Base.Label
                    r => {
                        k = new LangKey {
                            Id = GetId(r),
-                           Pack = GetString(r, "pack"),
+                           Pack = GetStringNull(r, "pack"),
                            Code = GetCode(r),
                            Description = GetDescription(r),
                            Updated = GetUpdated(r),
@@ -71,9 +71,9 @@ namespace Backend.Base.Label
             string? langCode,
             string? langKeyCode,
             List<string> langCodes,
-            int? hardCodedNr)
+            int? variant)
         {
-            string sql = "SELECT l.id, l.langKeyId, l.langCode, k.code AS kCode, l.hardCodedNr, l.code, l.tooltip, l.updated " +
+            string sql = "SELECT l.id, l.langKeyId, l.langCode, k.code AS kCode, l.variant, l.code, l.tooltip, l.updated " +
                             "FROM base.langLabel l " +
                             "INNER JOIN base.langKey k ON k.id = l.langKeyId ";
 
@@ -83,7 +83,7 @@ namespace Backend.Base.Label
                 sqlWhere = "WHERE l.id = " + id + " ";
             else
             {
-                sqlWhere = "WHERE l.hardCodedNr " + (hardCodedNr.HasValue ? " = " + hardCodedNr : " IS NULL") + " ";
+                sqlWhere = "WHERE l.variant " + (variant.HasValue ? " = " + variant : " IS NULL") + " ";
 
                 if (!string.IsNullOrEmpty(langCode))
                     sqlWhere = "WHERE l.langCode = '" + langCode + "' ";
@@ -111,9 +111,9 @@ namespace Backend.Base.Label
                             LangKeyId = GetId(r, "langKeyId"),
                             LangKeyCode = GetString(r, "kCode"),
                             LangCode = GetString(r, "langCode"),
-                            HardCodedNr = Sql.GetIntNull(r, "hardCodedNr"),
+                            Variant = GetIntNull(r, "variant"),
                             Code = GetCode(r),
-                            Tooltip = GetString(r, "tooltip"),
+                            Tooltip = GetStringNull(r, "tooltip"),
                             Updated = GetUpdated(r)
                         });
                     }
@@ -135,11 +135,11 @@ namespace Backend.Base.Label
                     + "WHERE id = " + label.Id;
             else
                 sql = "INSERT INTO  base.langLabel "
-                    + "(langKeyId, langCode, hardCodedNr, code, tooltip) "
+                    + "(langKeyId, langCode, variant, code, tooltip) "
                     + " VALUES ("
                     + label.LangKeyId + ","
                     + "'" + label.LangCode + "',"
-                    + (label.HardCodedNr != null ? label.HardCodedNr : "NULL") + ","
+                    + (label.Variant != null ? label.Variant : "NULL") + ","
                     + "'" + label.Code + "',"
                     + (label.Tooltip != null ? "'" + label.Tooltip + "'" : "NULL")
                     + ")";

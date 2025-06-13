@@ -16,8 +16,16 @@ namespace Backend.Base.Session.Ent
         public string Userid { get; set; }
         public List<PermissionCrudEnt> Permissions { get; set; }
 
-        public bool IsAdmin { get; set; } = true; //ToDo move to db
-        public bool IsAdminLanguage { get; set; } = true; //ToDo move to db
-        public bool IsService { get; set; } = true; //ToDo move to login
+        //ToDo move to db
+        public bool IsSystemAdmin { get; set; } = true; 
+        public bool IsCurrentLanguageAdmin { get; set; } = true;
+        public bool IsActiveLanguageAdmin { get; set; } = true;
+        public bool IsService { get; set; } = true; 
+
+        public bool IsLanguageAdmin()
+        {
+            return IsCurrentLanguageAdmin || IsActiveLanguageAdmin || IsService;
+        }
+
     }
 }

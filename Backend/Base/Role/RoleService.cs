@@ -43,8 +43,8 @@ namespace Backend.Base.Role
                     r => {
                         list.Add(new UserRoleEnt() {
                             RoleId = GetId(r, "id"),
-                            Code = GetString(r, "code"),
-                            Description = GetString(r, "descr"),
+                            Code = GetStringNull(r, "code"),
+                            Description = GetStringNull(r, "descr"),
                             OrgId = GetId(r, "orgId"),
                             Updated = GetDateTime(r, "updated"),
                             IsActive = GetBoolean(r, "isActive"),
@@ -59,8 +59,8 @@ namespace Backend.Base.Role
                         list.Add(new UserRoleEnt()
                         {
                             RoleId = GetId(r, "id"),
-                            Code = GetString(r, "code"),
-                            Description = GetString(r, "descr"),
+                            Code = GetStringNull(r, "code"),
+                            Description = GetStringNull(r, "descr"),
                             OrgId = GetId(r, "orgId"),
                             Updated = GetDateTime(r, "updated"),
                             IsActive = GetBoolean(r, "isActive"),

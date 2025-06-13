@@ -18,9 +18,9 @@ namespace Backend.Base.Label.Ent
         public string LangCode { get; set; }
 
         /// <summary>
-        /// Organisation number (null is the default).
+        /// Language code variant number (null is the default).
         /// </summary>
-        public int? HardCodedNr { get; set; }
+        public int? Variant { get; set; }
 
         /// <summary>
         /// Label label.
@@ -46,5 +46,10 @@ namespace Backend.Base.Label.Ent
          */
         [NotMapped]
         public string? LangKeyCode { get; set; }
+
+        public override void Decode()
+        {
+
+        }
     }
 }

@@ -1,16 +1,23 @@
 ﻿using Microsoft.Data.SqlClient;
 using System.Reflection.Metadata;
 
-namespace Backend.Base
+/// <summary>
+/// Database access
+/// Created: March 2025
+/// [*Licence*]
+/// Author: John Stewart
+/// </summary>
+
+namespace Backend.Base.Database
 {
-    public class Sql
+    public partial class Sql
     {
         static public async Task<bool> Run(string sqlString, Action<SqlDataReader> action, params SqlParameter[] parameters)
         {
             return await Task.Run(() =>
             {
-                
-//Thread.Sleep(400);
+
+                //Thread.Sleep(400);
                 var connectionString = AppSettings.DBMainConnection;
 
                 SqlConnection connection = null;
@@ -73,7 +80,7 @@ namespace Backend.Base
                 }
                 catch (Exception ex)
                 {
-                    Console.WriteLine(ex.Message); 
+                    Console.WriteLine(ex.Message);
                     Log.Logger.Error(sqlString + " -> " + ex.Message);
                     throw;
                 }
@@ -85,53 +92,5 @@ namespace Backend.Base
                 return true;
             });
         }
-
-        static public string TestActive(string? table)
-        {
-            return " " + 
-                (!string.IsNullOrEmpty(table)? table + "." : "") +
-                "isActive = 1 ";
-        }
-
-        static public bool ValidateParameter(string parameter)
-        {
-            return !string.IsNullOrWhiteSpace(parameter);
-        }
-
-        static public string? GetString(SqlDataReader r, string column)
-        {
-            return r.IsDBNull(r.GetOrdinal(column)) ? null : (string)r[column];
-        }
-
-        static public int GetId(SqlDataReader r, string column)
-        {
-            return (int)r[column];
-        }
-
-        static public int? GetIdNull(SqlDataReader r, string column)
-        {
-            return r.IsDBNull(r.GetOrdinal(column)) ? null : (int)r[column];
-        }
-
-        static public int GetInt(SqlDataReader r, string column)
-        {
-            return (int)r[column];
-        }
-        static public int? GetIntNull(SqlDataReader r, string column)
-        {
-            return r.IsDBNull(r.GetOrdinal(column)) ? null : (int)r[column];
-        }
-
-        static public bool GetBoolean(SqlDataReader r, string column)
-        {
-            return !r.IsDBNull(r.GetOrdinal(column)) && r.GetBoolean(r.GetOrdinal(column));
-        }
-
-        static public DateTime GetDateTime(SqlDataReader r, string column)
-        {
-            return r[column] == DBNull.Value ? DateTime.MinValue : (DateTime)r[column];
-        }
-
-
     }
 }

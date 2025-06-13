@@ -32,5 +32,10 @@ namespace Backend.Base.Label.Ent
         /// Is language code active
         /// </summary>
         public bool IsActive { get; set; }
+
+        public override void Decode()
+        {
+
+        }
     }
 }

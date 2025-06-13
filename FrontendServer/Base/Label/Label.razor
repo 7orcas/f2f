@@ -55,8 +55,8 @@
 
     private string ShowLabel()
     {
-        if (highlightNoKey) return "[" + Key + "]";
-        return GetLabelNoHighlight(Key);
+        if (highlightNoKey) return GetLabelHighlightNoKey(Key);
+        return GetLabel(Key);
     }
 
     private bool IsShowToolTip() => IsTooltip(Key);

@@ -47,11 +47,14 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options => options.TokenValidationParameters = TokenParameters.GetParameters());
 
+//Base Services (start up)
+builder.Services.AddSingleton<OrgConfigInitialiseServiceI, OrgConfigInitialiseService>();
+builder.Services.AddSingleton<PermissionInitialiseServiceI, PermissionInitialiseService>();
+
 //Base Services
 builder.Services.AddScoped<AuditServiceI, AuditService>();
 builder.Services.AddScoped<LabelServiceI, LabelService>();
 builder.Services.AddScoped<ConfigServiceI, ConfigService>();
-builder.Services.AddSingleton<PermissionInitialiseServiceI, PermissionInitialiseService>();
 builder.Services.AddScoped<LoginServiceI, LoginService>();
 builder.Services.AddScoped<TokenServiceI, TokenService>();
 builder.Services.AddScoped<OrgServiceI, OrgService>();
@@ -96,12 +99,17 @@ app.Use(async (context, next) =>
 RunOnStartup(app);
 app.Run();
 
+
+
+/// <summary>
+/// Call the initialisation service methods
+/// </summary>
 void RunOnStartup(WebApplication app)
 {
-    // Resolve the service from the DI container
-    var permissionService = app.Services.GetRequiredService<PermissionInitialiseServiceI>();
+    var configService = app.Services.GetRequiredService<OrgConfigInitialiseServiceI>();
+    configService.InitialiseOrgConfigs();
 
-    // Call the service method
+    var permissionService = app.Services.GetRequiredService<PermissionInitialiseServiceI>();
     permissionService.InitialisePermissions();
 }
 

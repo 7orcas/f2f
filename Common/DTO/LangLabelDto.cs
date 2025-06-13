@@ -11,7 +11,7 @@ namespace Common.DTO
         public int Id { get; set; }
         public int LangKeyId { set; get; }
         public string LangKeyCode { get; set; }
-        public int? HardCodedNr { get; set; }
+        public int? Variant { get; set; }
         public string LangCode { get; set; }
         public string Label { get; set; }
         public string? Tooltip { get; set; }

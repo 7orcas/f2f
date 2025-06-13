@@ -1,5 +1,4 @@
-﻿
-using Microsoft.Data.SqlClient;
+﻿using Microsoft.Data.SqlClient;
 
 namespace Backend.Base.Org
 {
@@ -16,12 +15,13 @@ namespace Backend.Base.Org
                     "SELECT * FROM base.org "
                     + "WHERE nr = @nr ",
                     r => {
-                        l.Id = GetId(r, "id");
-                        l.Nr = GetId(r, "nr");
-                        l.Code = GetString(r, "code");
-                        l.Description = GetString(r, "descr");
-                        l.Updated = GetDateTime(r, "updated");
-                        l.IsActive = GetBoolean(r, "isActive");
+                        l.Id = GetId(r);
+                        l.Nr = GetNr(r);
+                        l.Code = GetCode(r);
+                        l.Description = GetDescription(r);
+                        l.Updated = GetUpdated(r);
+                        l.IsActive = IsActive(r);
+                        l.LangLabelVariant = GetIntNull(r, "langLabelVariant");
                     },
                     new SqlParameter("@nr", nr)
                 );

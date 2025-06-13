@@ -38,8 +38,8 @@ namespace Backend.Base.Login
                         l.Userid = GetString(r, "xxx");
                         l.Password = GetString(r, "yyy");
                         l.Orgs = GetString(r, "orgs");
-                        l.LangCode = GetString(r, "langCode");
-                        l.Attempts = GetId(r, "attempts");
+                        l.LangCode = GetStringNull(r, "langCode");
+                        l.Attempts = GetIntNull(r, "attempts");
                         l.Lastlogin = GetDateTime(r, "lastlogin");
                         l.IsActive = GetBoolean(r, "isActive");
                     },
@@ -114,7 +114,10 @@ namespace Backend.Base.Login
 
         public async Task<bool> IncrementAttempts(LoginEnt l)
         {
-            return await SetAttempts(l.Id, ++l.Attempts);
+            if (l.Attempts == null)
+                l.Attempts = 0;
+            l.Attempts += 1;
+            return await SetAttempts(l.Id, l.Attempts.Value);
         }
 
         private async Task<bool> SetAttempts(int id, int attempts)

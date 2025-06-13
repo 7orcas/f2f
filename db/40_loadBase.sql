@@ -2,9 +2,9 @@ BEGIN TRANSACTION;
 
 SET IDENTITY_INSERT base.org ON;
 INSERT INTO base.org (id, nr, code, descr) VALUES (0, 0, 'Org Base', 'Base Orgisation');
-INSERT INTO base.org (id, nr, code, descr) VALUES (1, 1, 'Org 1', 'Org 1 Description');
-INSERT INTO base.org (id, nr, code, descr) VALUES (2, 2, 'Org 2', 'Org 2 Description');
-INSERT INTO base.org (id, nr, code, descr) VALUES (3, 3, 'Org 3', 'Org 3 Description');
+INSERT INTO base.org (id, nr, code, descr,langCode,encoded) VALUES (1, 1, 'Org 1', 'Org 1 Description','en','{LangCodeEditable:false,Languages:["en","de","c1","c2"]}');
+INSERT INTO base.org (id, nr, code, descr,langCode,langLabelVariant,encoded) VALUES (2, 2, 'Org 2', 'Org 2 Description','en',2,'{LangCodeEditable:true,Languages:["de","c1","c2"]}');
+INSERT INTO base.org (id, nr, code, descr,langCode) VALUES (3, 3, 'Org 3', 'Org 3 Description','de');
 SET IDENTITY_INSERT base.org OFF;
 
 

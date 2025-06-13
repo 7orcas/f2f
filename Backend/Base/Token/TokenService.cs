@@ -1,5 +1,4 @@
-﻿
-using Azure.Core;
+﻿using GC = Backend.GlobalConstants;
 using Backend.Base.Token.Ent;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.IdentityModel.Tokens;
@@ -7,11 +6,15 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 
+/// <summary>
+/// Tokens are used to control authorisation to this app
+/// Created: March 2025
+/// [*Licence*]
+/// Author: John Stewart
+/// </summary>
+
 namespace Backend.Base.Token
 {
-    /// <summary>
-    /// Tokens are used to control authorisation to this app
-    /// </summary>
     public class TokenService: BaseService, TokenServiceI
     {
         private readonly IMemoryCache _memoryCache;
@@ -143,7 +146,7 @@ namespace Backend.Base.Token
 
         private string Key(string key)
         {
-            return "TokenService_" + key;
+            return GC.CacheKeyTokenPrefix + key;
         }
     }
 }

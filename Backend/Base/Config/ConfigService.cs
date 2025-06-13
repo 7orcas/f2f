@@ -1,7 +1,7 @@
 ﻿using Backend.Base.Config.Ent;
-using Backend.Base.Label.Ent;
-using Microsoft.Data.SqlClient;
-using System.Security.Cryptography;
+using Microsoft.AspNetCore.DataProtection.KeyManagement;
+using Microsoft.Extensions.Caching.Memory;
+using System.Collections.Generic;
 using GC = Backend.GlobalConstants;
 
 /// <summary>
@@ -16,54 +16,101 @@ namespace Backend.Base.Config
 {
     public class ConfigService : BaseService, ConfigServiceI
     {
-        public ConfigService(IServiceProvider serviceProvider) : base(serviceProvider)
+        private readonly IMemoryCache _memoryCache;
+
+        public ConfigService(IServiceProvider serviceProvider,
+            IMemoryCache memoryCache) 
+            : base(serviceProvider)
         {
+            _memoryCache = memoryCache;
         }
 
-        public async Task<AppConfig> GetAppConfig(UserEnt user, OrgEnt org, string? langCode)
+        /// <summary>
+        /// Created at Login Time
+        /// </summary>
+        /// <param name="user"></param>
+        /// <param name="org"></param>
+        /// <param name="requestedLangCode"></param>
+        /// <returns></returns>
+        public UserConfig CreateUserConfig(UserEnt user, OrgEnt org, string? requestedLangCode)
         {
-            if (langCode == null) langCode = GC.LangCodeDefault;
+            var orgConfig = _memoryCache.Get<OrgConfig>(GC.CacheKeyOrgConfigPrefix + org.Id);
+            var userLangCode = ValidateLanguageCode(user, orgConfig, requestedLangCode);
 
-            var appConfig = new AppConfig()
+            var userConfig = new UserConfig()
             {
                 OrgId = org.Id,
-                LangCode = langCode,
+                LangCodeCurrent = userLangCode,
+                Languages = CreateClientLanguages(user, orgConfig, userLangCode)
             };
 
-            if (user.IsAdminLanguage || user.IsService)
-                appConfig.Languages = await GetClientLanguages(user, org, langCode);
+            return userConfig;
+        }
 
-            return appConfig;
+        /// <summary>
+        /// Make sure the user is using a valid language code
+        /// </summary>
+        /// <param name="user"></param>
+        /// <param name="orgConfig"></param>
+        /// <param name="langCode"></param>
+        /// <returns></returns>
+        private string ValidateLanguageCode(UserEnt user, OrgConfig orgConfig, string? langCode)
+        {
+            //Is user using the default org lang code?
+            if (langCode == null) langCode = orgConfig.LangCodeDefault;
+            if (langCode.Equals(orgConfig.LangCodeDefault)) return langCode;
+
+            //Is the user's lang code used by the organisation (and active if required)?
+            foreach (var lang in orgConfig.Languages)
+                if (langCode.Equals(lang.LangCode))
+                {
+                    if (user.IsService) return langCode;
+                    if (user.IsActiveLanguageAdmin && lang.IsActive) return langCode;
+                }
+                    
+            return orgConfig.LangCodeDefault;
         }
 
 
-        /**
-        * Get list of language codes the client is able to view / edit
-        * ToDo: logic for flags
-        */
-        private async Task<List<LanguageConfig>> GetClientLanguages(UserEnt user, OrgEnt org, string langCode)
+        /// <summary>
+        /// Get list of language codes the client is able to view and edit
+        /// </summary>
+        /// <param name="user"></param>
+        /// <param name="orgConfig"></param>
+        /// <param name="userLangCode"></param>
+        /// <returns></returns>
+        private List<LanguageConfig> CreateClientLanguages(UserEnt user, OrgConfig orgConfig, string userLangCode)
         {
             var langList = new List<LanguageConfig>();
-            
-            await Sql.Run(
-                    "SELECT * " +
-                    "FROM base.langCode " +
-                    "WHERE" + TestActive(),
-                    r => {
-                        var l = new LanguageConfig();
-                        l.LangCode = GetCode(r);
-                        langList.Add(l);
-                    }
-                );
 
-            foreach (var l in langList)
+            if (!user.IsLanguageAdmin()) return langList;
+            
+            foreach (var cl in orgConfig.Languages)
             {
-                l.IsCreateable = user.IsService;
-                l.IsReadable = true;
-                l.IsUpdateable = user.IsService || l.LangCode.Equals(langCode);
+                var up = user.IsService;
+                if (!up && cl.LangCode.Equals(userLangCode)) up = cl.IsActive;
+                if (!up && user.IsActiveLanguageAdmin) up = cl.IsActive;
+
+                langList.Add(new LanguageConfig { 
+                    LangCode = cl.LangCode,
+                    IsActive = user.IsService || cl.IsActive,
+                    IsUpdateable = up
+                });
             }
 
-            return langList;
+            //Sort list
+            langList = langList.OrderByDescending(x => x.LangCode).ToList();
+            var dl = langList.Find(x => x.LangCode == userLangCode);
+            
+            var langListX = new List<LanguageConfig>();
+            if (dl != null) 
+                langListX.Add(dl);
+
+            foreach (var l in langList)
+                if (l.LangCode != userLangCode)
+                    langListX.Add(l);
+
+            return langListX;
         }
 
     }

@@ -1,26 +1,19 @@
-﻿using Azure.Core;
-using GC = Backend.GlobalConstants;
-using Backend.Base.Permission.Ent;
-using Backend.Base.Entity;
-using System.Runtime.CompilerServices;
-using Microsoft.Data.SqlClient;
-using System.Security.Cryptography;
+﻿using GC = Backend.GlobalConstants;
 using Microsoft.Extensions.Caching.Memory;
-using Microsoft.AspNetCore.DataProtection.KeyManagement;
+
+/// <summary>
+/// Loading permissions on startup
+/// Created: March 2025
+/// [*Licence*]
+/// Author: John Stewart
+/// </summary>
 
 namespace Backend.Base.Permission
 {
-    /// <summary>
-    /// Loading permissions on startup
-    /// </summary>
-    /// <author>John Stewart</author>
-    /// <created>March 3, 2025</created>
-    /// <license>**Licence**</license>
     public class PermissionInitialiseService: BaseService, PermissionInitialiseServiceI
     {
         private readonly IMemoryCache _memoryCache;
-        private const string KEY = "PermissionService_list";
-
+        
         public PermissionInitialiseService(IServiceProvider serviceProvider,
             IMemoryCache memoryCache)
             : base(serviceProvider)
@@ -44,13 +37,13 @@ namespace Backend.Base.Permission
                 r => {
                     var l = new PermissionEnt();
                     l.PermissionId = GetId(r, "id");
-                    l.Code = GetString(r, "code");
-                    l.Description = GetString(r, "descr");
+                    l.Code = GetStringNull(r, "code");
+                    l.Description = GetStringNull(r, "descr");
                     list.Add(l);
                 }
             );
 
-            _memoryCache.Set(KEY, list);
+            _memoryCache.Set(GC.CacheKeyPermList, list);
         }
 
         /// <summary>
@@ -59,7 +52,7 @@ namespace Backend.Base.Permission
         /// <returns></returns>
         public List<PermissionEnt> GetPermissions()
         {
-            if (_memoryCache.TryGetValue(KEY, out var cachedValue))
+            if (_memoryCache.TryGetValue(GC.CacheKeyPermList, out var cachedValue))
             {
                 return cachedValue as List<PermissionEnt>;
             }

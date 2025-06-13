@@ -15,6 +15,12 @@
         public const string CrudReadList = "l";
         public const string CrudIgnore   = "x"; //Don't need a permission crud setting
 
+        //IMemoryCache keys
+        public const string CacheKeyTokenPrefix     = "TS_";
+        public const string CacheKeyOrgConfigPrefix = "CS_";
+        public const string CacheKeySessionPrefix   = "SS_";
+        public const string CacheKeyPermList        = "PS_list";
+
         //Entity Type Id
         public const int EntityTypePermission       = 1;
         public const int EntityTypePermissionEffect = 2;

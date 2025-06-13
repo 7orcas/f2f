@@ -42,23 +42,18 @@ namespace Backend.Base.Config
         public async Task<IActionResult> GetClientConfig()
         {
             var session = HttpContext.Items["session"] as SessionEnt;
-            var appConfig = session.Config;
-            var langCodeCurrent = appConfig.LangCode;
-            var isAdminLanguage = appConfig.Languages != null;
+            var user = session.User;
+            var userConfig = session.UserConfig;
 
-            //isAdminLanguage = false; //testing
+            var langCodeCurrent = userConfig.LangCodeCurrent;
+            var isAdminLanguage = userConfig.Languages != null;
+
             var langs = new List<LanguageConfigDto>();
-            var multiLang = 0;
-            for (int i=0; isAdminLanguage && i < appConfig.Languages.Count; i++)
+            foreach (var lang in userConfig.Languages)
             {
-                var l = appConfig.Languages[i];
-                if (!l.IsReadable) continue;
-
-                multiLang++;
                 langs.Add(new LanguageConfigDto {
-                    LangCode = l.LangCode,
-                    //Only service or translator permission can update non-default language codes
-                    IsUpdateable = l.IsCreateable || (l.IsUpdateable && l.LangCode.Equals(langCodeCurrent))
+                    LangCode = lang.LangCode,
+                    IsUpdateable = lang.IsUpdateable,
                 });
             }
             
@@ -67,7 +62,7 @@ namespace Backend.Base.Config
                 SuccessMessage = "Config Ok",
                 Result = new AppConfigDto
                 {
-                    OrgId = appConfig.OrgId,
+                    OrgId = userConfig.OrgId,
                     OrgDescription = session.Org.Description,
                     UniqueUserId = session.User.LoginId + 987123564,
                     UniqueSessionId = UniqueSessionId.GetId(),

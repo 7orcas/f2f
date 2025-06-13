@@ -25,8 +25,7 @@ namespace Backend.Base.Permission
     public class PermissionService: BaseService, PermissionServiceI
     {
         private readonly IMemoryCache _memoryCache;
-        private const string KEY = "PermissionService_list";
-
+        
         public PermissionService(IServiceProvider serviceProvider,
             IMemoryCache memoryCache) 
             : base(serviceProvider)
@@ -37,7 +36,7 @@ namespace Backend.Base.Permission
 
         public PermissionEnt GetPermissionEnt (string perm)
         {
-            if (_memoryCache.TryGetValue(KEY, out var cachedValue))
+            if (_memoryCache.TryGetValue(GC.CacheKeyPermList, out var cachedValue))
             {
                 var list = cachedValue as List<PermissionEnt>;
                 return list.Find(p => p.Code.Equals(perm));
@@ -79,7 +78,7 @@ namespace Backend.Base.Permission
                     r =>
                     {
                         AddPermission(GetId(r, "permissionId"),
-                            GetString(r, "crud"),
+                            GetStringNull(r, "crud"),
                             perms);
                     },
                     new SqlParameter("@userId", userId),
@@ -89,7 +88,7 @@ namespace Backend.Base.Permission
                 await Sql.Run(sql + "AND r.orgId = " + GC.BaseOrgId,
                     r => {
                         AddPermission(GetId(r, "permissionId"),
-                            GetString(r, "crud"),
+                            GetStringNull(r, "crud"),
                             perms);
                     },
                     new SqlParameter("@userId", userId)
@@ -142,10 +141,10 @@ namespace Backend.Base.Permission
                 await Sql.Run(sql + "AND r.orgId = @orgId" + by,
                     r => {
                         list.Add(new RolePermissionCrudEnt() { 
-                            Role = GetString(r, "role"),
-                            PermissionCode = GetString(r, "pCode"),
-                            PermissionsDescr = GetString(r, "pDescr"),
-                            Crud = GetString(r, "crud"),
+                            Role = GetStringNull(r, "role"),
+                            PermissionCode = GetStringNull(r, "pCode"),
+                            PermissionsDescr = GetStringNull(r, "pDescr"),
+                            Crud = GetStringNull(r, "crud"),
                             OrgId = GetId(r, "orgId")
                         });
                     },
@@ -157,10 +156,10 @@ namespace Backend.Base.Permission
                     r => {
                         list.Add(new RolePermissionCrudEnt()
                         {
-                            Role = GetString(r, "role"),
-                            PermissionCode = GetString(r, "pCode"),
-                            PermissionsDescr = GetString(r, "pDescr"),
-                            Crud = GetString(r, "crud"),
+                            Role = GetStringNull(r, "role"),
+                            PermissionCode = GetStringNull(r, "pCode"),
+                            PermissionsDescr = GetStringNull(r, "pDescr"),
+                            Crud = GetStringNull(r, "crud"),
                             OrgId = GetId(r, "orgId")
                         });
                     },

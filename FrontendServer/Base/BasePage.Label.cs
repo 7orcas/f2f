@@ -8,37 +8,12 @@
             _labels = Cache.GetLabels(_config.Label.LangCode);
         }
 
-        public string GetLabel(string labelCode)
-        {
-            if (_labels != null && _labels.ContainsKey(labelCode))
-                return _labels[labelCode].Label;
-            return "?" + labelCode;
-        }
+        public bool IsLabel(string labelCode) => _labels != null && _labels.ContainsKey(labelCode);
+        public bool IsTooltip(string labelCode) => IsLabel(labelCode) ? !string.IsNullOrEmpty(_labels[labelCode].Tooltip) : false;
 
-        public string GetLabelNoHighlight(string labelCode)
-        {
-            if (_labels != null && _labels.ContainsKey(labelCode))
-                return _labels[labelCode].Label;
-            return labelCode;
-        }
-
-        public string? GetTooltip(string labelCode)
-        {
-            if (_labels != null && _labels.ContainsKey(labelCode))
-                return _labels[labelCode].Tooltip;
-            return null;
-        }
-
-        public bool IsLabel(string labelCode)
-        {
-            return _labels != null && _labels.ContainsKey(labelCode);
-        }
-
-        public bool IsTooltip(string labelCode)
-        {
-            if (_labels != null && _labels.ContainsKey(labelCode))
-                return !string.IsNullOrEmpty(_labels[labelCode].Tooltip);
-            return false;
-        }
+        public string GetLabel(string labelCode) => IsLabel(labelCode)? _labels[labelCode].Label : labelCode;
+        public string GetLabelHighlightNoKey(string labelCode) => IsLabel(labelCode) ? _labels[labelCode].Label : "[" + labelCode + "]";
+        public string? GetTooltip(string labelCode) => IsTooltip(labelCode) ? _labels[labelCode].Tooltip : null;
+        
     }
 }

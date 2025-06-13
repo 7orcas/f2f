@@ -43,10 +43,10 @@ namespace Backend.Base.Audit
                             EntityTypeId = Sql.GetInt(r, "entityTypeId"),
                             EntityId = Sql.GetIntNull(r, "entityId"),
                             UserId = Sql.GetInt(r, "userId"),
-                            User = Sql.GetString(r, "xxx"),
+                            User = Sql.GetStringNull(r, "xxx"),
                             Created = Sql.GetDateTime(r, "created"),
-                            Crud = Sql.GetString(r, "crud"),
-                            Details = Sql.GetString(r, "details")
+                            Crud = Sql.GetStringNull(r, "crud"),
+                            Details = Sql.GetStringNull(r, "details")
                         });
                     });
 

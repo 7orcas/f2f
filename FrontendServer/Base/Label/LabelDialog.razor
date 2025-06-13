@@ -21,7 +21,7 @@ else
                         <MudForm @ref="form" @bind-IsValid="@success">
                 
                             <div class="label-key">
-                                &nbsp;@GetLabel("Code"):&nbsp;
+                                &nbsp;@GetLabelHighlightNoKey("Code"):&nbsp;
                                 <div>@LangKey</div>
                             </div>
                 
@@ -42,16 +42,16 @@ else
                                     </ColGroup>
 
                                     <HeaderContent>
-                                        <MudTh>@_lLangCode</MudTh>
-                                        <MudTh>@_lLabel</MudTh>
-                                        <MudTh>@_lTooltip</MudTh>
-                                        <MudTh>@_lNumber</MudTh>
+                                        <MudTh>@lLangCode</MudTh>
+                                        <MudTh>@lLabel</MudTh>
+                                        <MudTh>@lTooltip</MudTh>
+                                        <MudTh>@lVariant</MudTh>
                                     </HeaderContent>
                                     <RowTemplate>
                                         <MudTd DataLabel="LangCode">@context.LangCode</MudTd>
                                         <MudTd DataLabel="Label">@context.Label</MudTd>
                                         <MudTd DataLabel="ToolTip">@context.Tooltip</MudTd>
-                                        <MudTd DataLabel="Nr">@context.HardCodedNr</MudTd>
+                                        <MudTd DataLabel="Variant">@context.Variant</MudTd>
                                     </RowTemplate>
                                     <RowEditingTemplate>
                                         <MudTd DataLabel="LangCode">@context.LangCode</MudTd>
@@ -78,7 +78,7 @@ else
                                         <MudTd DataLabel="Nr">
                                             @if (context.IsUpdateable)
                                             {
-                                                <MudTextField @bind-Value="context.HardCodedNr" />
+                                                <MudTextField @bind-Value="context.Variant" />
                                             }
                                             else
                                             {
@@ -91,13 +91,13 @@ else
                             else
                             {
                                 <div class="label-langcode">
-                                    &nbsp;@GetLabel("Language"):&nbsp;
-                                    <div>@_langCode</div>
+                                    &nbsp;@GetLabelHighlightNoKey("Language"):&nbsp;
+                                    <div>@langCode</div>
                                 </div>
 
-                                <MudTextField T="string" Label="@_lLabel" OnBlur="@OnBlu" @ref="labelField" @bind-Value="_label" Required="true" RequiredError="Label is required!" />
-                                <MudTextField T="string" Label="@_tooltip" OnBlur="@OnBlu" @ref="tooltipField" @bind-Value="_tooltip" />
-                                <MudTextField T="int" Label="@_lNumber" OnBlur="@OnBlu" @ref="numberField" @bind-Value="_number" />
+                                <MudTextField T="string" Label="@lLabel" OnBlur="@OnBlu" @ref="labelField" @bind-Value="label" Required="true" RequiredError="Label is required!" />
+                                <MudTextField T="string" Label="@tooltip" OnBlur="@OnBlu" @ref="tooltipField" @bind-Value="tooltip" />
+                                <MudTextField T="int" Label="@lVariant" OnBlur="@OnBlu" @ref="variantField" @bind-Value="variant" />
                             }
                 
                             <div class="d-flex align-right label-buttons">
@@ -126,22 +126,22 @@ else
     private bool canCancelEdit = true;
 
     //Single label
-    private string? _langCode;
-    private string? _label;
-    private string? _tooltip;
-    private int _number;
+    private string? langCode;
+    private string? label;
+    private string? tooltip;
+    private int variant;
     private bool success  = true;
 
     //Headings
-    private string? _lLangCode;
-    private string? _lLabel;
-    private string? _lTooltip;
-    private string? _lNumber;
+    private string? lLangCode;
+    private string? lLabel;
+    private string? lTooltip;
+    private string? lVariant;
 
     MudForm form;
     MudTextField<string> labelField;
     MudTextField<string> tooltipField;
-    MudTextField<int> numberField;
+    MudTextField<int> variantField;
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
@@ -150,19 +150,19 @@ else
             await InitialiseBasePage();
             appConfig = await GetConfig();
             
-            _lLangCode = GetLabel("LangCode");
-            _lLabel = GetLabel("Label");
-            _lTooltip = GetLabel("Tooltip");
-            _lNumber = GetLabel("Org");
+            lLangCode = GetLabelHighlightNoKey("LangCode");
+            lLabel = GetLabelHighlightNoKey("Label");
+            lTooltip = GetLabelHighlightNoKey("Tooltip");
+            lVariant = GetLabelHighlightNoKey("Variant");
 
             labels = await Call<List<LangLabelDto>>(GC.URL_label_relatedlist + LangKey);
 
             if (labels != null && labels.Count == 1)
             {
-                _langCode = labels[0].LangCode;
-                _label = labels[0].Label;
-                _tooltip = labels[0].Tooltip;
-                _number = labels[0].HardCodedNr.HasValue ? labels[0].HardCodedNr.Value : 0;
+                langCode = labels[0].LangCode;
+                label = labels[0].Label;
+                tooltip = labels[0].Tooltip;
+                variant = labels[0].Variant.HasValue ? labels[0].Variant.Value : 0;
             }
 
             StateHasChanged();
@@ -184,15 +184,15 @@ else
         await form.Validate();
         if (success)
         {
-            int? org = null;
+            int? variant = null;
             try
             {
-                org = numberField.Value;
-                if (org == 0) org = null;
+                variant = variantField.Value;
+                if (variant == 0) variant = null;
             }
             catch
             {
-                org = null;
+                variant = null;
             }
 
             var tt = tooltipField.Value;
