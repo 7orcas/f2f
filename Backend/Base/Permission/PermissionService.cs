@@ -186,7 +186,7 @@ namespace Backend.Base.Permission
             var ent = GetPermissionEnt(perm.Name);
             if (ent == null) return false;
 
-            var userCrud = session.GetUserPermissionCrud(ent.PermissionId);
+            var userCrud = session.GetUserPermissionCrud(ent.Id);
             if (userCrud == null) return false; //permission not found in user profile
             if (crud == null) return true;
 

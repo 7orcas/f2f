@@ -1,8 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using GC = Backend.GlobalConstants;
+using GCT = BackendTest.GlobalConstants;
 
 namespace BackendTest.Base.Permission
 {
@@ -11,16 +8,33 @@ namespace BackendTest.Base.Permission
     {
         PermissionService service;
 
-        public PermissionServiceTest()
+        public PermissionServiceTest() : base ()
         {
-            service = new PermissionService(null, null);
+            service = permissionService;
+        }
+
+        //[AssemblyInitialize]
+        [ClassInitialize]
+        public static async Task InitialiseDb(TestContext context)
+        {
+            ResetInitialisedDb();
+            await SetupTestDb();
         }
 
         [TestMethod]
         public async Task LoadPermissions()
         {
-            var list = await service.LoadEffectivePermissionsInt(UserIdTest, OrgIdTest);
-            Assert.AreEqual(9, list.Count);
+            var list = await service.LoadEffectivePermissionsInt(GCT.UserId, GCT.OrgId);
+            Assert.AreEqual(MaxRoles, list.Count);
+            
+            bool v = true;
+            foreach (var permission in list)
+            {
+                if (permission.Crud != "crud")
+                    v = false;
+            }
+            if (!v) Assert.Fail();
+
         }
 
 

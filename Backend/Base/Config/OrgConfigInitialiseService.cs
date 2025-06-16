@@ -1,11 +1,5 @@
 ﻿using GC = Backend.GlobalConstants;
 using Microsoft.Extensions.Caching.Memory;
-using Microsoft.Data.SqlClient;
-using System.Collections.Generic;
-using Backend.Base.Label.Ent;
-using System.Diagnostics;
-using System.Runtime.CompilerServices;
-using Backend.Base.Entity;
 
 /// <summary>
 /// Load organisation configurations on startup

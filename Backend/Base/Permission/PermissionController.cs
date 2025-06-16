@@ -69,7 +69,7 @@ namespace Backend.Base.Permission
 
             foreach (var m in Permissions)
             {
-                var per = PermList.FirstOrDefault(p => p.PermissionId == m.PermissionId);
+                var per = PermList.FirstOrDefault(p => p.Id == m.PermissionId);
 
                 list.Add(new PermissionDto
                 {

@@ -10,5 +10,20 @@
         public int? Attempts { get; set; }
         public DateTime Lastlogin { get; set; }
         public bool IsActive { get; set; }
+
+        //Login Repsonse variables
+        public LoginResponse Response { get; set; } = new LoginResponse();
     }
+
+    public class LoginResponse
+    {
+        public bool Valid { get; set; } = false;
+
+        public string TokenKey { get; set; }
+        public string Token { get; set; }
+        public string MainUrl { get; set; }
+        public string LangCode { get; set; }
+        public string ErrorMessage { get; set; }
+    }
+
 }

@@ -1,11 +1,6 @@
-﻿using Backend.Base.Entity;
-using Microsoft.Extensions.Caching.Memory;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Microsoft.Extensions.Caching.Memory;
 using GC = Backend.GlobalConstants;
+using GCT = BackendTest.GlobalConstants;
 
 namespace BackendTest.Base.Config
 {
@@ -14,9 +9,16 @@ namespace BackendTest.Base.Config
     {
         OrgConfigInitialiseService service;
 
-        public OrgConfigInitialiseServiceTest()
+        public OrgConfigInitialiseServiceTest() : base()
         {
-            service = new OrgConfigInitialiseService(null, _memoryCache);
+            service = orgConfigInitialiseService;
+        }
+
+        [ClassInitialize]
+        public static async Task InitialiseDb(TestContext context)
+        {
+            ResetInitialisedDb();
+            await SetupTestDb();
         }
 
         [TestMethod]
@@ -24,7 +26,16 @@ namespace BackendTest.Base.Config
         {
             await service.InitialiseOrgConfigs();
 
-            var orgConfig = _memoryCache.Get<OrgConfig>(GC.CacheKeyOrgConfigPrefix + 1);
+            var orgConfig = _memoryCache.Get<OrgConfig>(GC.CacheKeyOrgConfigPrefix + GCT.OrgId);
+
+            Assert.AreEqual(GCT.OrgId, orgConfig.OrgId);
+            Assert.AreEqual(GCT.OrgLangCode, orgConfig.LangCodeDefault);
+
+            foreach (var lang in GCT.Languages)
+            {
+                if (orgConfig.Languages.Find(l => l.LangCode == lang) == null)
+                    Assert.Fail();
+            }
 
         }
 

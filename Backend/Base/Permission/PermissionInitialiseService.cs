@@ -36,7 +36,7 @@ namespace Backend.Base.Permission
             await Sql.Run(sql,
                 r => {
                     var l = new PermissionEnt();
-                    l.PermissionId = GetId(r, "id");
+                    l.Id = GetId(r, "id");
                     l.Code = GetStringNull(r, "code");
                     l.Description = GetStringNull(r, "descr");
                     list.Add(l);

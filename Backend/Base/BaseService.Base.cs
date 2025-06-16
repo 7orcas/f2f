@@ -6,7 +6,7 @@ namespace Backend.Base;
 public abstract partial class BaseService
 {
     protected readonly Serilog.ILogger _log;
-    protected AuditServiceI _auditService;
+    public AuditServiceI _auditService;
 
     public BaseService(IServiceProvider serviceProvider) 
     { 
