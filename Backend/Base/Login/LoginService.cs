@@ -86,11 +86,13 @@ namespace Backend.Base.Login
 
         public async Task<LoginEnt> GetLogin(string userid)
         {
-            var l = null as LoginEnt;
+            var l = new LoginEnt();
+            l.Response.Valid = false;
+
             try
             {
                 //ToDo Log
-                if (!Sql.ValidateParameter(userid))
+                if (!ValidateParameter(userid))
                     return l;
 
                 await Sql.Run(
@@ -108,19 +110,13 @@ namespace Backend.Base.Login
                             Lastlogin = GetDateTime(r, "lastlogin"),
                             IsActive = GetBoolean(r, "isActive")
                         };
+                        l.Response.Valid = true;
                     },
                     new SqlParameter("@userid", userid)
                 );
-
-                if (l == null) return l;
-
-                l.Response.Valid = l != null;
-                return l;
             }
-            catch 
-            {
-                return l;
-            }
+            catch { }
+            return l;
         }
 
         //ToDo Language codes!

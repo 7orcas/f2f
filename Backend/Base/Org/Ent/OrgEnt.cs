@@ -12,7 +12,7 @@ namespace Backend.Base.Org.Ent
 {
     public partial class OrgEnt : Encode
     {
-        public int Id { get; set; }
+        public long Id { get; set; }
         public int Nr { get; set; }
         public string Code { get; set; }
         public string? Description { get; set; }

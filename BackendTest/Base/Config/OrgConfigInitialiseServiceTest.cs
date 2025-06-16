@@ -26,7 +26,7 @@ namespace BackendTest.Base.Config
         {
             await service.InitialiseOrgConfigs();
 
-            var orgConfig = _memoryCache.Get<OrgConfig>(GC.CacheKeyOrgConfigPrefix + GCT.OrgId);
+            var orgConfig = memoryCache.Get<OrgConfig>(GC.CacheKeyOrgConfigPrefix + GCT.OrgId);
 
             Assert.AreEqual(GCT.OrgId, orgConfig.OrgId);
             Assert.AreEqual(GCT.OrgLangCode, orgConfig.LangCodeDefault);

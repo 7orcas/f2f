@@ -22,12 +22,12 @@ namespace BackendTest
         public void InitialiseServices()
         {
             // Initialize fields (assuming constructor injection or manual setup)
-            orgService = new OrgService(null, _memoryCache);
-            orgConfigInitialiseService = new OrgConfigInitialiseService(null, _memoryCache);
-            permissionService = new PermissionService(null, _memoryCache);
-            tokenService = new TokenService(null, _memoryCache);
-            configService = new ConfigService(null, _memoryCache);
-            sessionService = new SessionService(null, _memoryCache);
+            orgService = new OrgService(null, memoryCache);
+            orgConfigInitialiseService = new OrgConfigInitialiseService(null, memoryCache, orgService);
+            permissionService = new PermissionService(null, memoryCache);
+            tokenService = new TokenService(null, memoryCache);
+            configService = new ConfigService(null, memoryCache);
+            sessionService = new SessionService(null, memoryCache);
             loginservice = new LoginService(null, tokenService, orgService, configService, permissionService, sessionService);
 
             // Now safely initialize the array

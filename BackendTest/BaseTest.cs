@@ -7,13 +7,13 @@ namespace BackendTest
     public partial class BaseTest
     {
         private static bool initialisedDb = false;
-        public readonly IMemoryCache _memoryCache;
+        public readonly IMemoryCache memoryCache;
         
 
         public BaseTest() 
         {
             AppSettings.DBMainConnection = GCT.ConnString;
-            _memoryCache = new MemoryCache(new MemoryCacheOptions());
+            memoryCache = new MemoryCache(new MemoryCacheOptions());
             InitialiseServices();
         }
 

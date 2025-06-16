@@ -1,4 +1,5 @@
-﻿using Microsoft.Data.SqlClient;
+﻿using Backend.Base.Entity;
+using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Caching.Memory;
 using GC = Backend.GlobalConstants;
 
@@ -15,7 +16,7 @@ namespace Backend.Base.Org
     public class OrgService: BaseService, OrgServiceI
     {
         private readonly IMemoryCache _memoryCache;
-
+        
         public OrgService(IServiceProvider serviceProvider,
             IMemoryCache memoryCache) 
             : base(serviceProvider) 
@@ -23,29 +24,37 @@ namespace Backend.Base.Org
             _memoryCache = memoryCache;
         }
 
+        public async Task<List<OrgEnt>> GetOrgs()
+        {
+            var list = new List<OrgEnt>();
+            await Sql.Run(
+                    "SELECT * FROM base.org ",
+                    r => {
+                        var org = OrgLoad.Load(r);
+                        list.Add(org);
+                        _memoryCache.Set(GC.CacheKeyOrgPrefix + org.Nr, org);
+                    }
+                );
+            return list;
+        }
+
         public async Task<OrgEnt> GetOrg(int nr)
         {
             var org = _memoryCache.Get<OrgEnt>(GC.CacheKeyOrgPrefix + nr);
             if (org != null) return org;
 
-            org = new OrgEnt();
             try
             {
                 await Sql.Run(
                     "SELECT * FROM base.org "
                     + "WHERE nr = @nr ",
                     r => {
-                        org.Id = GetId(r);
-                        org.Nr = GetNr(r);
-                        org.Code = GetCode(r);
-                        org.Description = GetDescription(r);
-                        org.Updated = GetUpdated(r);
-                        org.IsActive = IsActive(r);
-                        org.LangLabelVariant = GetIntNull(r, "langLabelVariant");
+                        org = OrgLoad.Load(r);
+                        _memoryCache.Set(GC.CacheKeyOrgPrefix + org.Nr, org);
                     },
                     new SqlParameter("@nr", nr)
                 );
-                _memoryCache.Set(GC.CacheKeyOrgPrefix + org.Nr, org);
+                                
                 return org;
             }
             catch 
@@ -54,6 +63,5 @@ namespace Backend.Base.Org
             }
         }
 
-       
     }
 }

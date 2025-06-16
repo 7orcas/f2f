@@ -13,7 +13,7 @@ namespace Backend.Base.Config
     public class OrgConfigInitialiseService : BaseService, OrgConfigInitialiseServiceI
     {
         private readonly IMemoryCache _memoryCache;
-        
+
         public OrgConfigInitialiseService(IServiceProvider serviceProvider,
             IMemoryCache memoryCache)
             : base(serviceProvider)
@@ -28,20 +28,7 @@ namespace Backend.Base.Config
         /// <returns></returns>
         public async Task InitialiseOrgConfigs()
         {
-            var orgs = new List<OrgEnt>();
-            await Sql.Run(
-                    "SELECT * FROM base.org",
-                    r => {
-                        orgs.Add(new OrgEnt
-                        {
-                            Id = GetId(r),
-                            Nr = GetNr(r),
-                            LangCode = GetStringNull(r, "langCode"),
-                            LangLabelVariant = GetIntNull(r, "langLabelVariant"),
-                            Encoded = GetEncoded(r)
-                        });
-                    }
-                );
+            var orgs = await GetOrgs();
 
             var langCodes = new List<LangCode>();
             await Sql.Run(
@@ -58,9 +45,6 @@ namespace Backend.Base.Config
             //Config all organisations
             foreach (var org in orgs)
             {
-                org.Decode();
-                if (org.LangCode == null) org.LangCode = GC.LangCodeDefault;
-
                 //Config languages
                 var lConfigs = new List<LanguageConfig>();
                 foreach (var l in org.Languages)
@@ -80,6 +64,20 @@ namespace Backend.Base.Config
 
                 _memoryCache.Set(GC.CacheKeyOrgConfigPrefix + org.Id, oConfig);
             }
+        }
+
+        private async Task<List<OrgEnt>> GetOrgs()
+        {
+            var list = new List<OrgEnt>();
+            await Sql.Run(
+                    "SELECT * FROM base.org ",
+                    r => {
+                        var org = OrgLoad.Load(r);
+                        list.Add(org);
+                        _memoryCache.Set(GC.CacheKeyOrgPrefix + org.Nr, org);
+                    }
+                );
+            return list;
         }
 
         private LanguageConfig? ValidateLanguage(OrgEnt org, string langCode, List<LangCode> langCodes)

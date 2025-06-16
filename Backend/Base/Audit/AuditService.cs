@@ -37,16 +37,16 @@ namespace Backend.Base.Audit
                     r => {
                         list.Add(new AuditList()
                         {
-                            Id = Sql.GetId(r, "id"),
-                            OrgId = Sql.GetId(r, "orgId"),
-                            Source = Sql.GetInt(r, "source"),
-                            EntityTypeId = Sql.GetInt(r, "entityTypeId"),
-                            EntityId = Sql.GetIntNull(r, "entityId"),
-                            UserId = Sql.GetInt(r, "userId"),
-                            User = Sql.GetStringNull(r, "xxx"),
-                            Created = Sql.GetDateTime(r, "created"),
-                            Crud = Sql.GetStringNull(r, "crud"),
-                            Details = Sql.GetStringNull(r, "details")
+                            Id = SqlUtils.GetId(r),
+                            OrgId = SqlUtils.GetOrgId(r),
+                            Source = SqlUtils.GetInt(r, "source"),
+                            EntityTypeId = SqlUtils.GetInt(r, "entityTypeId"),
+                            EntityId = SqlUtils.GetIntNull(r, "entityId"),
+                            UserId = SqlUtils.GetInt(r, "userId"),
+                            User = SqlUtils.GetString(r, "xxx"),
+                            Created = SqlUtils.GetDateTime(r, "created"),
+                            Crud = SqlUtils.GetStringNull(r, "crud"),
+                            Details = SqlUtils.GetStringNull(r, "details")
                         });
                     });
 

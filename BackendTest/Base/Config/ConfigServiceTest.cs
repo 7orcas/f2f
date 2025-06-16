@@ -17,7 +17,7 @@ namespace BackendTest.Base.Config
 
         public ConfigServiceTest() : base()
         {
-            service = new ConfigService(null, _memoryCache);
+            service = new ConfigService(null, memoryCache);
         }
 
         [ClassInitialize]
@@ -31,7 +31,7 @@ namespace BackendTest.Base.Config
         {
             org = await orgService.GetOrg(GCT.OrgNr);
             await orgConfigInitialiseService.InitialiseOrgConfigs();
-            orgConfig = _memoryCache.Get<OrgConfig>(GC.CacheKeyOrgConfigPrefix + GCT.OrgId);
+            orgConfig = memoryCache.Get<OrgConfig>(GC.CacheKeyOrgConfigPrefix + GCT.OrgId);
         }
 
         [TestMethod]

@@ -10,7 +10,7 @@ using System.Reflection.Metadata;
 
 namespace Backend.Base.Database
 {
-    public partial class Sql
+    public class Sql
     {
         static public async Task<bool> Run(string sqlString, Action<SqlDataReader> action, params SqlParameter[] parameters)
         {
