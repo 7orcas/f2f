@@ -3,7 +3,7 @@ using Microsoft.Data.SqlClient;
 
 namespace Backend.Base;
 
-public abstract partial class BaseService
+public abstract class BaseService : SqlUtils
 {
     protected readonly Serilog.ILogger _log;
     public AuditServiceI _auditService;

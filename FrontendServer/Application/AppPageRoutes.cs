@@ -1,17 +1,18 @@
 ﻿namespace FrontendServer.Application
 {
-    public class ModPageRoutes
+    public class AppPageRoutes : BasePageRoutes
     {
-        static Dictionary<string, string> PageCodeDic; //page code, route
+        static private Dictionary<string, string> PageCodeDic; //page code, route
 
         //Routes
         public const string MachinesRoute = "machines";
 
         //Page Codes
-        public const string MachinesPageCode = "m01";
-        
+        public const string MachinesPageCode = "mac001";
+
 
         private static readonly string[] PageCodeRoutes = {
+
             MachinesPageCode,       MachinesRoute,
         };
 
@@ -35,6 +36,10 @@
         private static void InitialiseRoutes()
         {
             PageCodeDic = new Dictionary<string, string>();
+            for (int i = 0; i < BasePageCodeRoutes.Length; i += 2)
+            {
+                PageCodeDic.Add(BasePageCodeRoutes[i], BasePageCodeRoutes[i + 1]);
+            }
             for (int i = 0; i < PageCodeRoutes.Length; i += 2)
             {
                 PageCodeDic.Add(PageCodeRoutes[i], PageCodeRoutes[i + 1]);

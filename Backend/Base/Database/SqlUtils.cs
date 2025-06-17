@@ -1,4 +1,4 @@
-﻿
+﻿using GC = Backend.GlobalConstants;
 
 using Microsoft.Data.SqlClient;
 
@@ -15,10 +15,10 @@ namespace Backend.Base.Database
     {
         static public bool ValidateParameter(string parameter) => !string.IsNullOrWhiteSpace(parameter);
         
-        static public int GetId(SqlDataReader r) => GetId(r, "id");
-        static public int GetId(SqlDataReader r, string column) => (int)r[column];
-        static public int? GetIdNull(SqlDataReader r, string column) => r.IsDBNull(r.GetOrdinal(column)) ? null : (int)r[column];
-        static public int GetOrgId(SqlDataReader r) => GetId(r, "orgId");
+        static public long GetId(SqlDataReader r) => GetId(r, "id");
+        static public long GetId(SqlDataReader r, string column) => (long)r[column];
+        static public long? GetIdNull(SqlDataReader r, string column) => r.IsDBNull(r.GetOrdinal(column)) ? null : (long)r[column];
+        static public long GetOrgId(SqlDataReader r) => GetId(r, "orgId");
 
 
         static public int GetInt(SqlDataReader r, string column) => (int)r[column];
@@ -44,5 +44,12 @@ namespace Backend.Base.Database
         static public string TestActive(string? table) => " " + (!string.IsNullOrEmpty(table) ? table + "." : "") + "isActive = 1 ";
         static public bool GetBoolean(SqlDataReader r, string column) => !r.IsDBNull(r.GetOrdinal(column)) && r.GetBoolean(r.GetOrdinal(column));
 
+
+        static public string Update(string column, int? value) => column + "=" + (value != null? value : "NULL") + ",";
+        static public string Update(string column, int value) => column + "=" + value + ",";
+        static public string Update(string column, string? value) => column + "=" + (value != null ? "'" + value + "'": "NULL") + ",";
+        static public string Update(string column, DateTime? value) => column + "=" + (value != null ? "'" + value.Value.ToString(GC.DateTimeFormat) + "'" : "NULL") + ",";
+        static public string Update(string column, bool? value) => column + "=" + (value != null ? (value.Value?1:0)  : "NULL") + ",";
+        static public string NoComma(string column) => column.EndsWith(",")? column.Substring(0,column.Length-1) : column;
     }
 }

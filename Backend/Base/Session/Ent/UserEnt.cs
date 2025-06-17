@@ -12,7 +12,7 @@ namespace Backend.Base.Session.Ent
     {
         public UserEnt() { }
 
-        public int LoginId { get; set; }
+        public long LoginId { get; set; }
         public string Userid { get; set; }
         public List<PermissionCrudEnt> Permissions { get; set; }
 

@@ -143,8 +143,8 @@ else
             //Is there an auto open?
             if (query.TryGetValue("open", out var autoOpenX))
             {
-                if (ModPageRoutes.IsRoute(autoOpenX))
-                    NavigationManager.NavigateTo("/" + ModPageRoutes.GetRoute(autoOpenX));
+                if (AppPageRoutes.IsRoute(autoOpenX))
+                    NavigationManager.NavigateTo("/" + AppPageRoutes.GetRoute(autoOpenX));
             }
 
         }

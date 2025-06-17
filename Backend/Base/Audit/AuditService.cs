@@ -1,8 +1,4 @@
-﻿using Backend.App.Machines;
-using Backend.Base.Entity;
-using Microsoft.AspNetCore.Http.HttpResults;
-using System.Collections.Generic;
-using GC = Backend.GlobalConstants;
+﻿using GC = Backend.GlobalConstants;
 
 /// <summary>
 /// Audit of:
@@ -42,7 +38,7 @@ namespace Backend.Base.Audit
                             Source = SqlUtils.GetInt(r, "source"),
                             EntityTypeId = SqlUtils.GetInt(r, "entityTypeId"),
                             EntityId = SqlUtils.GetIntNull(r, "entityId"),
-                            UserId = SqlUtils.GetInt(r, "userId"),
+                            UserId = SqlUtils.GetId(r, "userId"),
                             User = SqlUtils.GetString(r, "xxx"),
                             Created = SqlUtils.GetDateTime(r, "created"),
                             Crud = SqlUtils.GetStringNull(r, "crud"),
@@ -58,7 +54,7 @@ namespace Backend.Base.Audit
             return list;
         }
 
-        public void ReadEntity(SessionEnt session, int entityTypeId, int entityId)
+        public void ReadEntity(SessionEnt session, int entityTypeId, long entityId)
         {
             Task.Run(async () =>
             {
@@ -73,13 +69,13 @@ namespace Backend.Base.Audit
             });
         }
 
-        public void ReadList(SessionEnt session, int entity, string query)
+        public void ReadList(SessionEnt session, int entityTypeId, string query)
         {
             Task.Run(async () =>
             {
                 try
                 {
-                    LogAuditRecord(session, entity, null, GC.CrudReadList, query);
+                    LogAuditRecord(session, entityTypeId, null, GC.CrudReadList, query);
                 }
                 catch (Exception ex)
                 {
@@ -88,7 +84,7 @@ namespace Backend.Base.Audit
             });
         }
 
-        public void LogInOut(int sourceApp, int orgId, int loginId, int entityTypeId)
+        public void LogInOut(int sourceApp, long orgId, long loginId, int entityTypeId)
         {
             Task.Run(async () =>
             {
@@ -105,7 +101,7 @@ namespace Backend.Base.Audit
 
         private async void LogAuditRecord(SessionEnt session,
             int entityTypeId,
-            int? entityId,
+            long? entityId,
             string crud,
             string details)
         {
@@ -120,10 +116,10 @@ namespace Backend.Base.Audit
 
         private async void LogAuditRecord(
             int sourceApp,
-            int orgId,
-            int loginId,
+            long orgId,
+            long loginId,
             int entityTypeId,
-            int? entityId, 
+            long? entityId, 
             string crud, 
             string details)
         {

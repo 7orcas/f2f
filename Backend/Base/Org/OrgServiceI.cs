@@ -5,5 +5,6 @@ namespace Backend.Base.Org
     {
         Task<OrgEnt> GetOrg(int nr);
         Task<List<OrgEnt>> GetOrgs();
+        Task UpdateOrg(OrgEnt org);
     }
 }

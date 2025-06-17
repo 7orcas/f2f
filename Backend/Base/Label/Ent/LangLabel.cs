@@ -8,9 +8,9 @@ namespace Backend.Base.Label.Ent
         /// <summary>
         /// The label's id.
         /// </summary>
-        public int Id { get; set; }
+        public long Id { get; set; }
 
-        public int LangKeyId { set; get; }
+        public long LangKeyId { set; get; }
 
         /// <summary>
         /// Language code of label (eg 'en').

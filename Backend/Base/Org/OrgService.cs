@@ -1,6 +1,7 @@
 ﻿using Backend.Base.Entity;
 using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Caching.Memory;
+using System.Security.Cryptography;
 using GC = Backend.GlobalConstants;
 
 /// <summary>
@@ -61,6 +62,24 @@ namespace Backend.Base.Org
             {
                 return null;
             }
+        }
+
+        public async Task UpdateOrg(OrgEnt org)
+        {
+            await Sql.Execute(
+                    "UPDATE base.org " +
+                    "SET " +
+                        Update("nr", org.Nr) +
+                        Update("code", org.Code) +
+                        Update("descr", org.Description) +
+                        Update("encoded", org.Encoded) +
+                        Update("updated", org.Updated) +
+                        Update("isActive", org.IsActive) +
+                        Update("langCode", org.LangCode) +
+                        NoComma(Update("langLabelVariant", org.LangLabelVariant)) +
+                    " WHERE id = " + org.Id
+            );
+            _memoryCache.Set(GC.CacheKeyOrgPrefix + org.Nr, org);
         }
 
     }

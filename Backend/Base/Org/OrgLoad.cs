@@ -3,7 +3,7 @@ using Microsoft.Data.SqlClient;
 
 /// <summary>
 /// Utility class to load org entities.
-/// Used by singleton service and others (keeps the DRY princple)
+/// Used by singleton service and other services (keeps the DRY princple)
 /// Created: June 2025
 /// [*Licence*]
 /// Author: John Stewart

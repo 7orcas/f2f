@@ -2,7 +2,7 @@
 {
     public class LoginEnt
     {
-        public int Id { get; set; }
+        public long Id { get; set; }
         public string Userid { get; set; }
         public string Password { get; set; }
         public string Orgs { get; set; }

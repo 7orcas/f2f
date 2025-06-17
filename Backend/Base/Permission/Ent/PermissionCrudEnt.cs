@@ -11,7 +11,7 @@ namespace Backend.Base.Permission.Ent
     public class PermissionCrudEnt
     {
         public PermissionCrudEnt() { }
-        public int PermissionId {  get; set; }
+        public long PermissionId {  get; set; }
         public string Crud { get; set; }
 
         public void AddCrud(string crud)

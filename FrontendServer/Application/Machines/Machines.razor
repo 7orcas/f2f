@@ -1,4 +1,4 @@
-﻿@attribute [Route(ModPageRoutes.MachinesRoute)]
+﻿@attribute [Route(AppPageRoutes.MachinesRoute)]
 @inherits BasePage
 @attribute [Authorize]
 
@@ -67,7 +67,7 @@
         if (firstRender)
         {
             await InitialiseBasePage();
-            _pageCode = ModPageRoutes.MachinesPageCode;
+            _pageCode = AppPageRoutes.MachinesPageCode;
             machines = await Call<List<MachineDto>>("api/Machine/list");
 
             StateHasChanged();

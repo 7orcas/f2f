@@ -6,13 +6,15 @@ using System.Threading.Tasks;
 
 namespace Common.DTO
 {
-    public class _BaseDto
+    public class OrgDto
     {
         public long Id { get; set; }
-        public long OrgId { get; set; }
+        public int Nr { get; set; }
         public string Code { get; set; }
         public string? Description { get; set; }
         public DateTime Updated { get; set; }
         public bool IsActive { get; set; }
+        public string? LangCode { get; set; }
+        public int? LangLabelVariant { get; set; }
     }
 }

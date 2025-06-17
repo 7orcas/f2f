@@ -15,6 +15,8 @@
         public const string CrudReadList = "l";
         public const string CrudIgnore   = "x"; //Don't need a permission crud setting
 
+        public const string DateTimeFormat = "yyyy-MM-dd HH:mm:ss";
+
         //IMemoryCache keys
         public const string CacheKeyTokenPrefix     = "TS_";
         public const string CacheKeyOrgPrefix       = "OS_";

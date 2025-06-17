@@ -19,9 +19,8 @@ CREATE TABLE cntrl.token (
 */
 
 CREATE TABLE base.org (
-    id          INT             PRIMARY KEY IDENTITY (1, 1) NOT NULL,
+    id          BIGINT             PRIMARY KEY IDENTITY (1, 1) NOT NULL,
 	nr          INT             NOT NULL  UNIQUE,
-	hardCodedNr INT             NOT NULL DEFAULT (0),
 	code        NVARCHAR (100)  NOT NULL,
 	descr       NVARCHAR (MAX)  NOT NULL,
 	encoded     NVARCHAR (MAX)  NULL,
@@ -32,7 +31,7 @@ CREATE TABLE base.org (
 );
 CREATE TABLE base.zzz
 (
-	id             INT             PRIMARY KEY IDENTITY (10000, 1) NOT NULL,
+	id             BIGINT             PRIMARY KEY IDENTITY (10000, 1) NOT NULL,
 	xxx            NVARCHAR (40)   NOT NULL UNIQUE,
 	yyy            NVARCHAR (100)  NOT NULL,
 	orgs           NVARCHAR (MAX) NOT  NULL,
@@ -45,7 +44,7 @@ CREATE TABLE base.zzz
 );
 CREATE TABLE base.permission
 (
-	id          INT             PRIMARY KEY IDENTITY (1, 1) NOT NULL,
+	id          BIGINT             PRIMARY KEY IDENTITY (1, 1) NOT NULL,
 	code        NVARCHAR (100)  NOT NULL,
 	descr       NVARCHAR (MAX)  NULL,
 	encoded     NVARCHAR (MAX)  NULL,
@@ -55,8 +54,8 @@ CREATE TABLE base.permission
 );
 CREATE TABLE base.role
 (
-	id          INT             PRIMARY KEY IDENTITY (10000, 1) NOT NULL,
-	orgId       INT             NOT NULL,
+	id          BIGINT             PRIMARY KEY IDENTITY (10000, 1) NOT NULL,
+	orgId       BIGINT            NOT NULL,
 	code        NVARCHAR (100)  NOT NULL,
 	descr       NVARCHAR (MAX)  NULL,
 	encoded     NVARCHAR (MAX)  NULL,
@@ -67,9 +66,9 @@ CREATE TABLE base.role
 );
 CREATE TABLE base.rolePermission
 (
-	id           INT             PRIMARY KEY IDENTITY (10000, 1) NOT NULL,
-    roleId       INT             NOT NULL,
-    permissionId INT             NOT NULL,
+	id           BIGINT             PRIMARY KEY IDENTITY (10000, 1) NOT NULL,
+    roleId       BIGINT           NOT NULL,
+    permissionId BIGINT             NOT NULL,
 	crud         NVARCHAR (10)   NULL,
 	updated     DATETIME         NOT NULL DEFAULT GETDATE(),
 	isActive    BIT              NOT NULL DEFAULT 1,
@@ -79,9 +78,9 @@ CREATE TABLE base.rolePermission
 );
 CREATE TABLE base.zzzRole
 (
-	id           INT             PRIMARY KEY IDENTITY (10000, 1) NOT NULL,
-	zzzId        INT             NOT NULL,
-	roleId       INT             NOT NULL,
+	id           BIGINT             PRIMARY KEY IDENTITY (10000, 1) NOT NULL,
+	zzzId        BIGINT             NOT NULL,
+	roleId       BIGINT             NOT NULL,
 	updated      DATETIME        NOT NULL DEFAULT GETDATE(),
 	isActive     BIT             NOT NULL DEFAULT 1,
 	FOREIGN KEY (zzzId)          REFERENCES base.zzz(id),
@@ -90,7 +89,7 @@ CREATE TABLE base.zzzRole
 );
 CREATE TABLE base.langCode
 (
-	id         INT             PRIMARY KEY IDENTITY (1, 1) NOT NULL,
+	id         BIGINT             PRIMARY KEY IDENTITY (1, 1) NOT NULL,
 	code       NVARCHAR (4)    NOT NULL,
 	descr      NVARCHAR (MAX)  NOT NULL,
 	encoded    NVARCHAR (MAX)  NULL,
@@ -99,7 +98,7 @@ CREATE TABLE base.langCode
 );
 CREATE TABLE base.langKey
 (
-	id         INT             PRIMARY KEY IDENTITY (1, 1) NOT NULL,
+	id         BIGINT             PRIMARY KEY IDENTITY (1, 1) NOT NULL,
 	pack       NVARCHAR (MAX)  NULL,
 	code       NVARCHAR (100)  NOT NULL,
 	descr      NVARCHAR (MAX)  NULL,
@@ -108,8 +107,8 @@ CREATE TABLE base.langKey
 );
 CREATE TABLE base.langLabel
 (
-	id             INT             PRIMARY KEY IDENTITY (1, 1) NOT NULL,
-	langKeyId  INT             NOT NULL,
+	id             BIGINT             PRIMARY KEY IDENTITY (1, 1) NOT NULL,
+	langKeyId  BIGINT             NOT NULL,
     langCode   NVARCHAR (4)    NOT NULL,
 	variant    INT             NULL,
 	code           NVARCHAR (MAX)  NOT NULL,
@@ -120,12 +119,12 @@ CREATE TABLE base.langLabel
 	CONSTRAINT langLabel_uq_code   UNIQUE (langKeyId, langCode, variant)
 );
 CREATE TABLE base.audit (
-    id                       INT                 PRIMARY KEY IDENTITY (1, 1) NOT NULL,
-	orgId                 INT                 NOT NULL,
+    id                       BIGINT                 PRIMARY KEY IDENTITY (1, 1) NOT NULL,
+	orgId                 BIGINT                 NOT NULL,
 	source              INT                 NOT NULL,
 	entityTypeId    INT                 NOT NULL,
-	entityId            INT                 NULL,
-	userId               INT                 NOT NULL,
+	entityId            BIGINT                 NULL,
+	userId               BIGINT                 NOT NULL,
 	created            DATETIME    NOT NULL DEFAULT GETDATE(),
 	crud                  NVARCHAR (10)   NULL,
 	details             NVARCHAR (MAX)  NULL

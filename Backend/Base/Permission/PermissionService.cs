@@ -63,9 +63,9 @@ namespace Backend.Base.Permission
         /// <param name="userId"></param>
         /// <param name="orgId"></param>
         /// <returns></returns>
-        public async Task<List<PermissionCrudEnt>> LoadEffectivePermissionsInt(int userId, int orgId)
+        public async Task<List<PermissionCrudEnt>> LoadEffectivePermissionsInt(long userId, long orgId)
         {
-            var perms = new Dictionary<int, PermissionCrudEnt>();
+            var perms = new Dictionary<long, PermissionCrudEnt>();
             try
             {
                 var sql = "SELECT rp.permissionId, rp.crud " +
@@ -103,7 +103,7 @@ namespace Backend.Base.Permission
             }
         }
 
-        private void AddPermission (int permissionId, string crud, Dictionary<int, PermissionCrudEnt> perms)
+        private void AddPermission (long permissionId, string crud, Dictionary<long, PermissionCrudEnt> perms)
         {
             if (!perms.ContainsKey(permissionId))
                 perms[permissionId] = new PermissionCrudEnt

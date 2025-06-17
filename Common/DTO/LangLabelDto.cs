@@ -8,8 +8,8 @@ namespace Common.DTO
 {
     public class LangLabelDto
     {
-        public int Id { get; set; }
-        public int LangKeyId { set; get; }
+        public long Id { get; set; }
+        public long LangKeyId { set; get; }
         public string LangKeyCode { get; set; }
         public int? Variant { get; set; }
         public string LangCode { get; set; }

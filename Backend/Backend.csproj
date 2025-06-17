@@ -27,8 +27,4 @@
     <Folder Include="Controllers\" />
   </ItemGroup>
 
-  <ItemGroup>
-    <None Include="Base\BaseService.Base.SqlUtils.cs" />
-  </ItemGroup>
-
 </Project>

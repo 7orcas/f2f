@@ -8,6 +8,6 @@ namespace Common.DTO
 {
     public class UserRoleDto : _BaseDto
     {
-        public int RoleId { set; get; }
+        public long RoleId { set; get; }
     }
 }

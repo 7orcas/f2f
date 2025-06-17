@@ -1,8 +1,8 @@
 
 
 CREATE TABLE app.machineGroup (
-    id                     INT             PRIMARY KEY IDENTITY (10000, 1) NOT NULL,
-	orgId                  INT             NOT NULL,
+    id                     BIGINT             PRIMARY KEY IDENTITY (10000, 1) NOT NULL,
+	orgId                  BIGINT             NOT NULL,
 	code                   NVARCHAR (100)  NOT NULL,
 	descr                  NVARCHAR (MAX)  NULL,
 	encoded                NVARCHAR (MAX)  NULL,
@@ -11,10 +11,10 @@ CREATE TABLE app.machineGroup (
 	FOREIGN KEY (orgId)    REFERENCES      base.org(id)
 );
 CREATE TABLE app.machine (
-    id                     INT             PRIMARY KEY IDENTITY (10000, 1) NOT NULL,
-	orgId                  INT             NOT NULL,
+    id                     BIGINT             PRIMARY KEY IDENTITY (10000, 1) NOT NULL,
+	orgId                  BIGINT             NOT NULL,
 	classification         INT             NULL,
-	machineGroupId         INT             NULL,
+	machineGroupId         BIGINT             NULL,
 	stationPairs           INT             NOT NULL,
 	code                   NVARCHAR (100)  NOT NULL,
 	descr                  NVARCHAR (MAX)  NULL,

@@ -10,7 +10,7 @@ namespace Backend.Base.Config.Ent
 {
     public class OrgConfig
     {
-        public int OrgId { get; set; }
+        public long OrgId { get; set; }
         public string LangCodeDefault { get; set; }
         public bool IsLangCodeEditable { get; set; } 
         public List<LanguageConfig> Languages { get; set; }

@@ -13,6 +13,6 @@
         public string PermissionCode { get; set; }
         public string PermissionsDescr { get; set; }
         public string Crud { get; set; }
-        public int OrgId { get; set; }
+        public long OrgId { get; set; }
     }
 }

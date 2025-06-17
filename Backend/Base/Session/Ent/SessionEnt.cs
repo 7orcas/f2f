@@ -24,7 +24,7 @@ namespace Backend.Base.Session.Ent
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        public string GetUserPermissionCrud (int id)
+        public string GetUserPermissionCrud (long id)
         {
             var p = User.Permissions.FirstOrDefault(p => p.PermissionId == id);
             if (p == null) return null;

@@ -8,10 +8,10 @@ namespace Common.DTO
 {
     public class AppConfigDto
     {
-        public int OrgId { get; set; }
+        public long OrgId { get; set; }
         public string OrgDescription { get; set; }
-        public int UniqueUserId { get; set; }
-        public int UniqueSessionId { get; set; }
+        public long UniqueUserId { get; set; }
+        public long UniqueSessionId { get; set; }
         public LanguageConfigDto[] Languages { get; set; }
         public LabelConfigDto Label {  get; set; }
     }

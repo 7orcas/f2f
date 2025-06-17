@@ -172,7 +172,7 @@ namespace Backend.Base.Login
             return await SetAttempts(l.Id, l.Attempts.Value);
         }
 
-        private async Task<bool> SetAttempts(int id, int attempts)
+        private async Task<bool> SetAttempts(long id, int attempts)
         {
             await Sql.Execute(
                    "UPDATE base.zzz "

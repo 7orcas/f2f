@@ -1,0 +1,77 @@
+﻿@attribute [Route(BasePageRoutes.OrgRoute)]
+@inherits BasePage
+@attribute [Authorize]
+@inject HttpClient Http
+@using System.Text;
+@using sysJ = System.Text.Json
+@using GC = FrontendServer.GlobalConstants;
+
+<AppTitle TitleKey="Org" PageCode=@_pageCode>
+    <Label Key="OrgSub"></Label>
+</AppTitle>
+
+
+@if (_isLoading || _isError)
+{
+    <LoadingWithError IsLoading=@_isLoading
+                      IsError=@_isError
+                      Message=@_errorMessage>
+        @exception
+    </LoadingWithError>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th></th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><Label Key="Org"></Label></td>
+                <td>@org.Code</td>
+            </tr>
+            <tr>
+                <td><Label Key="LangCode"></Label></td>
+                <td><MudTextField Label="LangCode" @bind-Value="@org.LangCode" Variant="Variant.Filled"></MudTextField></td>
+            </tr>
+        </tbody>
+    </table>
+
+    <button @onclick="Save">Save</button>
+}
+
+
+@code {
+    private OrgDto? org;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            await InitialiseBasePage();
+            _pageCode = BasePageRoutes.OrgPageCode;
+            org = await Call<OrgDto>(GC.URL_org);
+
+            StateHasChanged();
+        }
+    }
+
+    private async void Save()
+    {
+        var json = sysJ.JsonSerializer.Serialize(org);
+        var content = new StringContent(json, Encoding.UTF8, "application/json");
+
+        var client = await SetClient();
+
+        var response = await client.PostAsync(GC.URL_org_update, content);
+
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        _isLoading = true;
+    }
+}
