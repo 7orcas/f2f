@@ -12,6 +12,6 @@ namespace Backend.Base.Config.Ent
     {
         public string LangCode { get; set; }
         public bool IsActive { get; set; } = false;
-        public bool IsUpdateable { get; set; } = false;
+        public bool IsEditable { get; set; } = false;
     }
 }

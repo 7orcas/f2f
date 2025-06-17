@@ -14,9 +14,7 @@ namespace Backend.Base.Role.Ent
     {
         public RoleEnt() { }
 
-        public override void Decode()
-        {
-
-        }
+        public override void Decode() { }
+        public override void Encode() { }
     }
 }

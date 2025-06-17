@@ -53,7 +53,7 @@ namespace Backend.Base.Config
             {
                 langs.Add(new LanguageConfigDto {
                     LangCode = lang.LangCode,
-                    IsUpdateable = lang.IsUpdateable,
+                    IsUpdateable = lang.IsEditable,
                 });
             }
             

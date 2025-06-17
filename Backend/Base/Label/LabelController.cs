@@ -98,7 +98,7 @@ namespace Backend.Base.Label
                             Label = l.Code,
                             Tooltip = l.Tooltip,
                             Updated = l.Updated,
-                            IsUpdateable = lang.IsUpdateable,
+                            IsUpdateable = lang.IsEditable,
                         };
                         break;
                     }
@@ -109,7 +109,7 @@ namespace Backend.Base.Label
                         Id = GC.NewRecordId,
                         LangKeyId = key != null? key.Id : GC.NewRecordId,
                         LangCode = lang.LangCode,
-                        IsUpdateable = lang.IsUpdateable,
+                        IsUpdateable = lang.IsEditable,
                     };
                 list.Add(dto);
             }

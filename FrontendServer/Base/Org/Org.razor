@@ -24,21 +24,32 @@ else
     <table class="table">
         <thead>
             <tr>
-                <th></th>
-                <th></th>
+                <th><Label Key="LangCode"></Label></th>
+                <th><Label Key="Editable"></Label></th>
             </tr>
         </thead>
         <tbody>
-            <tr>
-                <td><Label Key="Org"></Label></td>
-                <td>@org.Code</td>
-            </tr>
-            <tr>
-                <td><Label Key="LangCode"></Label></td>
-                <td><MudTextField Label="LangCode" @bind-Value="@org.LangCode" Variant="Variant.Filled"></MudTextField></td>
-            </tr>
+            @foreach (var lang in org.Languages)
+            {
+                <tr>
+                    <td>@lang.LangCode</td>
+                    <td><MudCheckBox @bind-Value="@lang.IsEditable" Variant="Variant.Filled"></MudCheckBox></td>
+                </tr>
+            }
         </tbody>
     </table>
+
+    <div>
+        
+        <MudTextField Label="LangCode" @bind-Value="@org.LangCode" Variant="Variant.Filled"></MudTextField>
+        
+        <p></p>
+        <MudNumericField Label="MinLength" @bind-Value="@org.PasswordRule.MinLength" Variant="Variant.Filled"></MudNumericField>
+        <MudNumericField Label="MaxLength" @bind-Value="@org.PasswordRule.MaxLength" Variant="Variant.Filled"></MudNumericField>
+        <MudCheckBox Label="IsMixedCase" @bind-Value="@org.PasswordRule.IsMixedCase" Variant="Variant.Filled"></MudCheckBox>
+        <MudCheckBox Label="IsNonLetter" @bind-Value="@org.PasswordRule.IsNonLetter" Variant="Variant.Filled"></MudCheckBox>
+        <MudCheckBox Label="IsNumber" @bind-Value="@org.PasswordRule.IsNumber" Variant="Variant.Filled"></MudCheckBox>
+    </div>
 
     <button @onclick="Save">Save</button>
 }
@@ -46,7 +57,7 @@ else
 
 @code {
     private OrgDto? org;
-
+    
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         if (firstRender)
@@ -54,6 +65,8 @@ else
             await InitialiseBasePage();
             _pageCode = BasePageRoutes.OrgPageCode;
             org = await Call<OrgDto>(GC.URL_org);
+
+            
 
             StateHasChanged();
         }

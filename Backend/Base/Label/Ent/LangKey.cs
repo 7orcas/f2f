@@ -9,7 +9,7 @@ using System.Threading.Tasks;
  */
 namespace Backend.Base.Label.Ent
 {
-    public class LangKey : Encode
+    public class LangKey : BaseEncode
     {
         /// <summary>
         /// The language code's id.
@@ -38,9 +38,7 @@ namespace Backend.Base.Label.Ent
         /// </summary>
         public bool IsActive { get; set; }
 
-        public override void Decode()
-        {
-
-        }
+        public override void Decode() { }
+        public override void Encode() { }
     }
 }

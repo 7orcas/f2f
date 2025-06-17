@@ -95,7 +95,7 @@ namespace Backend.Base.Config
                 langList.Add(new LanguageConfig { 
                     LangCode = cl.LangCode,
                     IsActive = user.IsService || cl.IsActive,
-                    IsUpdateable = up
+                    IsEditable = up
                 });
             }
 

@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Backend.Base.Label.Ent
 {
-    public class LangLabel : Encode
+    public class LangLabel : BaseEncode
     {
         /// <summary>
         /// The label's id.
@@ -47,9 +47,7 @@ namespace Backend.Base.Label.Ent
         [NotMapped]
         public string? LangKeyCode { get; set; }
 
-        public override void Decode()
-        {
-
-        }
+        public override void Decode() { }
+        public override void Encode() { }
     }
 }

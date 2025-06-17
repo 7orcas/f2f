@@ -66,6 +66,7 @@ namespace Backend.Base.Org
 
         public async Task UpdateOrg(OrgEnt org)
         {
+            org.Encode();
             await Sql.Execute(
                     "UPDATE base.org " +
                     "SET " +

@@ -10,7 +10,7 @@
 
 namespace Backend.Base.Org.Ent
 {
-    public partial class OrgEnt : Encode
+    public class OrgEnt : BaseEncode
     {
         public long Id { get; set; }
         public int Nr { get; set; }
@@ -20,5 +20,16 @@ namespace Backend.Base.Org.Ent
         public bool IsActive { get; set; }
         public string? LangCode { get; set; }
         public int? LangLabelVariant { get; set; }
+        
+        public OrgEnc Encoding { get; set; }
+
+        public override void Decode()
+        {
+            Encoding = Decode<OrgEnc>();
+        }
+        public override void Encode()
+        {
+            Encode(Encoding);
+        }
     }
 }

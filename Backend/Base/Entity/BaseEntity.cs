@@ -8,7 +8,7 @@
 
 namespace Backend.Base.Entity
 {
-    public abstract class BaseEntity : Encode
+    public abstract class BaseEntity : BaseEncode
     {
         public long Id { get; set; }
         public long OrgId { get; set; }

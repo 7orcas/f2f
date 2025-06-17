@@ -1,4 +1,7 @@
 ﻿
+
+using System.Text;
+
 /// <summary>
 /// Interesction of user - role
 /// Created: April 2025
@@ -14,9 +17,7 @@ namespace Backend.Base.Role.Ent
 
         public UserRoleEnt() {}
 
-        public override void Decode()
-        {
-
-        }
+        public override void Decode() { }
+        public override void Encode() { }
     }
 }

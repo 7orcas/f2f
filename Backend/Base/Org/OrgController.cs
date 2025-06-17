@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Text;
 using GC = Backend.GlobalConstants;
 
 /// <summary>
@@ -41,7 +42,18 @@ namespace Backend.Base.Org
             var session = HttpContext.Items["session"] as SessionEnt;
 
             var org = await _orgService.GetOrg(session.Org.Nr);
-            
+            var enc = org.Encoding;
+
+            var langDtos = new List<OrgLangDto>();
+            foreach (var lang in enc.Languages)
+            {
+                langDtos.Add(new OrgLangDto
+                {
+                    LangCode = lang.LangCode,
+                    IsEditable = lang.IsEditable,
+                });
+            }
+
             var r = new _ResponseDto
             {
                 SuccessMessage = "Config Ok",
@@ -55,6 +67,16 @@ namespace Backend.Base.Org
                     IsActive = org.IsActive,
                     LangCode = org.LangCode,
                     LangLabelVariant = org.LangLabelVariant,
+                    Languages = langDtos,
+
+                    PasswordRule = new PasswordRuleDto
+                    {
+                        MinLength = enc.PasswordRule.MinLength,
+                        MaxLength = enc.PasswordRule.MaxLength,
+                        IsMixedCase = enc.PasswordRule.IsMixedCase,
+                        IsNonLetter = enc.PasswordRule.IsNonLetter,
+                        IsNumber = enc.PasswordRule.IsNumber,
+                    }
                 }
             };
             return Ok(r);
@@ -70,6 +92,24 @@ namespace Backend.Base.Org
         {
             var session = HttpContext.Items["session"] as SessionEnt;
 
+            var langs = new List<Language>();
+            foreach (var langDto in dto.Languages)
+            {
+                langs.Add(new Language
+                {
+                    LangCode = langDto.LangCode,
+                    IsEditable = langDto.IsEditable,
+                });
+            }
+
+            var pw = new PasswordRule() {
+                MinLength = dto.PasswordRule.MinLength,
+                MaxLength = dto.PasswordRule.MaxLength,
+                IsMixedCase = dto.PasswordRule.IsMixedCase,
+                IsNonLetter = dto.PasswordRule.IsNonLetter,
+                IsNumber = dto.PasswordRule.IsNumber,
+            };
+
             var org = new OrgEnt
             {
                 Id = dto.Id,
@@ -81,7 +121,11 @@ namespace Backend.Base.Org
                 LangCode = dto.LangCode,
                 LangLabelVariant = dto.LangLabelVariant,
             };
-
+            org.Encoding = new OrgEnc
+            {
+                Languages = langs,
+                PasswordRule = pw,
+            };
 
             await _orgService.UpdateOrg(org);
 

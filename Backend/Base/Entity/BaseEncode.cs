@@ -10,10 +10,11 @@
 
 namespace Backend.Base.Entity
 {
-    public abstract class Encode
+    public abstract class BaseEncode
     {
         public string Encoded { get; set; } = string.Empty;
         public abstract void Decode();
+        public abstract void Encode();
 
         protected T Decode<T>() where T : new()
         {
@@ -21,10 +22,9 @@ namespace Backend.Base.Entity
             return JsonConvert.DeserializeObject<T>(Encoded) ?? new T();
         }
 
-        protected int Get (int? value, int valueDefault) => value == null? valueDefault : value.Value;
-        protected string Get(string? value, string valueDefault) => string.IsNullOrEmpty(value) ? valueDefault : value;
-        protected List<string> Get(List<string>? value, List<string> valueDefault) => value == null ? valueDefault : value;
-        protected bool Get(bool? value, bool valueDefault) => value == null ? valueDefault : value.Value;
-
+        public void Encode<T>(T enc)
+        {
+            Encoded = JsonConvert.SerializeObject(enc);
+        }
     }
 }

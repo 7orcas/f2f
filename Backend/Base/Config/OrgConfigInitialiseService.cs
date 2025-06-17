@@ -47,7 +47,7 @@ namespace Backend.Base.Config
             {
                 //Config languages
                 var lConfigs = new List<LanguageConfig>();
-                foreach (var l in org.Languages)
+                foreach (var l in org.Encoding.Languages)
                 {
                     var v = ValidateLanguage(org, l, langCodes);
                     if (v != null) lConfigs.Add(v);
@@ -58,7 +58,6 @@ namespace Backend.Base.Config
                 {
                     OrgId = org.Id,
                     LangCodeDefault = org.LangCode,
-                    IsLangCodeEditable = org.IsLangCodeEditable,
                     Languages = lConfigs
                 };
 
@@ -80,17 +79,17 @@ namespace Backend.Base.Config
             return list;
         }
 
-        private LanguageConfig? ValidateLanguage(OrgEnt org, string langCode, List<LangCode> langCodes)
+        private LanguageConfig? ValidateLanguage(OrgEnt org, Language lang, List<LangCode> langCodes)
         {
             //Lang Code must exist in database
-            var lc = langCodes.Find(c => c.Code == langCode);
+            var lc = langCodes.Find(c => c.Code == lang.LangCode);
             if (lc == null) return null;
 
             return new LanguageConfig()
             {
-                LangCode = langCode,
+                LangCode = lang.LangCode,
                 IsActive = lc.IsActive,
-                IsUpdateable = org.IsLangCodeEditable,
+                IsEditable = lang.IsEditable,
             };
         }
     }
