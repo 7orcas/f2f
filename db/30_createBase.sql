@@ -19,8 +19,7 @@ CREATE TABLE cntrl.token (
 */
 
 CREATE TABLE base.org (
-    id          BIGINT             PRIMARY KEY IDENTITY (1, 1) NOT NULL,
-	nr          INT             NOT NULL  UNIQUE,
+    id          INT             PRIMARY KEY IDENTITY (1, 1) NOT NULL,
 	code        NVARCHAR (100)  NOT NULL,
 	descr       NVARCHAR (MAX)  NOT NULL,
 	encoded     NVARCHAR (MAX)  NULL,
@@ -55,7 +54,7 @@ CREATE TABLE base.permission
 CREATE TABLE base.role
 (
 	id          BIGINT             PRIMARY KEY IDENTITY (10000, 1) NOT NULL,
-	orgId       BIGINT            NOT NULL,
+	orgId       INT            NOT NULL,
 	code        NVARCHAR (100)  NOT NULL,
 	descr       NVARCHAR (MAX)  NULL,
 	encoded     NVARCHAR (MAX)  NULL,
@@ -100,7 +99,7 @@ CREATE TABLE base.langKey
 (
 	id         BIGINT             PRIMARY KEY IDENTITY (1, 1) NOT NULL,
 	pack       NVARCHAR (MAX)  NULL,
-	code       NVARCHAR (100)  NOT NULL,
+	code       NVARCHAR (100)  NOT NULL UNIQUE,
 	descr      NVARCHAR (MAX)  NULL,
 	encoded    NVARCHAR (MAX)  NULL,
 	updated    DATETIME        NOT NULL DEFAULT GETDATE(),
@@ -120,7 +119,7 @@ CREATE TABLE base.langLabel
 );
 CREATE TABLE base.audit (
     id                       BIGINT                 PRIMARY KEY IDENTITY (1, 1) NOT NULL,
-	orgId                 BIGINT                 NOT NULL,
+	orgId                 INT                 NOT NULL,
 	source              INT                 NOT NULL,
 	entityTypeId    INT                 NOT NULL,
 	entityId            BIGINT                 NULL,

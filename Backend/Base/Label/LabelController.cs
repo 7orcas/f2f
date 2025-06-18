@@ -34,7 +34,7 @@ namespace Backend.Base.Label
             var session = HttpContext.Items["session"] as SessionEnt;
             var labels = await _labelService.GetLanguageLabelList(langCode);
             var list = new List<LangLabelDto>();
-
+            
             foreach (var l in labels)
             {
                 list.Add(new LangLabelDto

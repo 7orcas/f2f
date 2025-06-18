@@ -36,6 +36,7 @@
         public const int EntityTypeLangLabelList    = 9;
         public const int EntityTypeLangLabelRelated = 10;
         public const int EntityTypeConfig           = 11;
+        public const int EntityTypeOrg              = 12;
 
         public const int EntityTypeMachine          = 101;
 
@@ -51,6 +52,7 @@
             EntityTypeLangLabelList,    "LangLabelList",
             EntityTypeLangLabelRelated, "LangLabelRelated",
             EntityTypeConfig,           "Config",
+            EntityTypeOrg,              "Org",
 
             EntityTypeMachine,          "Machine",
         };

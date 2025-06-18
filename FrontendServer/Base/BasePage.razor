@@ -21,6 +21,10 @@
     private AppConfigDto _config;
     private Dictionary<string, LangLabelDto> _labels;
 
+    //Debugging
+    public bool _debugOutlined = true;
+
+
     public async Task InitialiseBasePage()
     {
         await SetConfig();
@@ -107,4 +111,15 @@
         return Cache.GetString(key + "-" + _config.UniqueSessionId);
     }
 
+    public Typo GetTypo (GC.TextSize size){
+        switch (size){
+            case GC.TextSize.Heading: return Typo.h3; 
+            case GC.TextSize.SubHeading: return Typo.h4;
+            case GC.TextSize.Section: return Typo.h5;
+            case GC.TextSize.Large: return Typo.h6;
+            case GC.TextSize.Small: return Typo.body2;
+            case GC.TextSize.ButtonText: return Typo.h6;
+        }
+        return Typo.body1;
+    }
 }

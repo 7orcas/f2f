@@ -1,0 +1,67 @@
+﻿@inherits BasePage
+@using GC = FrontendServer.GlobalConstants;
+
+<PageTitle>@title</PageTitle>
+
+<div class="title-container">
+    <div class="title"><Label Size="GC.TextSize.Heading" Key=@TitleKey></Label></div>
+    <div class="page-code">@PageCode</div>
+</div>
+<Label Size="GC.TextSize.SubHeading" Key="@SubTitleKey"></Label>
+<div class="subtitle">
+    @ChildContent
+</div>
+@if (isToolbar)
+{
+    <MudPaper Elevation="0" Outlined="@_debugOutlined">
+        
+            <!-- Buttons -->
+            @if(TBSave.HasDelegate)
+            {
+                <MudButton OnClick="TBSave">
+                    <Label Key="SaveRec"
+                           Class="toolbar-button" 
+                           Size="GC.TextSize.ButtonText" 
+                           HideTooltip=true                        
+                    >
+                    </Label>
+                </MudButton>
+            }
+            @if(TBExport.HasDelegate)
+            {
+                <MudButton class="toolbar-button" OnClick="TBExport">
+                    <Label Key="Export"
+                           Size="GC.TextSize.ButtonText"     
+                    ></Label>
+                </MudButton>
+            }
+            <MudSpacer></MudSpacer>
+        
+    </MudPaper>
+}
+
+@code {
+    [Parameter] public string TitleKey { get; set; }
+    [Parameter] public string SubTitleKey { get; set; }
+    [Parameter] public string PageCode { get; set; }
+    [Parameter] public EventCallback TBSave { get; set; }
+    [Parameter] public EventCallback TBExport { get; set; }
+    [Parameter] public RenderFragment ChildContent { get; set; }
+
+    private string title;
+    private bool isSubTitle;
+    private bool isToolbar;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender){
+            await InitialiseBasePage();
+            title = GetLabel(TitleKey);
+            isSubTitle = string.IsNullOrEmpty(SubTitleKey);
+
+            isToolbar = TBSave.HasDelegate || TBExport.HasDelegate;
+
+            StateHasChanged();
+        }
+    }
+}

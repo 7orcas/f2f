@@ -1,0 +1,11 @@
+Org,Organisation,
+Orgs,Organisations,
+OrgSub,Configuration of Organisation,
+PW,Password,
+PWs,Passwords,
+BConf,Base Configuration,
+Langs,Languages,
+SaveRec,Save,Save Record
+Config,Configuration,
+ConfigG,General Configuration,
+LAST,<LAST LINE>,

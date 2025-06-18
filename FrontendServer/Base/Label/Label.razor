@@ -1,5 +1,7 @@
 ﻿@inherits BasePage
 @inject IDialogService DialogService
+@using GC = FrontendServer.GlobalConstants;
+
 
 <div>
     @if (!isAdminLanguage)
@@ -7,12 +9,16 @@
         @if (@IsShowToolTip())
         {
             <div data-tooltip="@ShowToolTip()">
-                <div class="@GetClass()">@ShowLabel()</div>
+                <div class="@GetClass()">
+                    <MudText Typo="@size">@ShowLabel()</MudText>
+                </div>
             </div>
         }
         else
         {
-            <div class="@GetClass()">@ShowLabel()</div>
+            <div class="@GetClass()">
+                <MudText Typo="@size">@ShowLabel()</MudText>
+            </div>
         }
     }
     else 
@@ -20,21 +26,28 @@
         @if (@IsShowToolTip())
         {
             <div data-tooltip="@ShowToolTip()">
-                <button class="@GetClass()" @onclick="OpenDialog">@ShowLabel()</button>
+                <button class="@GetClass()" @onclick="OpenDialog">
+                    <MudText Typo="@size">@ShowLabel()</MudText>
+                 </button>
             </div>
         }
         else
         {
-            <button class="@GetClass()" @onclick="OpenDialog">@ShowLabel()</button>
+            <button class="@GetClass()" @onclick="OpenDialog">
+                <MudText Typo="@size">@ShowLabel()</MudText>
+            </button>
         }
     }
 </div>
 
 
 @code {
-
     [Parameter] public string Key { get; set; }
+    [Parameter] public string Class { get; set; }
+    [Parameter] public GC.TextSize Size { get; set; } = GC.TextSize.Normal;
+    [Parameter] public bool HideTooltip { get; set; } = false;
 
+    private Typo size = Typo.body1;
     private bool showTooltip = false;
     private bool highlightNoKey = false;
     private bool isAdminLanguage = false;
@@ -45,9 +58,10 @@
         {
             await InitialiseBasePage();
             var appConfig = await GetConfig();
-            showTooltip = appConfig?.Label.ShowTooltip ?? false;
+            showTooltip = (appConfig?.Label.ShowTooltip ?? false) && !HideTooltip;
             highlightNoKey = !IsLabel(Key) && (appConfig?.Label.HighlightNoKey ?? false);
             isAdminLanguage = appConfig?.Label.IsAdminLanguage ?? false;
+            size = GetTypo(Size);
 
             StateHasChanged();
         }
@@ -67,6 +81,7 @@
         string css = isAdminLanguage ? "label-link" : "label-no-link";
         if (highlightNoKey) css += " label-no-key";
         else css += " label";
+        if (!string.IsNullOrEmpty(Class)) css += " " + Class;
         return css;
     }
 

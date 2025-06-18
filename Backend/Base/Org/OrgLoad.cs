@@ -16,8 +16,7 @@ namespace Backend.Base.Org
         static public OrgEnt Load(SqlDataReader r)
         {
             var org = new OrgEnt();
-            org.Id = GetId(r);
-            org.Nr = GetNr(r);
+            org.Id = GetInt(r, "id");
             org.Code = GetCode(r);
             org.Description = GetDescription(r);
             org.Updated = GetUpdated(r);

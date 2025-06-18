@@ -73,7 +73,7 @@ namespace Backend.Base.Config
                     r => {
                         var org = OrgLoad.Load(r);
                         list.Add(org);
-                        _memoryCache.Set(GC.CacheKeyOrgPrefix + org.Nr, org);
+                        _memoryCache.Set(GC.CacheKeyOrgPrefix + org.Id, org);
                     }
                 );
             return list;

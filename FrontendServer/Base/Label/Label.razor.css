@@ -25,6 +25,10 @@
     background-color: transparent;
 }
 
+.toolbar-button {
+    color: indianred !important;
+}
+
 [data-tooltip]:hover::after {
     display: block;
     position: absolute;

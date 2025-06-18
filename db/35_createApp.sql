@@ -2,7 +2,7 @@
 
 CREATE TABLE app.machineGroup (
     id                     BIGINT             PRIMARY KEY IDENTITY (10000, 1) NOT NULL,
-	orgId                  BIGINT             NOT NULL,
+	orgId                  INT             NOT NULL,
 	code                   NVARCHAR (100)  NOT NULL,
 	descr                  NVARCHAR (MAX)  NULL,
 	encoded                NVARCHAR (MAX)  NULL,
@@ -12,7 +12,7 @@ CREATE TABLE app.machineGroup (
 );
 CREATE TABLE app.machine (
     id                     BIGINT             PRIMARY KEY IDENTITY (10000, 1) NOT NULL,
-	orgId                  BIGINT             NOT NULL,
+	orgId                  INT             NOT NULL,
 	classification         INT             NULL,
 	machineGroupId         BIGINT             NULL,
 	stationPairs           INT             NOT NULL,

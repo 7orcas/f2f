@@ -31,17 +31,46 @@ namespace Backend.Base.Org
             _orgService = orgService;
         }
 
+        [CrudAtt(GC.CrudIgnore)]
+        [AuditListAtt(GC.EntityTypeOrg)]
+        [HttpGet("list")]
+        public async Task<IActionResult> Get()
+        {
+            var session = HttpContext.Items["session"] as SessionEnt;
+            var orgs = await _orgService.GetOrgList();
+            var list = new List<OrgDto>();
+
+            foreach (var org in orgs)
+            {
+                list.Add(new OrgDto
+                {
+                    Id = org.Id,
+                    Code = org.Code,
+                    Description = org.Description,
+                    Updated = org.Updated,
+                    IsActive = org.IsActive,
+                });
+            }
+
+            var r = new _ResponseDto
+            {
+                SuccessMessage = "Ok",
+                Result = list
+            };
+            return Ok(r);
+        }
+
         /// <summary>
         /// Get Org
         /// </summary>
+        /// <param name="id"></param>
         /// <returns></returns>
         [CrudAtt(GC.CrudIgnore)]
-        [HttpGet("get")]
-        public async Task<IActionResult> GetOrg()
+        [AuditListAtt(GC.EntityTypeOrg)]
+        [HttpGet("get/{id}")]
+        public async Task<IActionResult> GetOrg(int id)
         {
-            var session = HttpContext.Items["session"] as SessionEnt;
-
-            var org = await _orgService.GetOrg(session.Org.Nr);
+            var org = await _orgService.GetOrg(id);
             var enc = org.Encoding;
 
             var langDtos = new List<OrgLangDto>();
@@ -60,7 +89,6 @@ namespace Backend.Base.Org
                 Result = new OrgDto
                 {
                     Id = org.Id,
-                    Nr = org.Nr,
                     Code = org.Code,
                     Description = org.Description,
                     Updated = org.Updated,
@@ -87,6 +115,7 @@ namespace Backend.Base.Org
         /// </summary>
         /// <returns></returns>
         [CrudAtt(GC.CrudIgnore)]
+        [AuditListAtt(GC.EntityTypeOrg)]
         [HttpPost("update")]
         public async Task<IActionResult> UpdateOrg([FromBody] OrgDto dto)
         {
@@ -113,7 +142,6 @@ namespace Backend.Base.Org
             var org = new OrgEnt
             {
                 Id = dto.Id,
-                Nr = dto.Nr,
                 Code = dto.Code,
                 Description = dto.Description,
                 Updated = dto.Updated,

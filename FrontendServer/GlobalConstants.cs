@@ -18,9 +18,24 @@
         public const string URL_audit_list        = "api/Audit/list";
         public const string URL_role_list         = "api/Role/list";
         public const string URL_config            = "api/Config/get";
-        public const string URL_org               = "api/Org/get";
+        public const string URL_org_list          = "api/Org/list";
+        public const string URL_org               = "api/Org/get/";
         public const string URL_org_update        = "api/Org/update";
         public const string URL_label_clientlist  = "api/Label/clientlist/";
         public const string URL_label_relatedlist = "api/Label/relatedlist/";
+
+
+        public enum TextSize
+        {
+            Heading    = 1,
+            SubHeading = 2,
+            Section    = 3,
+            Large      = 4,
+            Normal     = 5,
+            Small      = 6,
+            ButtonText = 7,
+        }
+
+
     }
 }

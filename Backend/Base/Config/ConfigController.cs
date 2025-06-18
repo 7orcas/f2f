@@ -46,7 +46,7 @@ namespace Backend.Base.Config
             var userConfig = session.UserConfig;
 
             var langCodeCurrent = userConfig.LangCodeCurrent;
-            var isAdminLanguage = userConfig.Languages != null;
+            var isAdminLanguage = false; // userConfig.Languages != null;
 
             var langs = new List<LanguageConfigDto>();
             foreach (var lang in userConfig.Languages)

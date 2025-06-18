@@ -2,14 +2,19 @@
 @inherits BasePage
 @attribute [Authorize]
 @inject HttpClient Http
+@using MudBlazor
+@using FrontendServer.Base.Util
 @using System.Text;
 @using sysJ = System.Text.Json
 @using GC = FrontendServer.GlobalConstants;
 
-<AppTitle TitleKey="Org" PageCode=@_pageCode>
-    <Label Key="OrgSub"></Label>
-</AppTitle>
 
+<Header 
+    TitleKey="Org" 
+    SubTitleKey="OrgSub" 
+    PageCode=@_pageCode
+    TBSave="Save" 
+></Header>
 
 @if (_isLoading || _isError)
 {
@@ -19,44 +24,103 @@
         @exception
     </LoadingWithError>
 }
-else
-{
-    <table class="table">
-        <thead>
-            <tr>
-                <th><Label Key="LangCode"></Label></th>
-                <th><Label Key="Editable"></Label></th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var lang in org.Languages)
-            {
-                <tr>
-                    <td>@lang.LangCode</td>
-                    <td><MudCheckBox @bind-Value="@lang.IsEditable" Variant="Variant.Filled"></MudCheckBox></td>
-                </tr>
-            }
-        </tbody>
-    </table>
 
-    <div>
+<p></p>
+<MudGrid>
         
-        <MudTextField Label="LangCode" @bind-Value="@org.LangCode" Variant="Variant.Filled"></MudTextField>
-        
-        <p></p>
-        <MudNumericField Label="MinLength" @bind-Value="@org.PasswordRule.MinLength" Variant="Variant.Filled"></MudNumericField>
-        <MudNumericField Label="MaxLength" @bind-Value="@org.PasswordRule.MaxLength" Variant="Variant.Filled"></MudNumericField>
-        <MudCheckBox Label="IsMixedCase" @bind-Value="@org.PasswordRule.IsMixedCase" Variant="Variant.Filled"></MudCheckBox>
-        <MudCheckBox Label="IsNonLetter" @bind-Value="@org.PasswordRule.IsNonLetter" Variant="Variant.Filled"></MudCheckBox>
-        <MudCheckBox Label="IsNumber" @bind-Value="@org.PasswordRule.IsNumber" Variant="Variant.Filled"></MudCheckBox>
-    </div>
+    <!-- Left Side: List -->
+    @if (showList)
+    {
+        <MudItem xs="1">
+            <Label Size="GC.TextSize.Section" Key="Orgs"></Label>
+            <MudPaper Elevation="0" Outlined="@_debugOutlined">
+                <MudList T="OrgDto"  >
+                    @for (int i = 0; i < list.Count; i++)
+                    {
+                        var index = i;
+                        <div class="@GetListRowClass(i)">
+                        <MudListItem 
+                            Value="@list[i]" 
+                            OnClick="() => OnItemSelected(list[index].Id)"
+                            Text="@list[i].Code" />
+                        </div>
+                    }
+                </MudList>
+            </MudPaper>
+        </MudItem>
+    }
 
-    <button @onclick="Save">Save</button>
-}
+
+    <!-- Right Side: Details -->
+    @if (orgDto != null)
+    {
+        <MudItem xs="8">
+            <Text Size="GC.TextSize.Section">@orgDto.Description</Text>
+            <MudPaper Elevation="0" Outlined="@_debugOutlined">
+                <MudExpansionPanels MultiExpansion="true">
+                    <MudExpansionPanel>
+                        <TitleContent>
+                            <Label Size="GC.TextSize.Large" Key="ConfigG"></Label>
+                            <div class="d-flex">
+                            </div>
+                        </TitleContent>
+                        <ChildContent>
+                                <MudTextField Label="LangCode" @bind-Value="@orgDto.LangCode" Variant="Variant.Filled"></MudTextField>
+                        </ChildContent>
+                    </MudExpansionPanel>
+
+                    <MudExpansionPanel>
+                        <TitleContent>
+                            <Label Size="GC.TextSize.Large" Key="Langs"></Label>
+                        </TitleContent>
+                        <ChildContent>
+                                <table class="table">
+                                    <thead>
+                                        <tr>
+                                            <th><Label Key="LangCode"></Label></th>
+                                            <th><Label Key="Editable"></Label></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach (var lang in orgDto.Languages)
+                                        {
+                                            <tr>
+                                                <td>@lang.LangCode</td>
+                                                <td><MudCheckBox @bind-Value="@lang.IsEditable" Variant="Variant.Filled"></MudCheckBox></td>
+                                            </tr>
+                                        }
+                                    </tbody>
+                                </table>
+                        </ChildContent>
+                    </MudExpansionPanel>
+
+                    <MudExpansionPanel>
+                        <TitleContent>
+                            <Label Size="GC.TextSize.Large" Key="PWs"></Label>
+                        </TitleContent>
+                        <ChildContent>
+                                <MudNumericField Label="MinLength" @bind-Value="@orgDto.PasswordRule.MinLength" Variant="Variant.Filled"></MudNumericField>
+                                <MudNumericField Label="MaxLength" @bind-Value="@orgDto.PasswordRule.MaxLength" Variant="Variant.Filled"></MudNumericField>
+                                <MudCheckBox Label="IsMixedCase" @bind-Value="@orgDto.PasswordRule.IsMixedCase" Variant="Variant.Filled"></MudCheckBox>
+                                <MudCheckBox Label="IsNonLetter" @bind-Value="@orgDto.PasswordRule.IsNonLetter" Variant="Variant.Filled"></MudCheckBox>
+                                <MudCheckBox Label="IsNumber" @bind-Value="@orgDto.PasswordRule.IsNumber" Variant="Variant.Filled"></MudCheckBox>
+                        </ChildContent>
+                    </MudExpansionPanel>
+
+                </MudExpansionPanels>
+            </MudPaper>
+        </MudItem>
+    }
+</MudGrid>
+
 
 
 @code {
-    private OrgDto? org;
+    private bool showList = false;
+    private List<OrgDto> list;
+    private OrgDto? selectedRec;
+    private OrgDto? orgDto;
+    private bool tbSave;
     
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
@@ -64,23 +128,45 @@ else
         {
             await InitialiseBasePage();
             _pageCode = BasePageRoutes.OrgPageCode;
-            org = await Call<OrgDto>(GC.URL_org);
-
             
+            list = await Call<List<OrgDto>>(GC.URL_org_list);
+
+            if (list.Count > 0)
+                orgDto = await Call<OrgDto>(GC.URL_org + list[0].Id);
+                
+            showList = list.Count > 1;
+            tbSave = !_isLoading && !_isError;
 
             StateHasChanged();
         }
     }
 
-    private async void Save()
+    private async void OnItemSelected(int id) 
     {
-        var json = sysJ.JsonSerializer.Serialize(org);
+        orgDto = await Call<OrgDto>(GC.URL_org + id);
+        StateHasChanged();
+    }
+
+    private async void Save() 
+    {
+        var json = sysJ.JsonSerializer.Serialize(orgDto);
         var content = new StringContent(json, Encoding.UTF8, "application/json");
-
         var client = await SetClient();
-
         var response = await client.PostAsync(GC.URL_org_update, content);
+    }
 
+    private async void Export() 
+    {
+        // var json = sysJ.JsonSerializer.Serialize(org);
+        // var content = new StringContent(json, Encoding.UTF8, "application/json");
+        // var client = await SetClient();
+       // var response = await client.PostAsync(GC.URL_org_update, content);
+
+    }
+
+    private string GetListRowClass (int i)
+    {
+        return i % 2 == 0 ? "list-odd-row" : "list-even-row";
     }
 
     protected override async Task OnInitializedAsync()

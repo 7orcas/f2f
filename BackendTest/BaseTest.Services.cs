@@ -23,7 +23,7 @@ namespace BackendTest
         {
             // Initialize fields (assuming constructor injection or manual setup)
             orgService = new OrgService(null, memoryCache);
-            orgConfigInitialiseService = new OrgConfigInitialiseService(null, memoryCache, orgService);
+            orgConfigInitialiseService = new OrgConfigInitialiseService(null, memoryCache);
             permissionService = new PermissionService(null, memoryCache);
             tokenService = new TokenService(null, memoryCache);
             configService = new ConfigService(null, memoryCache);
@@ -54,7 +54,19 @@ namespace BackendTest
     {
         public Task<List<AuditList>> GetEvents(SessionEnt session) { throw new NotImplementedException(); }
         public void LogInOut(int sourceApp, int orgId, int loginId, int entity) { }
+
+        public void LogInOut(int sourceApp, long orgId, long loginId, int entityTypeId)
+        {
+            throw new NotImplementedException();
+        }
+
         public void ReadEntity(SessionEnt session, int entityTypeId, int entityId) { }
+
+        public void ReadEntity(SessionEnt session, int entityTypeId, long entityId)
+        {
+            throw new NotImplementedException();
+        }
+
         public void ReadList(SessionEnt session, int entityTypeId, string query) { }
     }
 

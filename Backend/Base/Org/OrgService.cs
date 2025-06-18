@@ -25,23 +25,27 @@ namespace Backend.Base.Org
             _memoryCache = memoryCache;
         }
 
-        public async Task<List<OrgEnt>> GetOrgs()
+        public async Task<List<OrgEnt>> GetOrgList()
         {
             var list = new List<OrgEnt>();
             await Sql.Run(
                     "SELECT * FROM base.org ",
                     r => {
-                        var org = OrgLoad.Load(r);
+                        var org = new OrgEnt();
+                        org.Id = GetInt(r, "id");
+                        org.Code = GetCode(r);
+                        org.Description = GetDescription(r);
+                        org.Updated = GetUpdated(r);
+                        org.IsActive = IsActive(r);
                         list.Add(org);
-                        _memoryCache.Set(GC.CacheKeyOrgPrefix + org.Nr, org);
                     }
                 );
             return list;
         }
 
-        public async Task<OrgEnt> GetOrg(int nr)
+        public async Task<OrgEnt> GetOrg(int id)
         {
-            var org = _memoryCache.Get<OrgEnt>(GC.CacheKeyOrgPrefix + nr);
+            var org = _memoryCache.Get<OrgEnt>(GC.CacheKeyOrgPrefix + id);
             if (org != null) return org;
 
             try
@@ -51,9 +55,9 @@ namespace Backend.Base.Org
                     + "WHERE nr = @nr ",
                     r => {
                         org = OrgLoad.Load(r);
-                        _memoryCache.Set(GC.CacheKeyOrgPrefix + org.Nr, org);
+                        _memoryCache.Set(GC.CacheKeyOrgPrefix + org.Id, org);
                     },
-                    new SqlParameter("@nr", nr)
+                    new SqlParameter("@nr", id)
                 );
                                 
                 return org;
@@ -70,7 +74,6 @@ namespace Backend.Base.Org
             await Sql.Execute(
                     "UPDATE base.org " +
                     "SET " +
-                        Update("nr", org.Nr) +
                         Update("code", org.Code) +
                         Update("descr", org.Description) +
                         Update("encoded", org.Encoded) +
@@ -80,7 +83,7 @@ namespace Backend.Base.Org
                         NoComma(Update("langLabelVariant", org.LangLabelVariant)) +
                     " WHERE id = " + org.Id
             );
-            _memoryCache.Set(GC.CacheKeyOrgPrefix + org.Nr, org);
+            _memoryCache.Set(GC.CacheKeyOrgPrefix + org.Id, org);
         }
 
     }

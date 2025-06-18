@@ -1,0 +1,29 @@
+﻿@inherits BasePage
+@using GC = FrontendServer.GlobalConstants;
+
+<div class="@Class">
+    <MudText Typo="@size">
+        @ChildContent
+    </MudText>
+</div>
+
+
+@code {
+    [Parameter] public string Class { get; set; }
+    [Parameter] public GC.TextSize Size { get; set; } = GC.TextSize.Normal;
+    [Parameter] public RenderFragment ChildContent { get; set; }
+
+    private Typo size = Typo.body1;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            await InitialiseBasePage();
+            size = GetTypo(Size);
+
+            StateHasChanged();
+        }
+    }
+    
+}
