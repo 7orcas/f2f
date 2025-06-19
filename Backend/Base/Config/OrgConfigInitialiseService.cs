@@ -79,17 +79,17 @@ namespace Backend.Base.Config
             return list;
         }
 
-        private LanguageConfig? ValidateLanguage(OrgEnt org, Language lang, List<LangCode> langCodes)
+        private LanguageConfig? ValidateLanguage(OrgEnt org, Language orgLang, List<LangCode> langCodes)
         {
             //Lang Code must exist in database
-            var lc = langCodes.Find(c => c.Code == lang.LangCode);
+            var lc = langCodes.Find(c => c.Code == orgLang.LangCode);
             if (lc == null) return null;
 
             return new LanguageConfig()
             {
-                LangCode = lang.LangCode,
-                IsActive = lc.IsActive,
-                IsEditable = lang.IsEditable,
+                LangCode = orgLang.LangCode,
+                IsReadonly = orgLang.IsReadonly,
+                IsEditable = orgLang.IsEditable,
             };
         }
     }

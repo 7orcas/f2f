@@ -36,7 +36,7 @@ public abstract class BaseService : SqlUtils
         return entity;
     }
 
-    public void DelaySeconds (int seconds)
+    public void TestDelaySeconds (int seconds)
     {
         System.Threading.Thread.Sleep(seconds * 1000); 
     }

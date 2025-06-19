@@ -1,18 +1,76 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Text.Json;
+using System.Security.Cryptography;
 using System.Text;
-using System.Threading.Tasks;
+using System.Text.Json.Serialization;
+
+/// <summary>
+/// Base controls for Dto's
+/// - Hashcodes used for detecting changes
+/// Created: June 2025
+/// [*Licence*]
+/// Author: John Stewart
+/// </summary>
 
 namespace Common.DTO
 {
-    public class _BaseDto
+    public abstract class _BaseDto<T> where T : _BaseDto<T>
+
     {
-        public long Id { get; set; }
-        public long OrgId { get; set; }
-        public string Code { get; set; }
-        public string? Description { get; set; }
-        public DateTime Updated { get; set; }
-        public bool IsActive { get; set; }
+        /// <summary>
+        /// Is this Dto fully loaded?
+        /// </summary>
+        [JsonInclude]
+        public bool IsLoaded { get; set; } = false;
+
+        [JsonInclude]
+        public string? OriginalHashCode { get; set; }
+
+        /// <summary>
+        /// Get this object's hash code (can only be run once)
+        /// </summary>
+        /// <returns></returns>
+        /// <exception cref="InvalidOperationException"></exception>
+        public T HashMe()
+        {
+            if (!string.IsNullOrEmpty(OriginalHashCode))
+                throw new InvalidOperationException("HashCode already created");
+            
+            OriginalHashCode = GetHash((T)(object)this);
+            return (T)(object)this; 
+        }
+        
+        public T SetLoaded()
+        {
+            IsLoaded = true;
+            return (T)(object)this;
+        }
+
+        public bool HasChanged()
+        {
+            if (string.IsNullOrEmpty(OriginalHashCode)) return true;
+            var hashCode = GetHash((T)(object)this);
+            return !hashCode.Equals(OriginalHashCode);
+        }
+
+        private string GetHash(T dto)
+        {
+            //Remove irrelevant fields
+            var o = dto.OriginalHashCode;
+            dto.OriginalHashCode = null;
+            var l = dto.IsLoaded;
+            dto.IsLoaded = false;
+
+            var json = JsonSerializer.Serialize(dto);
+            using var sha256 = SHA256.Create();
+            var hashBytes = sha256.ComputeHash(Encoding.UTF8.GetBytes(json));
+            var hash = Convert.ToHexString(hashBytes);
+            
+            //Reset fields
+            dto.OriginalHashCode = o;
+            dto.IsLoaded = l;
+
+            return hash;
+        }
+
     }
 }

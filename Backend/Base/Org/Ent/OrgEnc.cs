@@ -26,6 +26,7 @@ namespace Backend.Base.Org.Ent
     public class Language 
     {
         public string LangCode { get; set; }
+        public bool IsReadonly { get; set; } = true;
         public bool IsEditable { get; set; } = false;
     }
 

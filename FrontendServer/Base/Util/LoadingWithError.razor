@@ -1,9 +1,11 @@
 ﻿@inherits BasePage
 
-@if (@IsLoading)
+@if (@IsLoading || @IsSaving)
 {
-    <div class="loading-spinner">
-        <p>...</p>
+    <div class="loading-overlay">
+        <div class="loading-spinner">
+            <p>...</p>
+        </div>
     </div>
 }
 else @if (@IsError)
@@ -23,6 +25,7 @@ else @if (@IsError)
 
 @code {
     [Parameter] public bool IsLoading { get; set; }
+    [Parameter] public bool IsSaving { get; set; }
     [Parameter] public bool IsError { get; set; }
     [Parameter] public MarkupString? Message { get; set; }
     [Parameter] public RenderFragment ChildContent { get; set; }

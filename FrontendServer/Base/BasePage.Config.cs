@@ -1,6 +1,13 @@
 ﻿using Newtonsoft.Json;
 using GC = FrontendServer.GlobalConstants;
 
+/// <summary>
+/// Configuration methods for BasePage
+/// Created: June 2025
+/// [*Licence*]
+/// Author: John Stewart
+/// </summary>
+
 namespace FrontendServer.Base
 {
     public partial class BasePage

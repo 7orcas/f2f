@@ -145,7 +145,7 @@ namespace Backend.Base.Permission
                             PermissionCode = GetStringNull(r, "pCode"),
                             PermissionsDescr = GetStringNull(r, "pDescr"),
                             Crud = GetStringNull(r, "crud"),
-                            OrgId = GetId(r, "orgId")
+                            OrgId = GetOrgId(r)
                         });
                     },
                     new SqlParameter("@userId", session.User.LoginId),
@@ -160,7 +160,7 @@ namespace Backend.Base.Permission
                             PermissionCode = GetStringNull(r, "pCode"),
                             PermissionsDescr = GetStringNull(r, "pDescr"),
                             Crud = GetStringNull(r, "crud"),
-                            OrgId = GetId(r, "orgId")
+                            OrgId = GetOrgId(r)
                         });
                     },
                     new SqlParameter("@userId", session.User.LoginId)

@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Common.DTO
 {
-    public class OrgDto
+    public class OrgDto : _BaseDto<OrgDto>
     {
         public int Id { get; set; }
         public string Code { get; set; }
@@ -24,6 +24,7 @@ namespace Common.DTO
     public class OrgLangDto 
     {
         public string? LangCode { get; set; }
+        public bool IsReadonly { get; set; }
         public bool IsEditable { get; set; }
     }
 

@@ -12,7 +12,7 @@ namespace FrontendServer.Base.Cache
             _cache = cache;
         }
 
-        private string LabelKey(string key)
+        static public string LabelKey(string key)
         {
             return GC.LabelCacheKey + "-" + key;
         }

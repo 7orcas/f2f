@@ -8,11 +8,11 @@
     /// <license>**Licence**</license>
     public class RolePermissionCrudEnt
     {
-        public RolePermissionCrudEnt() { }
+        //public RolePermissionCrudEnt() { }
         public string Role {  get; set; }
         public string PermissionCode { get; set; }
         public string PermissionsDescr { get; set; }
         public string Crud { get; set; }
-        public long OrgId { get; set; }
+        public int OrgId { get; set; }
     }
 }

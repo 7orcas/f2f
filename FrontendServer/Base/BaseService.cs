@@ -15,7 +15,7 @@ namespace FrontendServer.Base
             SetLabels();
         }
 
-        public async Task<(T obj, MarkupString message)> Call<T>(HttpClient client, string url)
+        public async Task<(T obj, MarkupString message)> GetAsync<T>(HttpClient client, string url)
         {
             T rtn = default;
 

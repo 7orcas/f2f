@@ -6,8 +6,11 @@ using System.Threading.Tasks;
 
 namespace Common.DTO
 {
-    public class UserRoleDto : _BaseDto
+    public class UserRoleDto : _BaseFieldsDto<UserRoleDto>
     {
         public long RoleId { set; get; }
+
+        //public override UserRoleDto HashMe() => HashMe(this);
+        //public override bool HasChanged() => HasChanged(this);
     }
 }

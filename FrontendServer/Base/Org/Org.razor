@@ -1,32 +1,36 @@
 ﻿@attribute [Route(BasePageRoutes.OrgRoute)]
 @inherits BasePage
 @attribute [Authorize]
-@inject HttpClient Http
+
+@using System.Net
 @using MudBlazor
 @using FrontendServer.Base.Util
 @using System.Text;
 @using sysJ = System.Text.Json
 @using GC = FrontendServer.GlobalConstants;
 
+<ConfirmNavigation List="list" />
 
 <Header 
     TitleKey="Org" 
     SubTitleKey="OrgSub" 
     PageCode=@_pageCode
-    TBSave="Save" 
-></Header>
+    TBSave="SaveAsync"/>
 
-@if (_isLoading || _isError)
+@if (_isLoading || _isError || _isSaving)
 {
     <LoadingWithError IsLoading=@_isLoading
-                      IsError=@_isError
-                      Message=@_errorMessage>
+                        IsSaving=@_isSaving
+                        IsError=@_isError
+                        Message=@_errorMessage>
         @exception
     </LoadingWithError>
 }
 
 <p></p>
+
 <MudGrid>
+    
         
     <!-- Left Side: List -->
     @if (showList)
@@ -34,14 +38,14 @@
         <MudItem xs="1">
             <Label Size="GC.TextSize.Section" Key="Orgs"></Label>
             <MudPaper Elevation="0" Outlined="@_debugOutlined">
-                <MudList T="OrgDto"  >
+                <MudList T="OrgDto">
                     @for (int i = 0; i < list.Count; i++)
                     {
                         var index = i;
-                        <div class="@GetListRowClass(i)">
+                        <div class="@GetListRowOddEvenClass(i)">
                         <MudListItem 
                             Value="@list[i]" 
-                            OnClick="() => OnItemSelected(list[index].Id)"
+                            OnClick="() => OnItemSelected(index)"
                             Text="@list[i].Code" />
                         </div>
                     }
@@ -65,7 +69,15 @@
                             </div>
                         </TitleContent>
                         <ChildContent>
-                                <MudTextField Label="LangCode" @bind-Value="@orgDto.LangCode" Variant="Variant.Filled"></MudTextField>
+                            <MudGrid>
+                                <MudItem xs="12" sm="6" md="4">
+                                    <MudTextField Style="width: 240px;" Label="@Label("LangCode")" @bind-Value="@orgDto.LangCode" Variant="Variant.Filled" />
+                                </MudItem>
+                                <MudItem xs="12" sm="6" md="4">
+                                    <MudNumericField Style="width: 240px;" Label="@Label("LangCodeV")" @bind-Value="@orgDto.LangLabelVariant" Variant="Variant.Filled" />
+                                </MudItem>
+                            </MudGrid>
+
                         </ChildContent>
                     </MudExpansionPanel>
 
@@ -74,23 +86,25 @@
                             <Label Size="GC.TextSize.Large" Key="Langs"></Label>
                         </TitleContent>
                         <ChildContent>
-                                <table class="table">
-                                    <thead>
+                            <table class="table" style="table-layout: fixed; width: 400px;">
+                                <thead>
+                                    <tr>
+                                        <th style="width: 200px;"><Label Key="LangCode"></Label></th>
+                                        <th style="width: 100px;"><Label Key="Readonly"></Label></th>
+                                        <th style="width: 100px;"><Label Key="Editable"></Label></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var lang in orgDto.Languages)
+                                    {
                                         <tr>
-                                            <th><Label Key="LangCode"></Label></th>
-                                            <th><Label Key="Editable"></Label></th>
+                                            <td>@lang.LangCode</td>
+                                            <td><MudCheckBox @bind-Value="@lang.IsReadonly" Variant="Variant.Filled"></MudCheckBox></td>
+                                            <td><MudCheckBox @bind-Value="@lang.IsEditable" Variant="Variant.Filled"></MudCheckBox></td>
                                         </tr>
-                                    </thead>
-                                    <tbody>
-                                        @foreach (var lang in orgDto.Languages)
-                                        {
-                                            <tr>
-                                                <td>@lang.LangCode</td>
-                                                <td><MudCheckBox @bind-Value="@lang.IsEditable" Variant="Variant.Filled"></MudCheckBox></td>
-                                            </tr>
-                                        }
-                                    </tbody>
-                                </table>
+                                    }
+                                </tbody>
+                            </table>
                         </ChildContent>
                     </MudExpansionPanel>
 
@@ -99,11 +113,13 @@
                             <Label Size="GC.TextSize.Large" Key="PWs"></Label>
                         </TitleContent>
                         <ChildContent>
-                                <MudNumericField Label="MinLength" @bind-Value="@orgDto.PasswordRule.MinLength" Variant="Variant.Filled"></MudNumericField>
-                                <MudNumericField Label="MaxLength" @bind-Value="@orgDto.PasswordRule.MaxLength" Variant="Variant.Filled"></MudNumericField>
-                                <MudCheckBox Label="IsMixedCase" @bind-Value="@orgDto.PasswordRule.IsMixedCase" Variant="Variant.Filled"></MudCheckBox>
-                                <MudCheckBox Label="IsNonLetter" @bind-Value="@orgDto.PasswordRule.IsNonLetter" Variant="Variant.Filled"></MudCheckBox>
-                                <MudCheckBox Label="IsNumber" @bind-Value="@orgDto.PasswordRule.IsNumber" Variant="Variant.Filled"></MudCheckBox>
+                            <div class="d-flex gap-4">
+                                <MudNumericField Style="width: 240px;" Label="@Label("LenMin")" @bind-Value="@orgDto.PasswordRule.MinLength" Variant="Variant.Filled"></MudNumericField>
+                                <MudNumericField Style="width: 240px;" Label="@Label("LenMax")" @bind-Value="@orgDto.PasswordRule.MaxLength" Variant="Variant.Filled"></MudNumericField>
+                            </div>
+                            <MudCheckBox Label="@Label("PWmc")" @bind-Value="@orgDto.PasswordRule.IsMixedCase" Variant="Variant.Filled"></MudCheckBox>
+                            <MudCheckBox Label="@Label("PWNonLet")" @bind-Value="@orgDto.PasswordRule.IsNonLetter" Variant="Variant.Filled"></MudCheckBox>
+                            <MudCheckBox Label="@Label("PWNum")" @bind-Value="@orgDto.PasswordRule.IsNumber" Variant="Variant.Filled"></MudCheckBox>
                         </ChildContent>
                     </MudExpansionPanel>
 
@@ -114,26 +130,24 @@
 </MudGrid>
 
 
-
 @code {
     private bool showList = false;
     private List<OrgDto> list;
-    private OrgDto? selectedRec;
     private OrgDto? orgDto;
     private bool tbSave;
-    
+
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         if (firstRender)
         {
             await InitialiseBasePage();
             _pageCode = BasePageRoutes.OrgPageCode;
-            
-            list = await Call<List<OrgDto>>(GC.URL_org_list);
+
+            list = await GetAsync<List<OrgDto>>(GC.URL_org_list);
 
             if (list.Count > 0)
-                orgDto = await Call<OrgDto>(GC.URL_org + list[0].Id);
-                
+                Load(0, true);
+
             showList = list.Count > 1;
             tbSave = !_isLoading && !_isError;
 
@@ -141,36 +155,57 @@
         }
     }
 
-    private async void OnItemSelected(int id) 
+    private async void OnItemSelected(int index) => Load(index, false);
+
+    private async void Load(int index, bool force) 
     {
-        orgDto = await Call<OrgDto>(GC.URL_org + id);
+        var dto = list[index];
+        if (!dto.IsLoaded || force){
+            orgDto = await GetAsync<OrgDto>(GC.URL_org + dto.Id);
+            orgDto.HashMe();
+            orgDto.IsLoaded = true;
+            list[index] = orgDto;
+        }
+        else
+            orgDto = dto;
         StateHasChanged();
     }
 
-    private async void Save() 
+    private async Task SaveAsync()
     {
-        var json = sysJ.JsonSerializer.Serialize(orgDto);
-        var content = new StringContent(json, Encoding.UTF8, "application/json");
-        var client = await SetClient();
-        var response = await client.PostAsync(GC.URL_org_update, content);
+        _isSaving = true;
+        var curIndex = orgDto != null? list.FindIndex(d => d.Id == orgDto.Id) : -1;
+        // var client = await SetClient();
+        for (int i = 0; i < list.Count; i++) {
+            var dto = list[i];
+            if (dto.IsLoaded && dto.HasChanged()) {
+
+                // var json = sysJ.JsonSerializer.Serialize(dto);
+                // var content = new StringContent(json, Encoding.UTF8, "application/json");
+                // var response = await client.PostAsync(GC.URL_org_update, content);
+
+                var response = await PostAsync<OrgDto>(GC.URL_org_update, dto);
+
+                if (response.StatusCode == HttpStatusCode.OK)
+                {
+                    var o = await GetAsync<OrgDto>(GC.URL_org + dto.Id);
+                    list[i] = o.HashMe().SetLoaded();
+                }
+            }
+        }
+        _isSaving = false;
+
+        if (curIndex != -1)
+            OnItemSelected(curIndex);
     }
 
+    //ToDo
     private async void Export() 
     {
-        // var json = sysJ.JsonSerializer.Serialize(org);
-        // var content = new StringContent(json, Encoding.UTF8, "application/json");
-        // var client = await SetClient();
-       // var response = await client.PostAsync(GC.URL_org_update, content);
 
     }
 
-    private string GetListRowClass (int i)
-    {
-        return i % 2 == 0 ? "list-odd-row" : "list-even-row";
-    }
-
-    protected override async Task OnInitializedAsync()
-    {
-        _isLoading = true;
-    }
+    private string Label(string key) => GetLabel(key);
+    protected override async Task OnInitializedAsync() => _isLoading = true;
+    
 }

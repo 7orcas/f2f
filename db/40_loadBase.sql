@@ -1,7 +1,7 @@
 BEGIN TRANSACTION;
 
 SET IDENTITY_INSERT base.org ON;
-INSERT INTO base.org (id, code, descr) VALUES (0, 'Org Base', 'Base Orgisation');
+INSERT INTO base.org (id, code, descr) VALUES (0, 'Org Base', 'Base Organisation');
 INSERT INTO base.org (id, code, descr,langCode,encoded) VALUES (1, 'Org 1', 'Org 1 Description','en','{Languages:[{LangCode:"en",IsEditable:true},{LangCode:"de",IsEditable:true},{LangCode:"c1",IsEditable:false},{LangCode:"c2",IsEditable:false}]}');
 INSERT INTO base.org (id, code, descr,langCode,langLabelVariant,encoded) VALUES (2, 'Org 2', 'Org 2 Description','en',2,'{Languages:[{LangCode:"de",IsEditable:true}]}');
 INSERT INTO base.org (id, code, descr,langCode) VALUES (3, 'Org 3', 'Org 3 Description','de');

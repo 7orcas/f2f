@@ -43,13 +43,14 @@ namespace Backend.Base.Org
             foreach (var org in orgs)
             {
                 list.Add(new OrgDto
-                {
-                    Id = org.Id,
-                    Code = org.Code,
-                    Description = org.Description,
-                    Updated = org.Updated,
-                    IsActive = org.IsActive,
-                });
+                    {
+                        Id = org.Id,
+                        Code = org.Code,
+                        Description = org.Description,
+                        Updated = org.Updated,
+                        IsActive = org.IsActive,
+                    }
+                );
             }
 
             var r = new _ResponseDto
@@ -79,6 +80,7 @@ namespace Backend.Base.Org
                 langDtos.Add(new OrgLangDto
                 {
                     LangCode = lang.LangCode,
+                    IsReadonly = lang.IsReadonly,
                     IsEditable = lang.IsEditable,
                 });
             }
@@ -120,13 +122,13 @@ namespace Backend.Base.Org
         public async Task<IActionResult> UpdateOrg([FromBody] OrgDto dto)
         {
             var session = HttpContext.Items["session"] as SessionEnt;
-
             var langs = new List<Language>();
             foreach (var langDto in dto.Languages)
             {
                 langs.Add(new Language
                 {
                     LangCode = langDto.LangCode,
+                    IsReadonly = langDto.IsReadonly,
                     IsEditable = langDto.IsEditable,
                 });
             }

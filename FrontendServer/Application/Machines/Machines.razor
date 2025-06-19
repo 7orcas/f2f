@@ -5,9 +5,10 @@
 <ErrorBoundary @ref="errorBoundary">
     <ChildContent>
 
-        <AppTitle TitleKey="Machines" PageCode=@_pageCode>
-            <Label Key="Home"></Label>
-        </AppTitle>
+        <Header TitleKey="Machines"
+                SubTitleKey="Home"
+                PageCode=@_pageCode />
+        
 
         @if (_isLoading || _isError)
         {
@@ -68,7 +69,7 @@
         {
             await InitialiseBasePage();
             _pageCode = AppPageRoutes.MachinesPageCode;
-            machines = await Call<List<MachineDto>>("api/Machine/list");
+            machines = await GetAsync<List<MachineDto>>("api/Machine/list");
 
             StateHasChanged();
         }

@@ -42,12 +42,12 @@ namespace Backend.Base.Role
                 await Sql.Run(sql + "AND r.orgId = @orgId" + by,
                     r => {
                         list.Add(new UserRoleEnt() {
-                            RoleId = GetId(r, "id"),
-                            Code = GetStringNull(r, "code"),
-                            Description = GetStringNull(r, "descr"),
-                            OrgId = GetId(r, "orgId"),
-                            Updated = GetDateTime(r, "updated"),
-                            IsActive = GetBoolean(r, "isActive"),
+                            RoleId = GetId(r),
+                            Code = GetCode(r),
+                            Description = GetDescription(r),
+                            OrgId = GetOrgId(r),
+                            Updated = GetUpdated(r),
+                            IsActive = IsActive(r),
                         });
                     },
                     new SqlParameter("@userId", session.User.LoginId),
@@ -58,12 +58,12 @@ namespace Backend.Base.Role
                     r => {
                         list.Add(new UserRoleEnt()
                         {
-                            RoleId = GetId(r, "id"),
-                            Code = GetStringNull(r, "code"),
-                            Description = GetStringNull(r, "descr"),
-                            OrgId = GetId(r, "orgId"),
-                            Updated = GetDateTime(r, "updated"),
-                            IsActive = GetBoolean(r, "isActive"),
+                            RoleId = GetId(r),
+                            Code = GetCode(r),
+                            Description = GetDescription(r),
+                            OrgId = GetOrgId(r),
+                            Updated = GetUpdated(r),
+                            IsActive = IsActive(r),
                         });
                     },
                     new SqlParameter("@userId", session.User.LoginId)

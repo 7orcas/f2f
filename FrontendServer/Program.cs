@@ -42,6 +42,8 @@ builder.Services.AddHttpClient(GC.AuthorizedClientKey, client =>
     client.BaseAddress = new Uri(AppSettings.AuthorizedClientBaseUri);
 }); //.AddHttpMessageHandler<AuthorizationMessageHandler>();
 
+//Base Services (start up)
+builder.Services.AddSingleton<CacheInitialiseServiceI, CacheInitialiseService>();
 
 // Add session services
 builder.Services.AddSession();
@@ -80,6 +82,7 @@ app.UseRouting();
 app.MapBlazorHub();
 app.MapFallbackToPage("/_Host");
 
+RunOnStartup(app);
 app.Run();
 
 void LoadAppSettings(WebApplicationBuilder builder)
@@ -88,4 +91,14 @@ void LoadAppSettings(WebApplicationBuilder builder)
     AppSettings.AuthorizedClientBaseUri = builder.Configuration["Urls:AuthorizedClientBaseUri"];
 
  
+}
+
+
+/// <summary>
+/// Call the initialisation service methods
+/// </summary>
+void RunOnStartup(WebApplication app)
+{
+    var cache = app.Services.GetRequiredService<CacheInitialiseServiceI>();
+    cache.InitialiseCache();
 }

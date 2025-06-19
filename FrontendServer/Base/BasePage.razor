@@ -10,8 +10,11 @@
 
 
 @code {
+    [Inject] protected IJSRuntime JS { get; set; }
+
     public bool _isLoading = false;
     public bool _isError = false;
+    public bool _isSaving = false;
     public string? _pageCode;
     private string? _token;
     public HttpClient? _client;
@@ -22,7 +25,7 @@
     private Dictionary<string, LangLabelDto> _labels;
 
     //Debugging
-    public bool _debugOutlined = true;
+    public bool _debugOutlined = false;
 
 
     public async Task InitialiseBasePage()
@@ -43,11 +46,11 @@
         _client.DefaultRequestHeaders.Authorization =
             new System.Net.Http.Headers.AuthenticationHeaderValue(GC.BearerKey, _token);
 
-        SetLabels();
+        //SetLabels();
         return _client;
     }
 
-    public async Task<T> Call<T>(string url)
+    public async Task<T> GetAsync<T>(string url)
     {
         _isLoading = true;
 
@@ -122,4 +125,8 @@
         }
         return Typo.body1;
     }
+     
+
+    public string GetListRowOddEvenClass (int i) => i % 2 == 0 ? " list-odd-row" : " list-even-row";
+    
 }

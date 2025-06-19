@@ -18,7 +18,7 @@ namespace Backend.Base.Database
         static public long GetId(SqlDataReader r) => GetId(r, "id");
         static public long GetId(SqlDataReader r, string column) => (long)r[column];
         static public long? GetIdNull(SqlDataReader r, string column) => r.IsDBNull(r.GetOrdinal(column)) ? null : (long)r[column];
-        static public long GetOrgId(SqlDataReader r) => GetInt(r, "orgId");
+        static public int GetOrgId(SqlDataReader r) => GetInt(r, "orgId");
 
 
         static public int GetInt(SqlDataReader r, string column) => (int)r[column];
