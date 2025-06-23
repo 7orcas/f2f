@@ -2,6 +2,7 @@
 global using Common.Request;
 global using Serilog;
 global using FrontendServer.Base;
+global using FrontendServer.Base._Base;
 global using FrontendServer.Base.Cache;
 global using FrontendServer.Base.Label;
 global using FrontendServer.Base.Util;

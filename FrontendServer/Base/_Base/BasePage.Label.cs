@@ -1,11 +1,11 @@
-﻿namespace FrontendServer.Base
+﻿namespace FrontendServer.Base._Base
 {
     public partial class BasePage
     {
         protected async Task SetLabels()
         {
             if (_config == null) return;
-            _labels = Cache.GetLabels(_config.Label.LangCode);
+            _labels = CacheService.GetLabels(_config.Label.LangCode);
         }
 
         public bool IsLabel(string labelCode) => _labels != null && _labels.ContainsKey(labelCode);

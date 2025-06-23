@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Net.Http;
+using FrontendServer.Base._Base;
 using FrontendServer.Base.Cache;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage;
@@ -8,7 +9,7 @@ using GC = FrontendServer.GlobalConstants;
 
 namespace FrontendServer.Base.Role
 {
-    public class RoleService : BaseService
+    public class RoleService : BaseServiceDELETE_ME
     {
         public RoleService(CacheService Cache) : base (Cache) { }
 

@@ -19,7 +19,7 @@
             @if(TBSave.HasDelegate)
             {
                 <MudButton OnClick="TBSave">
-                    <Label Key="SaveRec"
+                    <Label Key="@TBSaveLabel"
                            Class="toolbar-button" 
                            Size="GC.TextSize.ButtonText" 
                            HideTooltip=true                        
@@ -44,6 +44,7 @@
     [Parameter] public string TitleKey { get; set; }
     [Parameter] public string SubTitleKey { get; set; }
     [Parameter] public string PageCode { get; set; }
+    [Parameter] public string TBSaveLabel { get; set; }
     [Parameter] public EventCallback TBSave { get; set; }
     [Parameter] public EventCallback TBExport { get; set; }
     [Parameter] public RenderFragment ChildContent { get; set; }
@@ -60,6 +61,9 @@
             isSubTitle = string.IsNullOrEmpty(SubTitleKey);
 
             isToolbar = TBSave.HasDelegate || TBExport.HasDelegate;
+
+            if (string.IsNullOrEmpty(TBSaveLabel))
+                TBSaveLabel = "SaveRec";
 
             StateHasChanged();
         }

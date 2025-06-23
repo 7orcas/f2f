@@ -10,14 +10,16 @@
         {
             <div data-tooltip="@ShowToolTip()">
                 <div class="@GetClass()">
-                    <MudText Typo="@size">@ShowLabel()</MudText>
+                    <MudText Style="white-space: normal; word-break: break-word;"
+                        Typo="@size">@ShowLabel()</MudText>
                 </div>
             </div>
         }
         else
         {
             <div class="@GetClass()">
-                <MudText Typo="@size">@ShowLabel()</MudText>
+                <MudText Style="white-space: normal; word-break: break-word;"
+                    Typo="@size">@ShowLabel()</MudText>
             </div>
         }
     }
@@ -27,14 +29,16 @@
         {
             <div data-tooltip="@ShowToolTip()">
                 <button class="@GetClass()" @onclick="OpenDialog">
-                    <MudText Typo="@size">@ShowLabel()</MudText>
+                    <MudText Style="white-space: normal; word-break: break-word;"
+                        Typo="@size">@ShowLabel()</MudText>
                  </button>
             </div>
         }
         else
         {
             <button class="@GetClass()" @onclick="OpenDialog">
-                <MudText Typo="@size">@ShowLabel()</MudText>
+                <MudText Style="white-space: normal; word-break: break-word;"
+                    Typo="@size">@ShowLabel()</MudText>
             </button>
         }
     }

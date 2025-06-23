@@ -64,7 +64,7 @@ else
             var result = await ProtectedSessionStore.GetAsync<string>(GC.TokenCacheKey);
             if (result.Success)
             {
-                var up = await GetCacheString("UP");
+                var up = GetCacheString("UP");
                 userParameters = JsonConvert.DeserializeObject<UserParameters>(up);
                 _isLoading = false;
                 StateHasChanged();
@@ -113,8 +113,8 @@ else
                 return;
             }
             var cjson = cdto.Result.ToString();
-            await ProtectedSessionStore.SetAsync(GC.ConfigCacheKey, cjson);
             var config = JsonConvert.DeserializeObject<AppConfigDto>(cjson);
+            SetConfig(config);
             userParameters.Add(config);
 
             //Get Labels

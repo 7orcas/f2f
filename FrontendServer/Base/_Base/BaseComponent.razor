@@ -1,0 +1,18 @@
+﻿@inherits BasePage
+@using MudBlazor
+@using GC = FrontendServer.GlobalConstants;
+
+@code {
+    public MudBlazor.Variant MudVariant = MudBlazor.Variant.Outlined;
+
+    public string GetStyle(GC.TextFieldWidth Width)
+    {
+        return Width switch
+        {
+            GC.TextFieldWidth.Short => "width: 200px;",
+            GC.TextFieldWidth.Long => "width: 800px;",
+            _ => "width: 500px;",
+        };
+
+    }
+}

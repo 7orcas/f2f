@@ -13,7 +13,7 @@ using System.Text;
 /// Author: John Stewart
 /// </summary>
 
-namespace FrontendServer.Base
+namespace FrontendServer.Base._Base
 {
     public partial class BasePage
     {

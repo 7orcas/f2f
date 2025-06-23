@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Components.Web;
 using MudBlazor.Services;
 using System.Net;
 using FrontendServer.Base.Cache;
+using FrontendServer.Base._Base;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -51,7 +52,9 @@ builder.Services.AddScoped<CacheService>();
 builder.Services.AddDistributedMemoryCache();
 builder.Services.AddScoped<ProtectedSessionStorage>();
 
-builder.Services.AddScoped<BaseService>();
+//Base Services 
+builder.Services.AddScoped<UserConfigService>();
+builder.Services.AddScoped<BaseServiceDELETE_ME>();
 //builder.Services.AddScoped<AuthorizationMessageHandler>();
 builder.Services.AddScoped<LogoutService>();
 builder.Services.AddScoped<PermissionService>();

@@ -36,6 +36,12 @@
             ButtonText = 7,
         }
 
+        public enum TextFieldWidth
+        {
+            Short = 1,
+            Medium = 2,
+            Long = 3,
+        }
 
     }
 }

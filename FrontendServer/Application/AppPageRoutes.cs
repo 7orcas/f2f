@@ -1,4 +1,6 @@
-﻿namespace FrontendServer.Application
+﻿using FrontendServer.Base._Base;
+
+namespace FrontendServer.Application
 {
     public class AppPageRoutes : BasePageRoutes
     {

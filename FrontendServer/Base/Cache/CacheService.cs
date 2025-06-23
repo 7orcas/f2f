@@ -1,6 +1,14 @@
 ﻿using Microsoft.Extensions.Caching.Memory;
 using GC = FrontendServer.GlobalConstants;
 
+/// <summary>
+/// This is a Scoped service, however IMemoryCache is a singleton. 
+/// ToDo: may want to make this as an explicit singleton.
+/// Created: April 2025
+/// [*Licence*]
+/// Author: John Stewart
+/// </summary>
+
 namespace FrontendServer.Base.Cache
 {
     public class CacheService

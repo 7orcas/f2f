@@ -8,6 +8,7 @@
 @using System.Text;
 @using sysJ = System.Text.Json
 @using GC = FrontendServer.GlobalConstants;
+@using FrontendServer.Base._Base;
 
 <ConfirmNavigation List="list" />
 
@@ -15,7 +16,8 @@
     TitleKey="Org" 
     SubTitleKey="OrgSub" 
     PageCode=@_pageCode
-    TBSave="SaveAsync"/>
+    TBSave="SaveAsync"
+    TBSaveLabel="SaveChg" />
 
 @if (_isLoading || _isError || _isSaving)
 {
@@ -37,7 +39,7 @@
     {
         <MudItem xs="1">
             <Label Size="GC.TextSize.Section" Key="Orgs"></Label>
-            <MudPaper Elevation="0" Outlined="@_debugOutlined">
+            <MudPaper Elevation="0" Outlined="true">
                 <MudList T="OrgDto">
                     @for (int i = 0; i < list.Count; i++)
                     {
@@ -70,12 +72,7 @@
                         </TitleContent>
                         <ChildContent>
                             <MudGrid>
-                                <MudItem xs="12" sm="6" md="4">
-                                    <MudTextField Style="width: 240px;" Label="@Label("LangCode")" @bind-Value="@orgDto.LangCode" Variant="Variant.Filled" />
-                                </MudItem>
-                                <MudItem xs="12" sm="6" md="4">
-                                    <MudNumericField Style="width: 240px;" Label="@Label("LangCodeV")" @bind-Value="@orgDto.LangLabelVariant" Variant="Variant.Filled" />
-                                </MudItem>
+                                
                             </MudGrid>
 
                         </ChildContent>
@@ -86,25 +83,43 @@
                             <Label Size="GC.TextSize.Large" Key="Langs"></Label>
                         </TitleContent>
                         <ChildContent>
-                            <table class="table" style="table-layout: fixed; width: 400px;">
-                                <thead>
-                                    <tr>
-                                        <th style="width: 200px;"><Label Key="LangCode"></Label></th>
-                                        <th style="width: 100px;"><Label Key="Readonly"></Label></th>
-                                        <th style="width: 100px;"><Label Key="Editable"></Label></th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @foreach (var lang in orgDto.Languages)
-                                    {
-                                        <tr>
-                                            <td>@lang.LangCode</td>
-                                            <td><MudCheckBox @bind-Value="@lang.IsReadonly" Variant="Variant.Filled"></MudCheckBox></td>
-                                            <td><MudCheckBox @bind-Value="@lang.IsEditable" Variant="Variant.Filled"></MudCheckBox></td>
-                                        </tr>
-                                    }
-                                </tbody>
-                            </table>
+                            <MudGrid>
+                                <MudItem xs="12" sm="6" md="4">
+                                        <TextField Width=GC.TextFieldWidth.Short
+                                                   LangCode="LangCode"
+                                                   Value="@orgDto.LangCode"
+                                                   ValueChanged="@((string val) => orgDto.LangCode = val)"
+                                                   ValueExpression="() => orgDto.LangCode"/>
+                                </MudItem>
+                                <MudItem xs="12" sm="6" md="4">
+                                    <NumericNullField Width=GC.TextFieldWidth.Short
+                                               LangCode="LangCodeV"
+                                               Value="@orgDto.LangLabelVariant"
+                                               ValueChanged="@((int? val) => orgDto.LangLabelVariant = val)"
+                                               ValueExpression="() => orgDto.LangLabelVariant" />
+                                </MudItem>
+                                <MudItem xs="12" sm="6" md="4">
+                                        <table class="table" style="table-layout: fixed; width: 400px;">
+                                            <thead>
+                                                <tr>
+                                                    <th style="width: 200px;"><Label Key="LangCode"></Label></th>
+                                                    <th style="width: 100px;"><Label Key="Readonly"></Label></th>
+                                                    <th style="width: 100px;"><Label Key="Editable"></Label></th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                @foreach (var lang in orgDto.Languages)
+                                                {
+                                                    <tr>
+                                                        <td>@lang.LangCode</td>
+                                                        <td><MudCheckBox @bind-Value="@lang.IsReadonly" Variant="Variant.Filled"></MudCheckBox></td>
+                                                        <td><MudCheckBox @bind-Value="@lang.IsEditable" Variant="Variant.Filled"></MudCheckBox></td>
+                                                    </tr>
+                                                }
+                                            </tbody>
+                                        </table>
+                                </MudItem>
+                            </MudGrid>
                         </ChildContent>
                     </MudExpansionPanel>
 
@@ -114,8 +129,18 @@
                         </TitleContent>
                         <ChildContent>
                             <div class="d-flex gap-4">
-                                <MudNumericField Style="width: 240px;" Label="@Label("LenMin")" @bind-Value="@orgDto.PasswordRule.MinLength" Variant="Variant.Filled"></MudNumericField>
-                                <MudNumericField Style="width: 240px;" Label="@Label("LenMax")" @bind-Value="@orgDto.PasswordRule.MaxLength" Variant="Variant.Filled"></MudNumericField>
+                                <NumericField Width=GC.TextFieldWidth.Short
+                                              LangCode="LenMin"
+                                              Value="@orgDto.PasswordRule.MinLength"
+                                              ValueChanged="@((int val) => orgDto.PasswordRule.MinLength = val)"
+                                              ValueExpression="() => orgDto.PasswordRule.MinLength" />
+
+                                <NumericField Width=GC.TextFieldWidth.Short
+                                              LangCode="LenMax"
+                                              Value="@orgDto.PasswordRule.MaxLength"
+                                              ValueChanged="@((int val) => orgDto.PasswordRule.MaxLength = val)"
+                                              ValueExpression="() => orgDto.PasswordRule.MaxLength" />
+
                             </div>
                             <MudCheckBox Label="@Label("PWmc")" @bind-Value="@orgDto.PasswordRule.IsMixedCase" Variant="Variant.Filled"></MudCheckBox>
                             <MudCheckBox Label="@Label("PWNonLet")" @bind-Value="@orgDto.PasswordRule.IsNonLetter" Variant="Variant.Filled"></MudCheckBox>

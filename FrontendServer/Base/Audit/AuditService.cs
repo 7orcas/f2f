@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Net.Http;
+using FrontendServer.Base._Base;
 using Newtonsoft.Json;
 using GC = FrontendServer.GlobalConstants;
 
@@ -8,7 +9,7 @@ namespace FrontendServer.Base.Audit
 
     //May not need this
 
-    public class AuditService : BaseService
+    public class AuditService : BaseServiceDELETE_ME
     {
         private readonly IHttpClientFactory _httpClientFactory;
 

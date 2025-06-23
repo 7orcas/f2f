@@ -2,14 +2,14 @@
 using Newtonsoft.Json;
 using GC = FrontendServer.GlobalConstants;
 
-namespace FrontendServer.Base
+namespace FrontendServer.Base._Base
 {
-    public class BaseService
+    public class BaseServiceDELETE_ME
     {
         protected CacheService _Cache;
         protected Dictionary<string, LangLabelDto> _labels;
 
-        public BaseService(CacheService Cache)
+        public BaseServiceDELETE_ME(CacheService Cache)
         {
             _Cache = Cache;
             SetLabels();
@@ -46,7 +46,7 @@ namespace FrontendServer.Base
 
         public void SetLabels()
         {
-           _labels = _Cache.GetLabels("en"); //ToDo
+            _labels = _Cache.GetLabels("en"); //ToDo
         }
 
         public string GetLabel(string labelCode)
