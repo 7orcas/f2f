@@ -8,6 +8,7 @@
 @using System.Text;
 @using sysJ = System.Text.Json
 @using GC = FrontendServer.GlobalConstants;
+@using CGC = Common.GlobalConstants;
 @using FrontendServer.Base._Base;
 
 <ConfirmNavigation List="list" />
@@ -38,7 +39,7 @@
     @if (showList)
     {
         <MudItem xs="1">
-            <Label Size="GC.TextSize.Section" Key="Orgs"></Label>
+            <Label Size="GC.TextSize.Section" Key="Orgs-s"></Label>
             <MudPaper Elevation="0" Outlined="true">
                 <MudList T="OrgDto">
                     @for (int i = 0; i < list.Count; i++)
@@ -71,10 +72,34 @@
                             </div>
                         </TitleContent>
                         <ChildContent>
-                            <MudGrid>
+                            <div style="display: flex; flex-wrap: wrap; gap: 20px;">
+                                <NumericField Width=GC.TextFieldWidth.Short
+                                              LangCode="Nr"
+                                              ReadOnly="true"
+                                              Value="@orgDto.Id"
+                                              ValueChanged="@((int val) => orgDto.Id = val)"
+                                              ValueExpression="() => orgDto.Id" />
                                 
-                            </MudGrid>
+                                <TextField Width=GC.TextFieldWidth.Short
+                                           LangCode="Code"
+                                           MaxLength="@CGC.LenCode"
+                                           Value="@orgDto.Code"
+                                           ValueChanged="@((string val) => orgDto.Code = val)"
+                                           ValueExpression="() => orgDto.Code" />
 
+                                <TextField Width=GC.TextFieldWidth.Medium
+                                           LangCode="Desc"
+                                           MaxLength="@CGC.LenDescription"
+                                           Value="@orgDto.Description"
+                                           ValueChanged="@((string val) => orgDto.Description = val)"
+                                           ValueExpression="() => orgDto.Description" />
+
+                                <CheckboxField Width=GC.TextFieldWidth.Short
+                                               LangCode="Active"
+                                               Value="@orgDto.IsActive"
+                                               ValueChanged="@((bool val) => orgDto.IsActive = val)"
+                                               ValueExpression="() => orgDto.IsActive" />
+                            </div>
                         </ChildContent>
                     </MudExpansionPanel>
 
@@ -85,10 +110,12 @@
                         <ChildContent>
                             <div style="display: flex; flex-wrap: wrap; gap: 20px;">
                                 <TextField Width=GC.TextFieldWidth.Short
-                                            LangCode="LangCode"
-                                            Value="@orgDto.LangCode"
-                                            ValueChanged="@((string val) => orgDto.LangCode = val)"
-                                            ValueExpression="() => orgDto.LangCode"/>
+                                           LangCode="LangCode"
+                                           MaxLength="@CGC.LenLangCode"
+                                           Value="@orgDto.LangCode"
+                                           ValueChanged="@((string val) => orgDto.LangCode = val)"
+                                           ValueExpression="() => orgDto.LangCode"/>
+                                
                                 <NumericNullField Width=GC.TextFieldWidth.Short
                                             LangCode="LangCodeV"
                                             Value="@orgDto.LangLabelVariant"
@@ -137,6 +164,7 @@
                                               Value="@orgDto.PasswordRule.MaxLength"
                                               ValueChanged="@((int val) => orgDto.PasswordRule.MaxLength = val)"
                                               ValueExpression="() => orgDto.PasswordRule.MaxLength" />
+                                
                                 <NumericField Width=GC.TextFieldWidth.Short
                                               LangCode="PWAt"
                                               Value="@orgDto.PasswordRule.MaxNumberLoginAttempts"
