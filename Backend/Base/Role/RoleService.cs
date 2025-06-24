@@ -24,24 +24,23 @@ namespace Backend.Base.Role
         /// <summary>
         /// Return a user's Roles
         /// </summary>
-        /// <param name="userId"></param>
-        /// <param name="orgId"></param>
+        /// <param name="sesson"></param>
         /// <returns></returns>
-        public async Task<List<UserRoleEnt>> GetUserRoles(SessionEnt session)
+        public async Task<List<UserAccountRoleEnt>> GetUserRoles(SessionEnt session)
         {
-            var list = new List<UserRoleEnt>();
+            var list = new List<UserAccountRoleEnt>();
             try
             {
                 var sql = "SELECT r.id, r.code, r.descr, r.orgId, zr.updated, zr.isActive " +
-                    "FROM base.zzzRole zr " +
+                    "FROM base.userAccRole zr " +
                         "INNER JOIN base.role r ON r.Id = zr.roleId " +
-                    "WHERE zr.zzzId = @userId " +
+                    "WHERE zr.userAccId = @userId " +
                     "AND r.isActive = 1 ";
                 var by = " ORDER BY r.code ";
 
                 await Sql.Run(sql + "AND r.orgId = @orgId" + by,
                     r => {
-                        list.Add(new UserRoleEnt() {
+                        list.Add(new UserAccountRoleEnt() {
                             RoleId = GetId(r),
                             Code = GetCode(r),
                             Description = GetDescription(r),
@@ -50,13 +49,13 @@ namespace Backend.Base.Role
                             IsActive = IsActive(r),
                         });
                     },
-                    new SqlParameter("@userId", session.User.LoginId),
+                    new SqlParameter("@userId", session.User.UserAccountId),
                     new SqlParameter("@orgId", session.Org.Id)
                 );
 
                 await Sql.Run(sql + "AND r.orgId = " + GC.BaseOrgId + by,
                     r => {
-                        list.Add(new UserRoleEnt()
+                        list.Add(new UserAccountRoleEnt()
                         {
                             RoleId = GetId(r),
                             Code = GetCode(r),
@@ -66,7 +65,7 @@ namespace Backend.Base.Role
                             IsActive = IsActive(r),
                         });
                     },
-                    new SqlParameter("@userId", session.User.LoginId)
+                    new SqlParameter("@userId", session.User.UserAccountId)
                 );
 
                 return list.OrderBy(r => r.Code).ToList();
@@ -74,7 +73,7 @@ namespace Backend.Base.Role
             catch
             {
                 //ToDo Logme
-                return new List<UserRoleEnt>();
+                return new List<UserAccountRoleEnt>();
             }
         }
 

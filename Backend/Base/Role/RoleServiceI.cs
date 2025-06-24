@@ -5,7 +5,7 @@ namespace Backend.Base.Role
 {
     public interface RoleServiceI
     {
-        Task<List<UserRoleEnt>> GetUserRoles(SessionEnt session);
+        Task<List<UserAccountRoleEnt>> GetUserRoles(SessionEnt session);
 
     }
 }

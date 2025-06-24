@@ -29,7 +29,8 @@ namespace Backend.Base.Audit
             await Sql.Run(
                     "SELECT a.*, z.xxx " +
                     "FROM base.Audit a " +
-                    "LEFT JOIN base.zzz z ON z.id = a.userId ",
+                    "LEFT JOIN base.userAcc ua ON ua.id = a.userAccId " +
+                    "LEFT JOIN base.zzz z ON z.id = ua.zzzId ",
                     r => {
                         list.Add(new AuditList()
                         {
@@ -38,7 +39,7 @@ namespace Backend.Base.Audit
                             Source = SqlUtils.GetInt(r, "source"),
                             EntityTypeId = SqlUtils.GetInt(r, "entityTypeId"),
                             EntityId = SqlUtils.GetIntNull(r, "entityId"),
-                            UserId = SqlUtils.GetId(r, "userId"),
+                            UserId = SqlUtils.GetId(r, "userAccId"),
                             User = SqlUtils.GetString(r, "xxx"),
                             Created = SqlUtils.GetDateTime(r, "created"),
                             Crud = SqlUtils.GetStringNull(r, "crud"),
@@ -84,13 +85,13 @@ namespace Backend.Base.Audit
             });
         }
 
-        public void LogInOut(int sourceApp, long orgId, long loginId, int entityTypeId)
+        public void LogInOut(int sourceApp, long orgId, long userAccId, int entityTypeId)
         {
             Task.Run(async () =>
             {
                 try
                 {
-                    LogAuditRecord(sourceApp, orgId, loginId, entityTypeId, null, null, null);
+                    LogAuditRecord(sourceApp, orgId, userAccId, entityTypeId, null, null, null);
                 }
                 catch (Exception ex)
                 {
@@ -107,7 +108,7 @@ namespace Backend.Base.Audit
         {
             LogAuditRecord(session.SourceApp,
                 session.Org.Id,
-                session.User.LoginId,
+                session.User.UserAccountId,
                 entityTypeId,
                 entityId,
                 crud,
@@ -117,7 +118,7 @@ namespace Backend.Base.Audit
         private async void LogAuditRecord(
             int sourceApp,
             long orgId,
-            long loginId,
+            long userAccId,
             int entityTypeId,
             long? entityId, 
             string crud, 
@@ -125,13 +126,13 @@ namespace Backend.Base.Audit
         {
             await Sql.Execute(
                     "INSERT INTO base.Audit " +
-                        "(orgId, source, entityTypeId, entityId, userId, crud, details) " +
+                        "(orgId, source, entityTypeId, entityId, userAccId, crud, details) " +
                     "VALUES (" + 
                         orgId + "," +
                         sourceApp + "," +
                         entityTypeId + "," +
                         (entityId == null? "null" : entityId) + "," +
-                        loginId + "," +
+                        userAccId + "," +
                         (crud == null ? "null" : "'" + crud + "'") + "," +
                         (details == null ? "null" : "'" + details + "'") + 
                         ")"

@@ -12,7 +12,7 @@ namespace Common.DTO
     public abstract class _BaseFieldsDto<T> : _BaseDto<T> where T : _BaseDto<T>
     {
         public long Id { get; set; }
-        public long OrgId { get; set; }
+        public int OrgId { get; set; }
         public string Code { get; set; }
         public string? Description { get; set; }
         public DateTime Updated { get; set; }

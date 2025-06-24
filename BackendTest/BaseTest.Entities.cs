@@ -14,9 +14,9 @@ namespace BackendTest
 
         public async Task<UserEnt> GetUserEnt()
         {
-            var login = await loginservice.GetLogin(GCT.UserName);
+            var result = await loginservice.GetLogin(GCT.UserName, GCT.OrgNr);
             var org = await orgService.GetOrg(GCT.OrgNr);
-            var user = await loginservice.InitialiseLogin(login, org, GC.AppClient);
+            var user = await loginservice.InitialiseLogin(result.login, org, GC.AppClient);
             return user;
         }
 

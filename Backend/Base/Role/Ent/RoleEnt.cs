@@ -1,7 +1,7 @@
 ﻿
 /// <summary>
 /// Roles have permissions
-/// Roles are assigned to user logins
+/// Roles are assigned to user accounts
 /// Users can have multiple roles, the highest permission will be used
 /// Created: April 2025
 /// [*Licence*]

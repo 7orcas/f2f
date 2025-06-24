@@ -28,18 +28,29 @@ CREATE TABLE base.org (
 	langCode  NVARCHAR (4)    NULL,
 	langLabelVariant  INT             NULL
 );
+
 CREATE TABLE base.zzz
 (
 	id             BIGINT             PRIMARY KEY IDENTITY (10000, 1) NOT NULL,
 	xxx            NVARCHAR (40)   NOT NULL UNIQUE,
 	yyy            NVARCHAR (100)  NOT NULL,
-	orgs           NVARCHAR (MAX) NOT  NULL,
-	langCode       NVARCHAR (4)  NULL,
  	attempts       INT             NULL DEFAULT (0),
+ 	lastlogin      DATETIME        NOT NULL DEFAULT GETDATE(),
+	isActive       BIT             NOT NULL DEFAULT 1
+);
+
+CREATE TABLE base.userAcc
+(
+	id             BIGINT             PRIMARY KEY IDENTITY (10000, 1) NOT NULL,
+	zzzId        BIGINT             NOT NULL,
+	orgId       INT                   NOT NULL,
+	langCode       NVARCHAR (4)  NULL,
  	lastlogin      DATETIME        NOT NULL DEFAULT GETDATE(),
 	classification INT             NULL DEFAULT (0),
 	isAdmin        BIT             NOT NULL DEFAULT 0,
-	isActive       BIT             NOT NULL DEFAULT 1
+	isActive       BIT             NOT NULL DEFAULT 1,
+	FOREIGN KEY (zzzId)          REFERENCES base.zzz(id),
+	FOREIGN KEY (orgId)         REFERENCES base.org(id)
 );
 CREATE TABLE base.permission
 (
@@ -75,16 +86,16 @@ CREATE TABLE base.rolePermission
 	FOREIGN KEY (permissionId)   REFERENCES base.permission(id),
 	CONSTRAINT rolePermission_uq_role_persmission UNIQUE (roleId, permissionId)
 );
-CREATE TABLE base.zzzRole
+CREATE TABLE base.userAccRole
 (
 	id           BIGINT             PRIMARY KEY IDENTITY (10000, 1) NOT NULL,
-	zzzId        BIGINT             NOT NULL,
+	userAccId     BIGINT             NOT NULL,
 	roleId       BIGINT             NOT NULL,
 	updated      DATETIME        NOT NULL DEFAULT GETDATE(),
 	isActive     BIT             NOT NULL DEFAULT 1,
-	FOREIGN KEY (zzzId)          REFERENCES base.zzz(id),
+	FOREIGN KEY (userAccId)          REFERENCES base.userAcc(id),
 	FOREIGN KEY (roleId)         REFERENCES base.role(id),
-	CONSTRAINT zzzRole_uq_zzz_role UNIQUE (zzzId, roleId)
+	CONSTRAINT zzzRole_uq_zzz_role UNIQUE (userAccId, roleId)
 );
 CREATE TABLE base.langCode
 (
@@ -123,7 +134,7 @@ CREATE TABLE base.audit (
 	source              INT                 NOT NULL,
 	entityTypeId    INT                 NOT NULL,
 	entityId            BIGINT                 NULL,
-	userId               BIGINT                 NOT NULL,
+	userAccId        BIGINT                 NOT NULL,
 	created            DATETIME    NOT NULL DEFAULT GETDATE(),
 	crud                  NVARCHAR (10)   NULL,
 	details             NVARCHAR (MAX)  NULL

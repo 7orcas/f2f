@@ -1,5 +1,12 @@
-﻿using Backend.Base.Token.Ent;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
+
+/// <summary>
+/// Login controller for any client
+/// When successful, a valid security token is issued
+/// Created: June 2025
+/// [*Licence*]
+/// Author: John Stewart
+/// </summary>
 
 namespace Backend.Base.Login
 {

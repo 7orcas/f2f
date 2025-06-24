@@ -14,9 +14,15 @@ SET IDENTITY_INSERT base.org OFF;
 --{Languages:[{LangCode:"de",IsEditable:true}]}
 
 SET IDENTITY_INSERT base.zzz ON;
-INSERT INTO base.zzz (id, xxx, yyy, orgs,langCode) VALUES (1, '1', '1', '0,1,2','de');
-INSERT INTO base.zzz (id, xxx, yyy, orgs,langCode) VALUES (2, 'user', 'xx123', '1,2,12','en');
+INSERT INTO base.zzz (id, xxx, yyy) VALUES (1, '1', '1');
+INSERT INTO base.zzz (id, xxx, yyy) VALUES (2, 'user', 'xx123');
 SET IDENTITY_INSERT base.zzz OFF;
+
+SET IDENTITY_INSERT base.userAcc ON;
+INSERT INTO base.userAcc (id, zzzId, orgId,langCode) VALUES (1, 1,1,'de');
+INSERT INTO base.userAcc (id, zzzId, orgId,langCode) VALUES (2, 2, 1,'en');
+INSERT INTO base.userAcc (id, zzzId, orgId,langCode) VALUES (3, 2, 2,'de');
+SET IDENTITY_INSERT base.userAcc OFF;
 
 SET IDENTITY_INSERT base.permission ON;
 INSERT INTO base.permission (id, code, descr) VALUES (10,  'label',         'Language Labels');
@@ -59,14 +65,14 @@ INSERT INTO base.rolePermission (id, roleId, permissionId, crud) VALUES (12, 1, 
 
 SET IDENTITY_INSERT base.rolePermission OFF;
 
-SET IDENTITY_INSERT base.zzzRole ON;
-INSERT INTO base.zzzRole (id, zzzId, roleId) VALUES (1, 2,1);
-INSERT INTO base.zzzRole (id, zzzId, roleId) VALUES (2, 2, 2);
-INSERT INTO base.zzzRole (id, zzzId, roleId) VALUES (3, 2, 3);
-INSERT INTO base.zzzRole (id, zzzId, roleId) VALUES (4, 2, 4);
-INSERT INTO base.zzzRole (id, zzzId, roleId) VALUES (5, 2, 5);
-INSERT INTO base.zzzRole (id, zzzId, roleId) VALUES (6, 2, 6);
-SET IDENTITY_INSERT base.zzzRole OFF;
+SET IDENTITY_INSERT base.userAccRole ON;
+INSERT INTO base.userAccRole (id, userAccId, roleId) VALUES (1, 2, 1);
+INSERT INTO base.userAccRole (id, userAccId, roleId) VALUES (2, 2, 2);
+INSERT INTO base.userAccRole (id, userAccId, roleId) VALUES (3, 2, 3);
+INSERT INTO base.userAccRole (id, userAccId, roleId) VALUES (4, 2, 4);
+INSERT INTO base.userAccRole (id, userAccId, roleId) VALUES (5, 2, 5);
+INSERT INTO base.userAccRole (id, userAccId, roleId) VALUES (6, 2, 6);
+SET IDENTITY_INSERT base.userAccRole OFF;
 
 
 COMMIT;

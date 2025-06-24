@@ -3,15 +3,16 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
 using GC = Backend.GlobalConstants;
 
+/// <summary>
+/// Manage login process for user
+/// Note a user can have multiple sessions open
+/// Created: April 2025
+/// [*Licence*]
+/// Author: John Stewart
+/// </summary>
+
 namespace Backend.Base.Login
 {
-    /// <summary>
-    /// Manage login process for user
-    /// Note a user can have multiple sessions open
-    /// </summary>
-    /// <author>John Stewart</author>
-    /// <created>March 5, 2025</created>
-    /// <license>**Licence**</license>
     public class LoginService: BaseService, LoginServiceI
     {
         private readonly PermissionServiceI _permissionService;
@@ -35,14 +36,24 @@ namespace Backend.Base.Login
             _sessionService = sessionService;
         }
 
-        public async Task<LoginEnt> LoginUser(string userid, string password, int orgNr, int sourceAppNr, string? langCode)
+        public async Task<LoginEnt> LoginUser(string userid, string password, int orgId, int sourceAppNr, string? langCode)
         {
             try
             {
-                var login = await GetLogin(userid);
-                if (!login.Response.Valid) return login;
+                var result = await GetLogin(userid, orgId);
+                var login = result.Login;
+                if (login == null) 
+                    login = new LoginEnt();
+                var account = result.Account;
 
-                var org = await _orgService.GetOrg(orgNr);
+                if (!login.IsActive ||
+                    account == null ||
+                    !account.IsActive)
+                {
+                    return login;
+                }
+
+                var org = await _orgService.GetOrg(orgId);
                 var err = await Validate(login, password, org);
                 if (err != null)
                 {
@@ -51,8 +62,8 @@ namespace Backend.Base.Login
                     return login;
                 }
 
-                langCode = !string.IsNullOrEmpty(langCode) ? langCode : login.LangCode;
-                var user = await InitialiseLogin(login, org, sourceAppNr);
+                langCode = !string.IsNullOrEmpty(langCode) ? langCode : account.LangCode;
+                var user = await InitialiseLogin(login, account, org, sourceAppNr);
                 var config = _configService.CreateUserConfig(user, org, langCode);
                 var session = await _sessionService.CreateSession(user, org, config, sourceAppNr);
 
@@ -60,7 +71,7 @@ namespace Backend.Base.Login
                 {
                     Username = userid,
                     SessionKey = session.Key,
-                    Org = orgNr,
+                    Org = orgId,
                 };
 
                 var tokenX = _tokenService.CreateToken(tv);
@@ -68,6 +79,7 @@ namespace Backend.Base.Login
                 _tokenService.AddToken(keyX, tokenX);
 
 
+                login.Response.Valid = true;
                 login.Response.Token = tokenX;
                 login.Response.TokenKey = keyX;
                 login.Response.MainUrl = AppSettings.MainClientUrl;
@@ -84,39 +96,61 @@ namespace Backend.Base.Login
             }
         }
 
-        public async Task<LoginEnt> GetLogin(string userid)
+        //Each login to an org requires an account record
+        //Users can have multiple accounts
+        public async Task<(LoginEnt Login, UserAccountEnt Account)> GetLogin(string userid, int orgId)
         {
-            var l = new LoginEnt();
-            l.Response.Valid = false;
+            var login = null as LoginEnt;
+            var account = null as UserAccountEnt;
 
             try
             {
                 //ToDo Log
                 if (!ValidateParameter(userid))
-                    return l;
+                    throw new Exception();
 
                 await Sql.Run(
-                    "SELECT * FROM base.zzz "
-                    + "WHERE xxx = @userid ",
+                    "SELECT * FROM base.zzz " +
+                        "WHERE xxx = @userid ",
                     r =>
                     {
-                        l = new LoginEnt { 
-                            Id = GetId(r, "id"),
+                        login = new LoginEnt { 
+                            Id = GetId(r),
                             Userid = GetString(r, "xxx"),
                             Password = GetString(r, "yyy"),
-                            Orgs = GetString(r, "orgs"),
-                            LangCode = GetStringNull(r, "langCode"),
                             Attempts = GetIntNull(r, "attempts"),
                             Lastlogin = GetDateTime(r, "lastlogin"),
                             IsActive = GetBoolean(r, "isActive")
                         };
-                        l.Response.Valid = true;
                     },
                     new SqlParameter("@userid", userid)
                 );
+
+                await Sql.Run(
+                    "SELECT * FROM base.userAcc " +
+                        "WHERE zzzId = @zzzId " +
+                        "AND orgId = @orgId",
+                    r =>
+                    {
+                        account = new UserAccountEnt
+                        {
+                            Id = GetId(r),
+                            UserId = GetId(r, "zzzId"),
+                            OrgId = GetOrgId(r),
+                            LangCode = GetStringNull(r, "langCode"),
+                            Lastlogin = GetDateTime(r, "lastlogin"),
+                            IsActive = IsActive(r),
+                            IsAdmin = GetBoolean(r, "isAdmin"),
+                            Classification = GetIntNull(r, "classification")
+                        };
+                    },
+                    new SqlParameter("@zzzId", login.Id),
+                    new SqlParameter("@orgId", orgId)
+                );
             }
             catch { }
-            return l;
+
+            return (login, account);
         }
 
         //ToDo Language codes!
@@ -136,34 +170,23 @@ namespace Backend.Base.Login
             if (!l.IsActive)
                 return "In active Login";
 
-            if (string.IsNullOrEmpty(l.Orgs))
-                return  "Invalid Organisation";
-            
-            List<int> numbers = l.Orgs
-                .Split(',')
-                .Select(int.Parse)
-            .ToList();
-
-            if (!numbers.Contains(org.Id))
-                return "Invalid Organisation";
-
             return null;
         }
 
 
-        public async Task<UserEnt> InitialiseLogin(LoginEnt l, OrgEnt org, int sourceAppNr)
+        public async Task<UserEnt> InitialiseLogin(LoginEnt login, UserAccountEnt account, OrgEnt org, int sourceAppNr)
         {
-            await SetAttempts(l.Id, 0);
-            var permissions = await _permissionService.LoadEffectivePermissionsInt(l.Id, org.Id);
+            await SetAttempts(login.Id, 0);
+            var permissions = await _permissionService.LoadEffectivePermissionsInt(account.Id, org.Id);
 
             var user = new UserEnt
             {
-                LoginId = l.Id,
-                Userid = l.Userid,
+                UserAccountId = account.Id,
+                Userid = login.Userid,
                 Permissions = permissions,
             };
 
-            _auditService.LogInOut(sourceAppNr, org.Id, l.Id, GC.EntityTypeLogin);
+            _auditService.LogInOut(sourceAppNr, org.Id, account.Id, GC.EntityTypeLogin);
             return user;
         }
 

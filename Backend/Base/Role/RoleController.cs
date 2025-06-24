@@ -38,7 +38,7 @@ namespace Backend.Base.Role
                 list.Add(new UserRoleDto
                 {
                     RoleId = m.RoleId,
-                    OrgId = m.OrgId,
+                    OrgId = m.OrgId.HasValue? m.OrgId.Value : GC.BaseOrgId,
                     Code = m.Code,
                     Description = m.Description,
                     Updated = m.Updated,

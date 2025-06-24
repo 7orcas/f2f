@@ -65,7 +65,7 @@ namespace Backend.Base.Config
                 {
                     OrgId = userConfig.OrgId,
                     OrgDescription = session.Org.Description,
-                    UniqueUserId = session.User.LoginId + 987123564,
+                    UniqueUserId = session.User.UserAccountId + 987123564,
                     UniqueSessionId = UniqueSessionId.GetId(),
 
                     Languages = langs.ToArray(),
