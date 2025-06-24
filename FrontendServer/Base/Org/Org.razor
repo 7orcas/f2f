@@ -11,6 +11,7 @@
 @using CGC = Common.GlobalConstants;
 @using FrontendServer.Base._Base;
 
+
 <ConfirmNavigation List="list" />
 
 <Header 
@@ -123,6 +124,30 @@
                                             ValueExpression="() => orgDto.LangLabelVariant" />
  
                             </div>
+                            <div style="table-layout: fixed; width: 400px;">
+                                <MudTable Items="@orgDto.Languages">
+                                    <HeaderContent>
+                                        <MudTh><Label Key="LangCode"/></MudTh>
+                                        <MudTh><Label Key="Readonly" /></MudTh>
+                                        <MudTh><Label Key="Editable" /></MudTh>
+                                    </HeaderContent>
+                                    <RowTemplate>
+                                        <MudTd DataLabel="Column 1">@context.LangCode</MudTd>
+                                        <MudTd DataLabel="Column 2">@context.IsReadonly</MudTd>
+                                        <MudTd DataLabel="Column 3">@context.IsEditable</MudTd>
+                                    </RowTemplate>
+                                    <RowEditingTemplate>
+                                        <MudTd DataLabel="Column 1">@context.LangCode</MudTd>
+                                        <MudTd DataLabel="Column 2">
+                                            <MudCheckBox @bind-Value="context.IsReadonly" />
+                                        </MudTd>
+                                        <MudTd DataLabel="Column 3">
+                                            <MudCheckBox @bind-Value="context.IsEditable" />
+                                        </MudTd>
+                                    </RowEditingTemplate>
+                                </MudTable>
+                            </div>
+                                <!--
                                 <MudItem xs="12" sm="6" md="4">
                                         <table class="table" style="table-layout: fixed; width: 400px;">
                                             <thead>
@@ -133,7 +158,7 @@
                                                 </tr>
                                             </thead>
                                             <tbody>
-                                                @foreach (var lang in orgDto.Languages)
+                                                foreach (var lang in orgDto.Languages)
                                                 {
                                                     <tr>
                                                         <td>@lang.LangCode</td>
@@ -144,6 +169,7 @@
                                             </tbody>
                                         </table>
                                 </MudItem>
+                                    -->
                         </ChildContent>
                     </MudExpansionPanel>
 
@@ -215,7 +241,6 @@
 
             showList = list.Count > 1;
             tbSave = !_isLoading && !_isError;
-
             StateHasChanged();
         }
     }

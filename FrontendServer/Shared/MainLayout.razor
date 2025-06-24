@@ -1,32 +1,98 @@
 ﻿@inherits LayoutComponentBase
 
-@* Required *@
-<MudThemeProvider />
+<MudThemeProvider DefaultScrollbar="true" @bind-IsDarkMode="_isDarkMode" Theme="_theme" />
 <MudPopoverProvider />
-
-@* Needed for dialogs *@
 <MudDialogProvider />
-
-@* Needed for snackbars *@
 <MudSnackbarProvider />
 
+<MudLayout>
 
-<head>
-    <HeadOutlet />
-</head>
+    <MudAppBar Elevation="4">
+        <div style="display: flex; align-items: center; width: 100%; justify-content: space-between;">
 
-<div class="page">
-    <div class="sidebar">
-        <NavMenu />
-    </div>
+            <!-- Left -->
+            <div style="display: flex; align-items: center;">
+                <MudIconButton Icon="@Icons.Material.Filled.Menu"
+                               Color="Color.Inherit"
+                               Edge="Edge.Start"
+                               OnClick="@ToggleDrawer" />
+                <MudText Typo="Typo.h6" Class="ml-2">Blue</MudText>
+            </div>
 
-    <main>
-        <div class="top-row px-4">
-            <a href="https://docs.microsoft.com/aspnet/" target="_blank">About</a>
+            <!-- Center: Menu items -->
+            <div style="display: flex; gap: 16px;">
+                <MudButton Link="true" Href="/machines" Color="Color.Inherit" Variant="Variant.Text">Machines</MudButton>
+                <MudButton Link="true" Href="/permission" Color="Color.Inherit" Variant="Variant.Text">Permissions</MudButton>
+                <MudButton Link="true" Href="/role" Color="Color.Inherit" Variant="Variant.Text">User Roles</MudButton>
+                <MudButton Link="true" Href="/organisation" Color="Color.Inherit" Variant="Variant.Text">Organisation</MudButton>
+                <MudButton Link="true" Href="/config" Color="Color.Inherit" Variant="Variant.Text">Config</MudButton>
+                <MudButton Link="true" Href="/audit" Color="Color.Inherit" Variant="Variant.Text">Audit</MudButton>
+            </div>
+
+            <!-- Right -->
+            <div style="display: flex; align-items: center; gap: 12px;">
+                <MudSwitch @bind-Value="_isDarkMode"
+                           T="bool"
+                           Label="Toggle Light/Dark Mode" />
+
+                <MudAvatar Size="Size.Medium"
+                            Color="Color.Primary"
+                            Icon="@Icons.Material.Filled.AccountCircle"
+                            Style="cursor: pointer;" />
+        
+                <MudIconButton Icon="@Icons.Material.Filled.Settings"
+                                Color="Color.Inherit"
+                                Href="/settings" />
+            </div>
+
         </div>
+    </MudAppBar>
 
-        <article class="content px-4">
+    <MudDrawer @bind-Open="_drawerOpen"
+               Elevation="1"
+               ClipMode="DrawerClipMode.Always"
+               Variant="DrawerVariant.Responsive">
+        <MudNavMenu>
+            <MudNavLink Href="/" Match="NavLinkMatch.All" Icon="@Icons.Material.Filled.Home">Home</MudNavLink>
+            <MudNavLink Href="/settings" Icon="@Icons.Material.Filled.Settings">Settings</MudNavLink>
+        </MudNavMenu>
+    </MudDrawer>
+
+    <MudMainContent Class="main-content-fill-screen">
+        <MudContainer MaxWidth="MaxWidth.False" Class="mt-4">
             @Body
-        </article>
-    </main>
-</div>
+        </MudContainer>
+    </MudMainContent>
+
+</MudLayout>
+
+@code {
+    private bool _drawerOpen = true;
+    private bool _isDarkMode = false;
+
+    private MudTheme _theme = new MudTheme
+        {
+            PaletteLight = new PaletteLight
+            {
+                Primary = Colors.Blue.Default,
+                AppbarBackground = Colors.Blue.Darken1
+            },
+            PaletteDark = new PaletteDark
+            {
+                Primary = Colors.Blue.Lighten1,
+                AppbarBackground = Colors.Gray.Darken4
+            }
+        };
+        
+            
+    private void ToggleDrawer()
+    {
+        _drawerOpen = !_drawerOpen;
+    }
+
+    private void Logout()
+    {
+        
+    }
+
+}
