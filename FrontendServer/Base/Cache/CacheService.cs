@@ -2,7 +2,8 @@
 using GC = FrontendServer.GlobalConstants;
 
 /// <summary>
-/// This is a Scoped service, however IMemoryCache is a singleton. 
+/// Scoped service, however IMemoryCache is a singleton. 
+/// Allows client to persist strings
 /// ToDo: may want to make this as an explicit singleton.
 /// Created: April 2025
 /// [*Licence*]
@@ -20,50 +21,18 @@ namespace FrontendServer.Base.Cache
             _cache = cache;
         }
 
-        static public string LabelKey(string key)
-        {
-            return GC.LabelCacheKey + "-" + key;
-        }
-
-        public bool HasLabels(string langCode)
-        {
-            if (_cache.TryGetValue(LabelKey(langCode), out Dictionary<string, LangLabelDto> labelsX))
-                return true;
-            return false;
-        }
-
-        public void PutLabels(string langCode, Dictionary<string, LangLabelDto> labels)
-        {
-            _cache.Set(LabelKey(langCode), labels);
-        }
-
-        public Dictionary<string, LangLabelDto> GetLabels(string langCode)
-        {
-            Dictionary<string, LangLabelDto>? labels = null;
-
-            if (_cache.TryGetValue(LabelKey(langCode), out Dictionary<string, LangLabelDto> labelsX))
-                labels = labelsX;
-
-            return labels != null ? labels : new Dictionary<string, LangLabelDto>();
-        }
-
-        public void PutString(string key, string s)
-        {
-            _cache.Set(key, s);
-        }
 
         public string? GetString(string key)
         {
             if (_cache.TryGetValue(key, out string s))
                 return s;
-
             return null;
         }
 
-        public void RemoveString(string key)
-        {
-            _cache.Remove(key);
-        }
+        public void PutString(string key, string s) => _cache.Set(key, s);
+
+        public void RemoveString(string key) => _cache.Remove(key);
+        
 
     }
 }

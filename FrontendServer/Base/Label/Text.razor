@@ -1,4 +1,4 @@
-﻿@inherits BasePage
+﻿@inherits BaseComponent
 @using GC = FrontendServer.GlobalConstants;
 
 <div class="@Class">
@@ -19,9 +19,7 @@
     {
         if (firstRender)
         {
-            await InitialiseBasePage();
             size = GetTypo(Size);
-
             StateHasChanged();
         }
     }

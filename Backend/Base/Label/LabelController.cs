@@ -1,5 +1,7 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using Backend.Base.Session.Ent;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Serilog.Events;
 using GC = Backend.GlobalConstants;
 
 namespace Backend.Base.Label
@@ -28,11 +30,23 @@ namespace Backend.Base.Label
         /// <returns></returns>
         [CrudAtt(GC.CrudRead)]
         [AuditListAtt(GC.EntityTypeLangLabelList)]
-        [HttpGet("clientlist/{langCode}")]
-        public async Task<IActionResult> GetLabelList(string langCode)
+        [HttpGet("clientlist/{langCode}/{variant}")]
+        public async Task<IActionResult> GetClientLabelList(string langCode, int? variant)
         {
             var session = HttpContext.Items["session"] as SessionEnt;
-            var labels = await _labelService.GetLanguageLabelList(langCode);
+
+            if (!IsSame(variant, session.Org.LangLabelVariant))
+            {
+                LogEvent(LogEventLevel.Warning, "Invalid language variant", session);
+                var e = new _ResponseDto
+                {
+                    Valid = false,
+                    ErrorMessage = "Invalid variant",
+                };
+                return Ok(e);
+            }
+
+            var labels = await _labelService.GetLanguageLabelList(langCode, variant);
             var list = new List<LangLabelDto>();
             
             foreach (var l in labels)

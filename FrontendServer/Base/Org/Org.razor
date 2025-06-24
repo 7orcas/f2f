@@ -83,21 +83,19 @@
                             <Label Size="GC.TextSize.Large" Key="Langs"></Label>
                         </TitleContent>
                         <ChildContent>
-                            <MudGrid>
-                                <MudItem xs="12" sm="6" md="4">
-                                        <TextField Width=GC.TextFieldWidth.Short
-                                                   LangCode="LangCode"
-                                                   Value="@orgDto.LangCode"
-                                                   ValueChanged="@((string val) => orgDto.LangCode = val)"
-                                                   ValueExpression="() => orgDto.LangCode"/>
-                                </MudItem>
-                                <MudItem xs="12" sm="6" md="4">
-                                    <NumericNullField Width=GC.TextFieldWidth.Short
-                                               LangCode="LangCodeV"
-                                               Value="@orgDto.LangLabelVariant"
-                                               ValueChanged="@((int? val) => orgDto.LangLabelVariant = val)"
-                                               ValueExpression="() => orgDto.LangLabelVariant" />
-                                </MudItem>
+                            <div style="display: flex; flex-wrap: wrap; gap: 20px;">
+                                <TextField Width=GC.TextFieldWidth.Short
+                                            LangCode="LangCode"
+                                            Value="@orgDto.LangCode"
+                                            ValueChanged="@((string val) => orgDto.LangCode = val)"
+                                            ValueExpression="() => orgDto.LangCode"/>
+                                <NumericNullField Width=GC.TextFieldWidth.Short
+                                            LangCode="LangCodeV"
+                                            Value="@orgDto.LangLabelVariant"
+                                            ValueChanged="@((int? val) => orgDto.LangLabelVariant = val)"
+                                            ValueExpression="() => orgDto.LangLabelVariant" />
+ 
+                            </div>
                                 <MudItem xs="12" sm="6" md="4">
                                         <table class="table" style="table-layout: fixed; width: 400px;">
                                             <thead>
@@ -119,7 +117,6 @@
                                             </tbody>
                                         </table>
                                 </MudItem>
-                            </MudGrid>
                         </ChildContent>
                     </MudExpansionPanel>
 
@@ -128,7 +125,7 @@
                             <Label Size="GC.TextSize.Large" Key="PWs"></Label>
                         </TitleContent>
                         <ChildContent>
-                            <div class="d-flex gap-4">
+                            <div style="display: flex; flex-wrap: wrap; gap: 20px;">
                                 <NumericField Width=GC.TextFieldWidth.Short
                                               LangCode="LenMin"
                                               Value="@orgDto.PasswordRule.MinLength"
@@ -140,11 +137,26 @@
                                               Value="@orgDto.PasswordRule.MaxLength"
                                               ValueChanged="@((int val) => orgDto.PasswordRule.MaxLength = val)"
                                               ValueExpression="() => orgDto.PasswordRule.MaxLength" />
+                                <NumericField Width=GC.TextFieldWidth.Short
+                                              LangCode="PWAt"
+                                              Value="@orgDto.PasswordRule.MaxNumberLoginAttempts"
+                                              ValueChanged="@((int val) => orgDto.PasswordRule.MaxNumberLoginAttempts = val)"
+                                              ValueExpression="() => orgDto.PasswordRule.MaxNumberLoginAttempts" />
 
                             </div>
-                            <MudCheckBox Label="@Label("PWmc")" @bind-Value="@orgDto.PasswordRule.IsMixedCase" Variant="Variant.Filled"></MudCheckBox>
-                            <MudCheckBox Label="@Label("PWNonLet")" @bind-Value="@orgDto.PasswordRule.IsNonLetter" Variant="Variant.Filled"></MudCheckBox>
-                            <MudCheckBox Label="@Label("PWNum")" @bind-Value="@orgDto.PasswordRule.IsNumber" Variant="Variant.Filled"></MudCheckBox>
+                            <CheckboxField LangCode="PWmc"
+                                           Value="@orgDto.PasswordRule.IsMixedCase"
+                                           ValueChanged="@((bool val) => orgDto.PasswordRule.IsMixedCase = val)"
+                                           ValueExpression="() => orgDto.PasswordRule.IsMixedCase" />
+                            <CheckboxField LangCode="PWNonLet"
+                                           Value="@orgDto.PasswordRule.IsNonLetter"
+                                           ValueChanged="@((bool val) => orgDto.PasswordRule.IsNonLetter= val)"
+                                           ValueExpression="() => orgDto.PasswordRule.IsNonLetter" />
+                            <CheckboxField LangCode="PWNum"
+                                           Value="@orgDto.PasswordRule.IsNumber"
+                                           ValueChanged="@((bool val) => orgDto.PasswordRule.IsNumber = val)"
+                                           ValueExpression="() => orgDto.PasswordRule.IsNumber" />
+                            
                         </ChildContent>
                     </MudExpansionPanel>
 

@@ -14,9 +14,28 @@ namespace Backend.Base.Label
         /*
          * Get language list for passed in language code (eg 'en')
          */
-        public async Task<List<LangLabel>> GetLanguageLabelList(string langCode)
+        public async Task<List<LangLabel>> GetLanguageLabelList(string langCode, int? variant)
         {
-            return await GetLabelList(null, langCode, null, null, null);
+            var list = await GetLabelList(null, langCode, null, null, null);
+            if (variant.HasValue)
+            {
+                try
+                {
+                    var dict = list.ToDictionary(x => x.LangKeyCode, x => x);
+
+                    var listX = await GetLabelList(null, langCode, null, null, variant);
+                    foreach (var label in listX) 
+                        dict[label.LangKeyCode] = label;
+                    
+                    list = dict.Values.ToList();
+                }
+                catch 
+                {
+                    _log.Error("Can't get language variants");
+                }
+            }
+
+            return list;
         }
 
         /*
@@ -86,11 +105,15 @@ namespace Backend.Base.Label
                 sqlWhere = "WHERE l.variant " + (variant.HasValue ? " = " + variant : " IS NULL") + " ";
 
                 if (!string.IsNullOrEmpty(langCode))
-                    sqlWhere = "WHERE l.langCode = '" + langCode + "' ";
+                    sqlWhere += "AND l.langCode = '" + langCode + "' ";
 
                 else if (langCodes  != null)
+                {
+                    sqlWhere += "AND (";
                     for (int i = 0; i < langCodes.Count; i++)
-                        sqlWhere += (i==0?"WHERE ":"AND ") + "l.langCode = '" + langCodes[i] + "' ";
+                        sqlWhere += (i==0?"":" OR ") + "l.langCode = '" + langCodes[i] + "'";
+                    sqlWhere += ") ";
+                }
 
                 if (!string.IsNullOrEmpty(langKeyCode))
                     sqlWhere = "AND k.code = '" + langKeyCode + "' ";

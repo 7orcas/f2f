@@ -24,6 +24,7 @@ namespace Common.DTO
 
     public class PasswordRuleDto
     {
+        public int MaxNumberLoginAttempts { get; set; }
         public int MinLength { get; set; } 
         public int MaxLength { get; set; } 
         public bool IsMixedCase { get; set; }

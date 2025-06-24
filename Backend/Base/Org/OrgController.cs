@@ -101,6 +101,7 @@ namespace Backend.Base.Org
 
                     PasswordRule = new PasswordRuleDto
                     {
+                        MaxNumberLoginAttempts = enc.MaxNumberLoginAttempts,
                         MinLength = enc.PasswordRule.MinLength,
                         MaxLength = enc.PasswordRule.MaxLength,
                         IsMixedCase = enc.PasswordRule.IsMixedCase,
@@ -153,6 +154,7 @@ namespace Backend.Base.Org
             };
             org.Encoding = new OrgEnc
             {
+                MaxNumberLoginAttempts = dto.PasswordRule.MaxNumberLoginAttempts,
                 Languages = langs,
                 PasswordRule = pw,
             };

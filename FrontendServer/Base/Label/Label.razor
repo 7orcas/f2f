@@ -1,7 +1,6 @@
-﻿@inherits BasePage
+﻿@inherits BaseComponent
 @inject IDialogService DialogService
 @using GC = FrontendServer.GlobalConstants;
-
 
 <div>
     @if (!isAdminLanguage)
@@ -60,11 +59,10 @@
     {
         if (firstRender)
         {
-            await InitialiseBasePage();
-            var appConfig = await GetConfig();
-            showTooltip = (appConfig?.Label.ShowTooltip ?? false) && !HideTooltip;
-            highlightNoKey = !IsLabel(Key) && (appConfig?.Label.HighlightNoKey ?? false);
-            isAdminLanguage = appConfig?.Label.IsAdminLanguage ?? false;
+            var cnfg = GetConfig();
+            showTooltip = (cnfg?.Label.ShowTooltip ?? false) && !HideTooltip;
+            highlightNoKey = !IsLabel(Key) && (cnfg?.Label.HighlightNoKey ?? false);
+            isAdminLanguage = cnfg?.Label.IsAdminLanguage ?? false;
             size = GetTypo(Size);
 
             StateHasChanged();
@@ -78,7 +76,7 @@
     }
 
     private bool IsShowToolTip() => IsTooltip(Key);
-    private string? ShowToolTip() => showTooltip? GetTooltip(Key) : null;
+    private string? ShowToolTip() => showTooltip ? GetTooltip(Key) : null;
 
     private string GetClass()
     {

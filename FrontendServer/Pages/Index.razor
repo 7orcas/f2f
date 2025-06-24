@@ -3,7 +3,8 @@
 @inject HttpClient HttpClient
 @inject IHttpClientFactory HttpClientFactory
 @inject NavigationManager NavigationManager
-@inject CacheService Cache
+@inject LabelCacheService LCS
+@inject LabelService LS
 @inject IJSRuntime JS
 
 @using GC = FrontendServer.GlobalConstants;
@@ -114,13 +115,17 @@ else
             }
             var cjson = cdto.Result.ToString();
             var config = JsonConvert.DeserializeObject<AppConfigDto>(cjson);
+config.DebugMode = true;
             SetConfig(config);
             userParameters.Add(config);
 
             //Get Labels
-            if (!Cache.HasLabels(config.Label.LangCode))
+            if (!LCS.HasLabels(config.Label.LangCode, config.Label.Variant))
             {
-                var url = GC.URL_label_clientlist + config.Label.LangCode;
+                var url = GC.URL_label_clientlist 
+                            + config.Label.LangCode 
+                            + (config.Label.Variant.HasValue ? "/" + config.Label.Variant : "");
+
                 var rl = await client.GetAsync(url);
                 userParameters.loaded = AppendMarkupString(userParameters.loaded, url);
                 var rls = await rl.Content.ReadAsStringAsync();
@@ -132,9 +137,10 @@ else
                     var dic = new Dictionary<string, LangLabelDto>();
                     foreach (var l in labels)
                         dic.Add(l.LangKeyCode, l);
-                    Cache.PutLabels(config.Label.LangCode, dic);
+                    LCS.PutLabels(config.Label.LangCode, config.Label.Variant, dic);
                 }
             }
+            LS.SetLabels(LCS.GetLabels(config.Label.LangCode, config.Label.Variant));
 
             PutCacheString("UP", sysJ.JsonSerializer.Serialize(userParameters));
             _isLoading = false;

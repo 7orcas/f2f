@@ -13,7 +13,7 @@ namespace FrontendServer.Base.Audit
     {
         private readonly IHttpClientFactory _httpClientFactory;
 
-        public AuditService(IHttpClientFactory httpClientFactory, CacheService Cache) : base(Cache) 
+        public AuditService(IHttpClientFactory httpClientFactory, LabelCacheService Cache) : base(Cache) 
         {
             _httpClientFactory = httpClientFactory;
         }

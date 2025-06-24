@@ -1,4 +1,6 @@
-﻿@inject HttpClient HttpClient
+﻿@inherits BaseComponent
+
+@inject HttpClient HttpClient
 @inject NavigationManager NavigationManager
 @inject IHttpClientFactory HttpClientFactory
 @inject CacheService CacheService
@@ -7,8 +9,7 @@
 @using Newtonsoft.Json;
 @using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage
 @inject ProtectedSessionStorage ProtectedSessionStore
-@inject UserConfigService ConfigService
-
+@inject ConfigService ConfigService
 
 @code {
     [Inject] protected IJSRuntime JS { get; set; }
@@ -31,8 +32,6 @@
 
     public async Task InitialiseBasePage()
     {
-        await SetConfig();
-        await SetLabels();
     }
 
     public async Task<HttpClient> SetClient()
@@ -101,27 +100,8 @@
         return new MarkupString(m.ToString() + "<br>" + s);
     }
 
-    public void PutCacheString(string key, string s)
-    {
-        CacheService.PutString(key + "-" + _config.UniqueSessionId, s);
-    }
-
-    public string? GetCacheString(string key)
-    {
-        return CacheService.GetString(key + "-" + _config.UniqueSessionId);
-    }
-
-    public Typo GetTypo(GC.TextSize size) => size switch
-    {
-        GC.TextSize.Heading => Typo.h3,
-        GC.TextSize.SubHeading => Typo.h4,
-        GC.TextSize.Section => Typo.h5,
-        GC.TextSize.Large => Typo.h6,
-        GC.TextSize.Small => Typo.body2,
-        GC.TextSize.ButtonText => Typo.h6,
-        _ => Typo.body1
-    };
-
+    public void PutCacheString(string key, string s) => CacheService.PutString(key + "-" + _config.UniqueSessionId, s);
+    public string? GetCacheString(string key) => CacheService.GetString(key + "-" + _config.UniqueSessionId);
     public string GetListRowOddEvenClass (int i) => i % 2 == 0 ? " list-odd-row" : " list-even-row";
-    
+  
 }

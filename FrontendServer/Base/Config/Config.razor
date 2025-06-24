@@ -1,7 +1,7 @@
 ﻿@attribute [Route(BasePageRoutes.ConfigRoute)]
 @inherits BasePage
 @attribute [Authorize]
-@inject UserConfigService ConfigService
+@inject ConfigService ConfigService
 
 @using System.Net
 @using MudBlazor
@@ -14,7 +14,7 @@
 
 <ConfirmNavigation Dto="configDto" />
 
-<Header TitleKey="Conf"
+<Header TitleKey="Cfg"
         SubTitleKey="ConfSub"
         PageCode=@_pageCode
         TBSave="SaveAsync"

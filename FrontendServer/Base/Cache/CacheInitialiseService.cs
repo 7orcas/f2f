@@ -27,8 +27,8 @@ namespace FrontendServer.Base.Cache
         /// <returns></returns>
         public async Task InitialiseCache()
         {
-            _cache.Remove(CacheService.LabelKey("en"));
-            _cache.Remove(CacheService.LabelKey("de"));
+            //_cache.Remove(CacheService.LabelKey("en"));
+            //_cache.Remove(CacheService.LabelKey("de"));
         }
     }
 }

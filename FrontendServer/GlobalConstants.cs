@@ -17,7 +17,7 @@
         public const string URL_perm_eff          = "api/Permission/listeffective";
         public const string URL_audit_list        = "api/Audit/list";
         public const string URL_role_list         = "api/Role/list";
-        public const string URL_config            = "api/Config/get";
+        public const string URL_config            = "api/Config/clientConfig";
         public const string URL_org_list          = "api/Org/list";
         public const string URL_org               = "api/Org/get/";
         public const string URL_org_update        = "api/Org/update";
@@ -38,6 +38,7 @@
 
         public enum TextFieldWidth
         {
+            Ignore = 0,
             Short = 1,
             Medium = 2,
             Long = 3,

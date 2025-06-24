@@ -11,7 +11,7 @@ namespace FrontendServer.Base.Role
 {
     public class RoleService : BaseServiceDELETE_ME
     {
-        public RoleService(CacheService Cache) : base (Cache) { }
+        public RoleService(LabelCacheService Cache) : base (Cache) { }
 
         public async Task<(List<UserRoleDto> roles, MarkupString message)> RolesAsync(HttpClient client)
         {

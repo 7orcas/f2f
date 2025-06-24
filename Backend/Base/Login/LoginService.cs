@@ -42,7 +42,8 @@ namespace Backend.Base.Login
                 var login = await GetLogin(userid);
                 if (!login.Response.Valid) return login;
 
-                var err = await Validate(login, password, orgNr);
+                var org = await _orgService.GetOrg(orgNr);
+                var err = await Validate(login, password, org);
                 if (err != null)
                 {
                     login.Response.Valid = false;
@@ -51,7 +52,6 @@ namespace Backend.Base.Login
                 }
 
                 langCode = !string.IsNullOrEmpty(langCode) ? langCode : login.LangCode;
-                var org = await _orgService.GetOrg(orgNr);
                 var user = await InitialiseLogin(login, org, sourceAppNr);
                 var config = _configService.CreateUserConfig(user, org, langCode);
                 var session = await _sessionService.CreateSession(user, org, config, sourceAppNr);
@@ -120,7 +120,7 @@ namespace Backend.Base.Login
         }
 
         //ToDo Language codes!
-        private async Task<string> Validate (LoginEnt l, string password, int org)
+        private async Task<string> Validate (LoginEnt l, string password, OrgEnt org)
         {
             if (l == null || l.Id == 0)
                 return "Invalid Username and/or Password.";
@@ -130,8 +130,11 @@ namespace Backend.Base.Login
             if (string.IsNullOrEmpty(password) || !password.Equals(l.Password))
                 return "Invalid Username and/or Password";
             
-            if (l.Attempts > 3)
+            if (l.Attempts > org.Encoding.MaxNumberLoginAttempts)
                 return "Max Attempts";
+
+            if (!l.IsActive)
+                return "In active Login";
 
             if (string.IsNullOrEmpty(l.Orgs))
                 return  "Invalid Organisation";
@@ -141,7 +144,7 @@ namespace Backend.Base.Login
                 .Select(int.Parse)
             .ToList();
 
-            if (!numbers.Contains(org))
+            if (!numbers.Contains(org.Id))
                 return "Invalid Organisation";
 
             return null;

@@ -38,10 +38,11 @@ namespace Backend.Base.Config
         /// </summary>
         /// <returns></returns>
         [CrudAtt(GC.CrudIgnore)]
-        [HttpGet("get")]
+        [HttpGet("clientConfig")]
         public async Task<IActionResult> GetClientConfig()
         {
             var session = HttpContext.Items["session"] as SessionEnt;
+            var org = session.Org;
             var user = session.User;
             var userConfig = session.UserConfig;
 
@@ -71,6 +72,7 @@ namespace Backend.Base.Config
                     Label = new LabelConfigDto
                     {
                         LangCode = langCodeCurrent,
+                        Variant = org.LangLabelVariant,
                         ShowTooltip = true,
                         HighlightNoKey = isAdminLanguage, //ToDo turn on/off
                         IsAdminLanguage = isAdminLanguage, //ToDo turn on/off

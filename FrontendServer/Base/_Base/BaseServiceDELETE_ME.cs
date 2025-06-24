@@ -6,10 +6,10 @@ namespace FrontendServer.Base._Base
 {
     public class BaseServiceDELETE_ME
     {
-        protected CacheService _Cache;
+        protected LabelCacheService _Cache;
         protected Dictionary<string, LangLabelDto> _labels;
 
-        public BaseServiceDELETE_ME(CacheService Cache)
+        public BaseServiceDELETE_ME(LabelCacheService Cache)
         {
             _Cache = Cache;
             SetLabels();
@@ -46,7 +46,7 @@ namespace FrontendServer.Base._Base
 
         public void SetLabels()
         {
-            _labels = _Cache.GetLabels("en"); //ToDo
+            _labels = _Cache.GetLabels("en", null); //ToDo
         }
 
         public string GetLabel(string labelCode)

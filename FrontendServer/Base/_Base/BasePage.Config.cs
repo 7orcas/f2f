@@ -15,20 +15,6 @@ namespace FrontendServer.Base._Base
         protected async Task SetConfig()
         {
             if (_config != null) return;
-
-            //DELETE ME
-            //if (!ConfigService.IsInitialized)
-            //{
-            //    var result = await ProtectedSessionStore.GetAsync<AppConfigDto>(GC.ConfigCacheKey);
-            //    if (result.Success && result.Value is not null)
-            //    {
-            //        var cjson = await ProtectedSessionStore.GetAsync<string>(GC.ConfigCacheKey);
-            //        _config = JsonConvert.DeserializeObject<AppConfigDto>(result.Value);
-            //        _config = result.Value;
-            //        ConfigService.Set(result.Value);
-            //    }
-            //}
-            //else
             _config = @ConfigService.Config;
         }
 

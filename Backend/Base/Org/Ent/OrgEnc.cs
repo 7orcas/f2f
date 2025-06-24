@@ -34,6 +34,7 @@ namespace Backend.Base.Org.Ent
     {
         public int MinLength { get; set; } = 8;
         public int MaxLength { get; set; } = 30;
+        public int MaxAttempts { get; set; } = 3;
         public bool IsMixedCase { get; set; } = true;
         public bool IsNumber { get; set; } = true;
         public bool IsNonLetter { get; set; } = true;

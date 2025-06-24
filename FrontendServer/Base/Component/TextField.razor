@@ -19,17 +19,6 @@
     [Parameter] public EventCallback<string> ValueChanged { get; set; }
     [Parameter] public Expression<Func<string>> ValueExpression { get; set; }
 
-
-    private string label;
-
-    protected override async Task OnAfterRenderAsync(bool firstRender)
-    {
-        if (firstRender)
-        {
-            await InitialiseBasePage();
-            label = GetLabel(LangCode);
-            StateHasChanged();
-        }
-    }
-
+    private string label = loading;
+    protected override void OnInitialized() => label = GetLabel(LangCode);
 }
