@@ -80,3 +80,7 @@ a, .btn-link {
     display: flex;
     flex-direction: column;
 }
+
+.main-toolbar-button{
+    text-transform: none;
+}

@@ -54,8 +54,8 @@ builder.Services.AddDistributedMemoryCache();
 builder.Services.AddScoped<ProtectedSessionStorage>();
 
 //Base Services 
-builder.Services.AddScoped<LabelService>();
 builder.Services.AddScoped<ConfigService>();
+builder.Services.AddScoped<LabelService>();
 builder.Services.AddScoped<BaseServiceDELETE_ME>();
 //builder.Services.AddScoped<AuthorizationMessageHandler>();
 builder.Services.AddScoped<LogoutService>();

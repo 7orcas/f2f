@@ -3,7 +3,7 @@
 @inject HttpClient HttpClient
 @inject IHttpClientFactory HttpClientFactory
 @inject NavigationManager NavigationManager
-@inject LabelCacheService LCS
+@inject ConfigService ConfS
 @inject LabelService LS
 @inject IJSRuntime JS
 
@@ -57,16 +57,16 @@ else
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        //await Task.Delay(100); // Pause to make it work
-
         if (firstRender && !_isError)
         {
-            //Already loged in?
+            //Already logged in?
             var result = await ProtectedSessionStore.GetAsync<string>(GC.TokenCacheKey);
             if (result.Success)
             {
+                await InitialiseBasePage();
                 var up = GetCacheString("UP");
-                userParameters = JsonConvert.DeserializeObject<UserParameters>(up);
+                if (up != null)
+                    userParameters = JsonConvert.DeserializeObject<UserParameters>(up);
                 _isLoading = false;
                 StateHasChanged();
                 return;
@@ -101,46 +101,14 @@ else
             userParameters.token = token;
 
             //Get App Config
-            var cl = await client.GetAsync(GC.URL_config);
             userParameters.loaded = AppendMarkupString(userParameters.loaded, GC.URL_config);
-            var cls = await cl.Content.ReadAsStringAsync();
-            var cdto = JsonConvert.DeserializeObject<_ResponseDto>(cls);
-            if (!cdto.Valid)
-            {
-                _isLoading = false;
-                _isError = true;
-                _errorMessage = new MarkupString("Missing Config");
-                StateHasChanged();
-                return;
-            }
-            var cjson = cdto.Result.ToString();
-            var config = JsonConvert.DeserializeObject<AppConfigDto>(cjson);
-config.DebugMode = true;
+            var config = await ConfS.Initialise();
+config.DebugMode = true; //DELETE ME
             SetConfig(config);
             userParameters.Add(config);
 
             //Get Labels
-            if (!LCS.HasLabels(config.Label.LangCode, config.Label.Variant))
-            {
-                var url = GC.URL_label_clientlist 
-                            + config.Label.LangCode 
-                            + (config.Label.Variant.HasValue ? "/" + config.Label.Variant : "");
-
-                var rl = await client.GetAsync(url);
-                userParameters.loaded = AppendMarkupString(userParameters.loaded, url);
-                var rls = await rl.Content.ReadAsStringAsync();
-                var rdto = JsonConvert.DeserializeObject<_ResponseDto>(rls);
-
-                if (rdto.Valid)
-                {
-                    var labels = JsonConvert.DeserializeObject<List<LangLabelDto>>(rdto.Result.ToString());
-                    var dic = new Dictionary<string, LangLabelDto>();
-                    foreach (var l in labels)
-                        dic.Add(l.LangKeyCode, l);
-                    LCS.PutLabels(config.Label.LangCode, config.Label.Variant, dic);
-                }
-            }
-            LS.SetLabels(LCS.GetLabels(config.Label.LangCode, config.Label.Variant));
+            await LS.Initialise();
 
             PutCacheString("UP", sysJ.JsonSerializer.Serialize(userParameters));
             _isLoading = false;
@@ -156,11 +124,9 @@ config.DebugMode = true;
         }
     }
 
-    protected override async Task OnInitializedAsync()
-    {
-        _isLoading = true;
-    }
-
+    protected override async Task OnInitializedAsync() => _isLoading = true;
+    
+    //Used for development only
     public class UserParameters
     {
         public string tokenkey { get; set; }

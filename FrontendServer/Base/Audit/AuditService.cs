@@ -7,7 +7,7 @@ using GC = FrontendServer.GlobalConstants;
 namespace FrontendServer.Base.Audit
 {
 
-    //May not need this
+    //DELETE ME
 
     public class AuditService : BaseServiceDELETE_ME
     {

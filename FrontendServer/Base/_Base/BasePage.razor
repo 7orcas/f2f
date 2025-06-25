@@ -3,13 +3,14 @@
 @inject HttpClient HttpClient
 @inject NavigationManager NavigationManager
 @inject IHttpClientFactory HttpClientFactory
-@inject CacheService CacheService
+@inject CacheService CS
+@inject ProtectedSessionStorage ProtectedSessionStore
+@inject ConfigService ConfS
+@inject LabelService LS
 
 @using GC = FrontendServer.GlobalConstants;
 @using Newtonsoft.Json;
 @using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage
-@inject ProtectedSessionStorage ProtectedSessionStore
-@inject ConfigService ConfigService
 
 @code {
     [Inject] protected IJSRuntime JS { get; set; }
@@ -32,6 +33,14 @@
 
     public async Task InitialiseBasePage()
     {
+        if (!ConfS.IsInitialized)
+            await ConfS.Initialise();
+            
+        if (!LS.IsInitialized)
+            await LS.Initialise();
+
+        _config = ConfS.Config;
+        _labels = LS.Labels;
     }
 
     public async Task<HttpClient> SetClient()
@@ -100,8 +109,8 @@
         return new MarkupString(m.ToString() + "<br>" + s);
     }
 
-    public void PutCacheString(string key, string s) => CacheService.PutString(key + "-" + _config.UniqueSessionId, s);
-    public string? GetCacheString(string key) => CacheService.GetString(key + "-" + _config.UniqueSessionId);
+    public void PutCacheString(string key, string s) => CS.PutString(key + "-" + _config.UniqueSessionId, s);
+    public string? GetCacheString(string key) => CS.GetString(key + "-" + _config.UniqueSessionId);
     public string GetListRowOddEvenClass (int i) => i % 2 == 0 ? " list-odd-row" : " list-even-row";
   
 }

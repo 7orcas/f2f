@@ -10,23 +10,21 @@ using GC = FrontendServer.GlobalConstants;
 
 namespace FrontendServer.Base._Base
 {
+    //ToDo Is this class required?
     public partial class BasePage
     {
         protected async Task SetConfig()
         {
             if (_config != null) return;
-            _config = @ConfigService.Config;
+            _config = ConfS.Config;
         }
 
-        public async Task<AppConfigDto> GetConfig()
-        {
-            return _config;
-        }
-
+        public async Task<AppConfigDto> GetConfig() => _config;
+        
         public void SetConfig(AppConfigDto config)
         {
             _config = config;
-            ConfigService.Set(config);
+            ConfS.Set(config);
         }
 
 

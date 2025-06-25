@@ -1,4 +1,6 @@
 ﻿@inherits LayoutComponentBase
+@inject LabelService LS
+
 
 <MudThemeProvider DefaultScrollbar="true" @bind-IsDarkMode="_isDarkMode" Theme="_theme" />
 <MudPopoverProvider />
@@ -21,10 +23,12 @@
 
             <!-- Center: Menu items -->
             <div style="display: flex; gap: 16px;">
-                <MudButton Link="true" Href="/machines" Color="Color.Inherit" Variant="Variant.Text">Machines</MudButton>
+                <MudButton Class="main-toolbar-button" Link="true" Href="/machines" Color="Color.Inherit" Variant="Variant.Text">@lMac</MudButton>
                 <MudButton Link="true" Href="/permission" Color="Color.Inherit" Variant="Variant.Text">Permissions</MudButton>
                 <MudButton Link="true" Href="/role" Color="Color.Inherit" Variant="Variant.Text">User Roles</MudButton>
-                <MudButton Link="true" Href="/organisation" Color="Color.Inherit" Variant="Variant.Text">Organisation</MudButton>
+                <MudButton Link="true" Href="/organisation" Color="Color.Inherit" Variant="Variant.Text">
+                    @lOrg
+                </MudButton>
                 <MudButton Link="true" Href="/config" Color="Color.Inherit" Variant="Variant.Text">Config</MudButton>
                 <MudButton Link="true" Href="/audit" Color="Color.Inherit" Variant="Variant.Text">Audit</MudButton>
             </div>
@@ -70,6 +74,9 @@
     private bool _drawerOpen = true;
     private bool _isDarkMode = false;
 
+    private string lOrg = "Organisations";
+    private string lMac = "Machines";
+
     private MudTheme _theme = new MudTheme
         {
             PaletteLight = new PaletteLight
@@ -83,12 +90,29 @@
                 AppbarBackground = Colors.Gray.Darken4
             }
         };
-        
-            
+
     private void ToggleDrawer()
     {
         _drawerOpen = !_drawerOpen;
     }
+
+    protected override void OnInitialized()
+    {
+        LS.OnLabelsChanged += RefreshLayout;
+    }
+
+    private void RefreshLayout() 
+    {
+        lOrg = LS.GetLabel("Orgs");
+        lMac = LS.GetLabel("Machines");
+        InvokeAsync(StateHasChanged);
+    }
+
+    public void Dispose()
+    {
+        LS.OnLabelsChanged -= RefreshLayout;
+    }
+
 
     private void Logout()
     {

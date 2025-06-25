@@ -14,7 +14,7 @@
 
 <ConfirmNavigation List="list" />
 
-<Header 
+<Header @key="_pageCode"
     TitleKey="Org" 
     SubTitleKey="OrgSub" 
     PageCode=@_pageCode
@@ -147,29 +147,6 @@
                                     </RowEditingTemplate>
                                 </MudTable>
                             </div>
-                                <!--
-                                <MudItem xs="12" sm="6" md="4">
-                                        <table class="table" style="table-layout: fixed; width: 400px;">
-                                            <thead>
-                                                <tr>
-                                                    <th style="width: 200px;"><Label Key="LangCode"></Label></th>
-                                                    <th style="width: 100px;"><Label Key="Readonly"></Label></th>
-                                                    <th style="width: 100px;"><Label Key="Editable"></Label></th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                foreach (var lang in orgDto.Languages)
-                                                {
-                                                    <tr>
-                                                        <td>@lang.LangCode</td>
-                                                        <td><MudCheckBox @bind-Value="@lang.IsReadonly" Variant="Variant.Filled"></MudCheckBox></td>
-                                                        <td><MudCheckBox @bind-Value="@lang.IsEditable" Variant="Variant.Filled"></MudCheckBox></td>
-                                                    </tr>
-                                                }
-                                            </tbody>
-                                        </table>
-                                </MudItem>
-                                    -->
                         </ChildContent>
                     </MudExpansionPanel>
 
