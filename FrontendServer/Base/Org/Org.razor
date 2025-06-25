@@ -10,6 +10,7 @@
 @using GC = FrontendServer.GlobalConstants;
 @using CGC = Common.GlobalConstants;
 @using FrontendServer.Base._Base;
+@inject ThemeService TS
 
 
 <ConfirmNavigation List="list" />
@@ -32,6 +33,7 @@
 }
 
 <p></p>
+<p>Current theme: @(TS.IsDarkMode ? "Dark" : "Light")</p>
 
 <MudGrid>
     

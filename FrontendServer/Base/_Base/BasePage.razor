@@ -7,6 +7,8 @@
 @inject ProtectedSessionStorage ProtectedSessionStore
 @inject ConfigService ConfS
 @inject LabelService LS
+@inject ThemeService TS
+
 
 @using GC = FrontendServer.GlobalConstants;
 @using Newtonsoft.Json;
@@ -43,6 +45,11 @@
         _labels = LS.Labels;
     }
 
+    //DarkMode
+    protected override void OnInitialized() => TS.OnThemeChanged += OnThemeChanged;
+    private void OnThemeChanged() => InvokeAsync(StateHasChanged);
+    public void Dispose() => TS.OnThemeChanged -= OnThemeChanged;
+    
     public async Task<HttpClient> SetClient()
     {
         var store = await ProtectedSessionStore.GetAsync<string>(GC.TokenCacheKey);
@@ -111,6 +118,10 @@
 
     public void PutCacheString(string key, string s) => CS.PutString(key + "-" + _config.UniqueSessionId, s);
     public string? GetCacheString(string key) => CS.GetString(key + "-" + _config.UniqueSessionId);
-    public string GetListRowOddEvenClass (int i) => i % 2 == 0 ? " list-odd-row" : " list-even-row";
+    public string GetListRowOddEvenClass (int i) {
+        if (TS.IsDarkMode)
+            return i % 2 == 0 ? " list-odd-row-dm" : " list-even-row-dm";
+        return i % 2 == 0 ? " list-odd-row" : " list-even-row";
+    }
   
 }

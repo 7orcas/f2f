@@ -68,12 +68,24 @@ a, .btn-link {
 }
 
 .list-even-row {
-    background-color: #f0f0f0 !important; /* Light gray */
+    color: var(--mud-palette-text-primary);
+    background-color: var(--mud-palette-surface);
+    /*background-color: #f0f0f0 !important;*/ /* Light gray */
+}
+
+.list-even-row-dm {
+    background-color: blue !important; 
 }
 
 .list-odd-row {
-    
+    background-color: var(--mud-palette-background);
+    color: var(--mud-palette-text-secondary);
 }
+
+.list-odd-row-dm {
+    background-color: red !important; 
+}
+
 
 .main-content-fill-screen {
     flex: 1 1 auto;

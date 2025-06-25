@@ -1,10 +1,11 @@
 ﻿@inherits BasePage
+@inject ThemeService TS
 @using GC = FrontendServer.GlobalConstants;
 
 <PageTitle>@title</PageTitle>
 
 <div class="title-container">
-    <div class="title"><Label Size="GC.TextSize.Heading" Key=@TitleKey></Label></div>
+    <div class="@GetTitleClass()"><Label Size="GC.TextSize.Heading" Key=@TitleKey></Label></div>
     <div class="page-code">@PageCode</div>
 </div>
 <Label Size="GC.TextSize.Normal" Key="@SubTitleKey"></Label>
@@ -67,5 +68,12 @@
 
             StateHasChanged();
         }
+    }
+
+    private string GetTitleClass()
+    {
+        if (TS.IsDarkMode)
+            return " title title-dm";
+        return " title title-lm"; 
     }
 }

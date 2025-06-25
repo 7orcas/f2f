@@ -1,0 +1,69 @@
+﻿@inject LabelService LS
+
+@for (int i = 0; i < items.Count(); i += cMax)
+{
+    var index = i;
+    <MudButton Style="text-transform: none"
+               Link="true"
+               Href="@items[index + cRoute]"
+               Color="Color.Inherit"
+               Variant="Variant.Text">
+        <MudText Typo="Typo.h6">@items[index + cLabel]</MudText>
+    </MudButton>
+}
+
+<MudMenu Label="Settings"
+         ActivationEvent="MouseEvent.MouseOver"
+         AnchorOrigin="Origin.CenterRight"
+         TransformOrigin="Origin.TopLeft"
+         Dense="true">
+    <ActivatorContent>
+        <MudMenuItem Icon="@Icons.Material.Filled.Settings">
+            Settings
+        </MudMenuItem>
+    </ActivatorContent>
+    <ChildContent>
+        <MudMenuItem>Profile</MudMenuItem>
+        <MudMenuItem>Security</MudMenuItem>
+        <MudMenuItem>Notifications</MudMenuItem>
+    </ChildContent>
+</MudMenu>
+
+@code {
+    private int cCode  = 0;
+    private int cRoute = 1;
+    private int cLabel = 2;
+    private int cMax   = 3;
+
+    private string[] items =
+        {
+            "Machines",     AppPageRoutes.MachinesRoute, "",
+            "Organisation", AppPageRoutes.OrgRoute,      "",
+            "Permissions",  AppPageRoutes.PermRoute,     "",
+            "Roles",        AppPageRoutes.RolesRoute,    "",
+            "Config",       AppPageRoutes.ConfigRoute,   "",
+            "Audit",        AppPageRoutes.AuditRoute,    "",
+    };
+
+
+    protected override void OnInitialized()
+    {
+        SetLabels();
+        LS.OnLabelsChanged += RefreshLayout;
+    }
+
+    private void RefreshLayout()
+    {
+        SetLabels();
+        InvokeAsync(StateHasChanged);
+    }
+
+    private void SetLabels()
+    {
+        for (int i = 0; i < items.Count(); i += 3)
+            items[i + cLabel] = LS.GetLabel(items[i + cCode]);
+    }
+
+    public void Dispose() => LS.OnLabelsChanged -= RefreshLayout;
+
+}
