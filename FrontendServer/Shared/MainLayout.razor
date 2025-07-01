@@ -10,7 +10,7 @@
 
 <MudLayout>
 
-    <MudAppBar Elevation="4">
+    <MudAppBar Elevation="4" Class="app-bar">
         <div style="display: flex; align-items: center; width: 100%; justify-content: space-between;">
 
             <!-- Left -->
@@ -25,15 +25,13 @@
             <!-- Center: Menu items -->
             <div style="display: flex; gap: 16px;">
                 <MainMenu />
-                
             </div>
-            
 
             <!-- Right -->
             <div style="display: flex; align-items: center; gap: 12px;">
                 <MudSwitch @bind-Value="_isDarkMode"
                            T="bool"
-                           Label="Toggle Light/Dark Mode" />
+                           Label="Light/Dark Mode" />
 
                 <MudAvatar Size="Size.Medium"
                             Color="Color.Primary"
@@ -81,7 +79,6 @@
         }
     }
 
-
     private string lOrg = "Organisations";
     private string lMac = "Machines";
 
@@ -89,17 +86,32 @@
         {
             PaletteLight = new PaletteLight
             {
-                Primary = Colors.Blue.Default,
-                AppbarBackground = Colors.Blue.Darken1
+                AppbarText = "#FFFFFF",
+                AppbarBackground = "#1976d2",
+
+                Primary = "#1976d2",
+                Secondary = "#e91e63",
+                Background = "#f5f5f5",
+                TextPrimary = "#212121",
+                DrawerBackground = "#ffffff",
+
             },
             PaletteDark = new PaletteDark
             {
-                Primary = Colors.Blue.Lighten1,
-                AppbarBackground = Colors.Gray.Darken4
-            }
+                AppbarBackground = "#2A2D3E",   // Soft steel blue-gray
+                AppbarText = "#E0E0E0",         // Muted white for comfort
+
+                Background = "#1E1E2F",         // Deep but not harsh
+                Surface = "#2A2D3E",            // Match or complement AppBar
+                Primary = "#90CAF9",            // Soft blue (Material Blue 200)
+                PrimaryContrastText = "#1E1E2F",// Text on primary buttons
+
+                TextPrimary = "#E0E0E0",        // Light gray for standard text
+                TextSecondary = "#A0A0B2",      // Dimmer for subtext
+                DrawerBackground = "#2C2F3A",   // Slightly lighter for depth
+            },
         };
 
-    
 
     protected override void OnInitialized()
     {

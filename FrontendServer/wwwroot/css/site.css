@@ -1,5 +1,15 @@
 @import url('open-iconic/font/css/open-iconic-bootstrap.min.css');
 
+:root {
+    --bg-color-lm: #1976d2;
+    
+    --bg-color-dm: rgb(56, 56, 67);
+    --accent-color: #e91e63;
+    --text-light: #ffffff;
+    --text-dark: #333333;
+}
+
+
 html, body {
     font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
 }
@@ -67,6 +77,18 @@ a, .btn-link {
     content: "An error has occurred."
 }
 
+/*Main Layout*/
+.app-bar-lm {
+    background-color: gray !important;
+    color: yellow !important;
+}
+
+.app-bar-dm {
+    background-color: red !important;
+    color: green !important;
+}
+
+
 .list-even-row {
     color: var(--mud-palette-text-primary);
     background-color: var(--mud-palette-surface);
@@ -96,3 +118,12 @@ a, .btn-link {
 .main-toolbar-button{
     text-transform: none;
 }
+
+.custom-menu-button {
+    border-radius: 4px;
+    transition: 0.3s ease;
+    text-transform: none;
+}
+    .custom-menu-button:hover {
+        cursor: pointer;
+    }

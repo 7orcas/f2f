@@ -3,7 +3,7 @@
 @for (int i = 0; i < items.Count(); i += cMax)
 {
     var index = i;
-    <MudButton Style="text-transform: none"
+    <MudButton Class="custom-menu-button"
                Link="true"
                Href="@items[index + cRoute]"
                Color="Color.Inherit"
@@ -12,20 +12,36 @@
     </MudButton>
 }
 
-<MudMenu Label="Settings"
-         ActivationEvent="MouseEvent.MouseOver"
-         AnchorOrigin="Origin.CenterRight"
-         TransformOrigin="Origin.TopLeft"
+<MudMenu ActivationEvent="MouseEvent.MouseOver"
+         AnchorOrigin="Origin.BottomCenter"
+         TransformOrigin="Origin.TopCenter"
+         OffsetY="true"
          Dense="true">
     <ActivatorContent>
-        <MudMenuItem Icon="@Icons.Material.Filled.Settings">
-            Settings
-        </MudMenuItem>
+        <MudButton Class="custom-menu-button"
+                   Link="true"
+                   Color="Color.Inherit"
+                   Variant="Variant.Text">
+            <MudText Typo="Typo.h6">Settings</MudText>
+        </MudButton>
     </ActivatorContent>
     <ChildContent>
-        <MudMenuItem>Profile</MudMenuItem>
-        <MudMenuItem>Security</MudMenuItem>
-        <MudMenuItem>Notifications</MudMenuItem>
+        @for (int i = 0; i < items.Count(); i += cMax)
+        {
+            var index = i;
+            <MudMenuItem>
+                <MudButton Class="custom-menu-button"
+                           Link="true"
+                           Href="@items[index + cRoute]"
+                           Color="Color.Inherit"
+                           Variant="Variant.Text">
+                    <MudText Typo="Typo.h6">@items[index + cLabel]</MudText>
+                </MudButton>
+            </MudMenuItem>
+        }
+        <MudMenuItem Href="/profile">Profile</MudMenuItem>
+        <MudMenuItem Href="/security">Security</MudMenuItem>
+        <MudMenuItem Href="/notifications">Notifications</MudMenuItem>
     </ChildContent>
 </MudMenu>
 
