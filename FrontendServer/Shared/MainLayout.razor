@@ -27,20 +27,32 @@
                 <MainMenu />
             </div>
 
-            <!-- Right -->
+            <!-- Right Settings -->
             <div style="display: flex; align-items: center; gap: 12px;">
-                <MudSwitch @bind-Value="_isDarkMode"
-                           T="bool"
-                           Label="Light/Dark Mode" />
-
-                <MudAvatar Size="Size.Medium"
-                            Color="Color.Primary"
-                            Icon="@Icons.Material.Filled.AccountCircle"
-                            Style="cursor: pointer;" />
-        
-                <MudIconButton Icon="@Icons.Material.Filled.Settings"
-                                Color="Color.Inherit"
-                                Href="/settings" />
+                <MudMenu ActivationEvent="MouseEvent.MouseOver"
+                         AnchorOrigin="Origin.BottomLeft"
+                         TransformOrigin="Origin.TopLeft"
+                         OffsetY="true"
+                         Dense="true">
+                    <ActivatorContent>
+                        <MudIconButton Icon="@Icons.Material.Filled.Settings"
+                                       Color="Color.Inherit"/>
+                    </ActivatorContent>
+                    <ChildContent>
+                        <MudStack Spacing="1" Style="align-items: flex-start;">
+                            <div style="margin-left:10px;">
+                                <MudSwitch @bind-Value="_isDarkMode"
+                                           T="bool"
+                                           LabelPlacement="Placement.Start"
+                                            >
+                                    <MudText Typo="Typo.h6">Light/Dark Mode</MudText>
+                                </MudSwitch>
+                            </div>
+                            <MenuButton Title="Logout [CM]" Link="@AppPageRoutes.LogoutRoute" />
+                            <MenuButton Title="Change Password [CM]" Link="@AppPageRoutes.ChangePWRoute" />
+                        </MudStack>
+                    </ChildContent>
+                </MudMenu>
             </div>
 
         </div>
