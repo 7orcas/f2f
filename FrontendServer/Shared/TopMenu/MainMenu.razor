@@ -1,15 +1,8 @@
-﻿@inject LabelService LS
-
+﻿
 @for (int i = 0; i < items.Count(); i += cMax)
 {
     var index = i;
-    <MudButton Class="custom-menu-button"
-               Link="true"
-               Href="@items[index + cRoute]"
-               Color="Color.Inherit"
-               Variant="Variant.Text">
-        <MudText Typo="Typo.h6">@items[index + cLabel]</MudText>
-    </MudButton>
+    <MenuButton Title="@items[index + cLabel]" Link="@items[index + cRoute]" />
 }
 
 <MudMenu ActivationEvent="MouseEvent.MouseOver"
@@ -26,25 +19,17 @@
         </MudButton>
     </ActivatorContent>
     <ChildContent>
+        <MudStack Spacing="1" Style="align-items: flex-start;">
         @for (int i = 0; i < items.Count(); i += cMax)
         {
             var index = i;
-            <MudMenuItem>
-                <MudButton Class="custom-menu-button"
-                           Link="true"
-                           Href="@items[index + cRoute]"
-                           Color="Color.Inherit"
-                           Variant="Variant.Text">
-                    <MudText Typo="Typo.h6">@items[index + cLabel]</MudText>
-                </MudButton>
-            </MudMenuItem>
+            <MenuButton Title="@items[index + cLabel]" Link="@items[index + cRoute]" />
         }
-        <MudMenuItem Href="/profile">Profile</MudMenuItem>
-        <MudMenuItem Href="/security">Security</MudMenuItem>
-        <MudMenuItem Href="/notifications">Notifications</MudMenuItem>
+        </MudStack>
     </ChildContent>
 </MudMenu>
 
+@inject LabelService LS
 @code {
     private int cCode  = 0;
     private int cRoute = 1;

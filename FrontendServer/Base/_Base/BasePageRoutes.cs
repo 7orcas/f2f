@@ -3,6 +3,7 @@
     public class BasePageRoutes
     {
         //Routes
+        public const string HomeRoute      = "/";
         public const string LogoutRoute    = "logout";
         public const string ChangePWRoute  = "changePW";
         public const string OrgRoute       = "organisation";
@@ -12,6 +13,7 @@
         public const string AuditRoute     = "audit";
 
         //Page Codes
+        public const string HomeCode       = "hme001";
         public const string ChangePWCode   = "cpw001";
         public const string OrgPageCode    = "org001";
         public const string ConfigPageCode = "con001";
@@ -20,6 +22,7 @@
         public const string AuditPageCode  = "aud001";
 
         static protected readonly string[] BasePageCodeRoutes = {
+            HomeCode,               HomeRoute,
             ChangePWCode,           ChangePWRoute,
             OrgPageCode,            OrgRoute,
             ConfigPageCode,         ConfigRoute,

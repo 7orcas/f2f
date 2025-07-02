@@ -1,7 +1,4 @@
 ﻿@inherits LayoutComponentBase
-@inject LabelService LS
-@inject ThemeService TS
-@using GC = FrontendServer.GlobalConstants;
 
 <MudThemeProvider DefaultScrollbar="true" @bind-IsDarkMode="_isDarkMode" Theme="_theme" />
 <MudPopoverProvider />
@@ -19,7 +16,7 @@
                                Color="Color.Inherit"
                                Edge="Edge.Start"
                                OnClick="@ToggleDrawer" />
-                <MudText Typo="Typo.h6" Class="ml-2">Blue</MudText>
+                <MenuButton Title="Blue [CM]" Link="@AppPageRoutes.HomeRoute" />
             </div>
 
             <!-- Center: Menu items -->
@@ -40,6 +37,14 @@
                     </ActivatorContent>
                     <ChildContent>
                         <MudStack Spacing="1" Style="align-items: flex-start;">
+                            <MudButton Class="custom-menu-button"
+                                       Link="true"
+                                       OnClick="@Logout"
+                                       Color="Color.Inherit"
+                                       Variant="Variant.Text">
+                                <MudText Typo="Typo.h6">Logout [CM]</MudText>
+                            </MudButton>
+
                             <div style="margin-left:10px;">
                                 <MudSwitch @bind-Value="_isDarkMode"
                                            T="bool"
@@ -48,7 +53,6 @@
                                     <MudText Typo="Typo.h6">Light/Dark Mode</MudText>
                                 </MudSwitch>
                             </div>
-                            <MenuButton Title="Logout [CM]" Link="@AppPageRoutes.LogoutRoute" />
                             <MenuButton Title="Change Password [CM]" Link="@AppPageRoutes.ChangePWRoute" />
                         </MudStack>
                     </ChildContent>
@@ -62,10 +66,7 @@
                Elevation="1"
                ClipMode="DrawerClipMode.Always"
                Variant="DrawerVariant.Responsive">
-        <MudNavMenu>
-            <MudNavLink Href="/" Match="NavLinkMatch.All" Icon="@Icons.Material.Filled.Home">Home</MudNavLink>
-            <MudNavLink Href="/settings" Icon="@Icons.Material.Filled.Settings">Settings</MudNavLink>
-        </MudNavMenu>
+        <ServiceMenu />
     </MudDrawer>
 
     <MudMainContent Class="main-content-fill-screen">
@@ -76,8 +77,15 @@
 
 </MudLayout>
 
+@using GC = FrontendServer.GlobalConstants;
+@using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage
+@inject NavigationManager Navigation
+@inject LabelService LS
+@inject ThemeService TS
+@inject LogoutService LgS
+@inject ProtectedSessionStorage PS
 @code {
-    private bool _drawerOpen = true;
+    private bool _drawerOpen = false;
     private bool _isDarkModeBacking = false;
 
     private bool _isDarkMode
@@ -142,12 +150,6 @@
 
     private void ToggleDrawer() => _drawerOpen = !_drawerOpen;
     public void Dispose() => LS.OnLabelsChanged -= RefreshLayout;
-    
-
-
-    private void Logout()
-    {
-        
-    }
+    private async Task Logout() => await LgS.LogoutAsync();
 
 }
