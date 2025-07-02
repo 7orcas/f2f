@@ -35,6 +35,7 @@ namespace Backend.Base.Config
 
         /// <summary>
         /// Get client config
+        /// This is a mix of organisation and user account config
         /// </summary>
         /// <returns></returns>
         [CrudAtt(GC.CrudIgnore)]

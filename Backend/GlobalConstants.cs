@@ -57,5 +57,9 @@
             EntityTypeMachine,          "Machine",
         };
 
+        //Service
+        public const long ServiceLoginId             = -1L;
+        public const long ServiceAccountId           = -1L;
+
     }
 }

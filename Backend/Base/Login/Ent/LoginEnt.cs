@@ -1,4 +1,5 @@
-﻿
+﻿using GC = Backend.GlobalConstants;
+
 /// <summary>
 /// User login entity
 /// Created: June 2025
@@ -16,6 +17,28 @@ namespace Backend.Base.Login.Ent
         public int? Attempts { get; set; }
         public DateTime Lastlogin { get; set; }
         public bool IsActive { get; set; }
+        //Update note: Add to service
+
+
+        public bool IsService () => Id == GC.ServiceLoginId;
+        
+
+        /*
+         * Special service account
+         * Account is not in database
+         */
+        public static LoginEnt GetServiceLogin()
+        {
+            return new LoginEnt
+            {
+                Id = GC.ServiceLoginId,
+                Userid = "service",
+                Password = "",
+                Attempts = 0,
+                Lastlogin = DateTime.Now,
+                IsActive = true
+            };
+        }
 
         //Login Repsonse variables
         public LoginResponse Response { get; set; } = new LoginResponse();

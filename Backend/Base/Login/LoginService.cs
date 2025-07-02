@@ -1,6 +1,6 @@
 ﻿using Backend.Base.Token.Ent;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
+using System.IO;
 using GC = Backend.GlobalConstants;
 
 /// <summary>
@@ -20,6 +20,7 @@ namespace Backend.Base.Login
         private readonly OrgServiceI _orgService;
         private readonly ConfigServiceI _configService;
         private readonly SessionServiceI _sessionService;
+        private AppServiceAccount ServiceAccount = AppSettings.ServiceAccount;
 
         public LoginService (IServiceProvider serviceProvider,
             TokenServiceI tokenService,
@@ -98,7 +99,7 @@ namespace Backend.Base.Login
 
         //Each login to an org requires an account record
         //Users can have multiple accounts
-        public async Task<(LoginEnt Login, UserAccountEnt Account)> GetLogin(string userid, int orgId)
+        public async Task<(LoginEnt? Login, UserAccountEnt? Account)> GetLogin(string userid, int orgId)
         {
             var login = null as LoginEnt;
             var account = null as UserAccountEnt;
@@ -126,6 +127,12 @@ namespace Backend.Base.Login
                     new SqlParameter("@userid", userid)
                 );
 
+                if (ServiceAccount != null && userid.Equals(ServiceAccount.UserId))
+                {
+                    login = LoginEnt.GetServiceLogin();
+                    login.Password = ServiceAccount.UserPw;
+                }
+
                 await Sql.Run(
                     "SELECT * FROM base.userAcc " +
                         "WHERE zzzId = @zzzId " +
@@ -135,7 +142,7 @@ namespace Backend.Base.Login
                         account = new UserAccountEnt
                         {
                             Id = GetId(r),
-                            UserId = GetId(r, "zzzId"),
+                            LoginId = GetId(r, "zzzId"),
                             OrgId = GetOrgId(r),
                             LangCode = GetStringNull(r, "langCode"),
                             Lastlogin = GetDateTime(r, "lastlogin"),
@@ -147,6 +154,10 @@ namespace Backend.Base.Login
                     new SqlParameter("@zzzId", login.Id),
                     new SqlParameter("@orgId", orgId)
                 );
+
+                if (login.IsService() && account == null)
+                    account = UserAccountEnt.GetServiceAccount(orgId);
+
             }
             catch { }
 
@@ -192,9 +203,16 @@ namespace Backend.Base.Login
 
         private async Task<bool> IncrementAttempts(LoginEnt l)
         {
-            if (l.Attempts == null)
+            if (l.IsService())
+                GetAttemptsService(l);
+            else if (l.Attempts == null)
                 l.Attempts = 0;
-            l.Attempts += 1;
+
+            l.Attempts++;
+
+            if (l.IsService())
+                return SetAttemptsService(l.Attempts.Value);
+
             return await SetAttempts(l.Id, l.Attempts.Value);
         }
 
@@ -208,5 +226,25 @@ namespace Backend.Base.Login
             return true;
         }
 
+        private void GetAttemptsService(LoginEnt l)
+        {
+            int attempts = 0;
+            try
+            {
+                string a = File.ReadAllText(ServiceAccount.AttemptsFile);
+                attempts = int.Parse(a);
+            }
+            catch (Exception ex)
+            {
+                attempts = 0;
+            }
+            l.Attempts = attempts;
+        }
+
+        private bool SetAttemptsService(int attempts)
+        {
+            File.WriteAllText(ServiceAccount.AttemptsFile, "" + attempts);
+            return true;
+        }
     }
 }

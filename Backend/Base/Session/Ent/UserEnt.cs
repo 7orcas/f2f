@@ -8,7 +8,7 @@
 
 namespace Backend.Base.Session.Ent
 {
-    public class UserEnt
+    public class UserEnt 
     {
         public UserEnt() { }
 
@@ -26,6 +26,6 @@ namespace Backend.Base.Session.Ent
         {
             return IsCurrentLanguageAdmin || IsActiveLanguageAdmin || IsService;
         }
-
+        
     }
 }

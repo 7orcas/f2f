@@ -122,6 +122,20 @@ void LoadAppSettings(WebApplicationBuilder builder)
     AppSettings.MainClientUrl = builder.Configuration["Urls:MainClientUrl"];
     AppSettings.PathBase = builder.Configuration["PathBase"];
 
+    //Do not log details!
+    try
+    {
+        var acc = new AppServiceAccount();
+        acc.UserId = builder.Configuration["ServiceAccount.UserId"];
+        acc.UserPw = builder.Configuration["ServiceAccount.PW"];
+        acc.AttemptsFile = builder.Configuration["ServiceAccount.AttemptsFile"];
+
+        if (acc.IsValid())
+            AppSettings.ServiceAccount = acc;
+    }
+    catch { }
+
+
     var _log = Serilog.Log.Logger;
     _log.Information("---------Backend Startup------------" +
         "\nDBMainConnection=" + AppSettings.DBMainConnection +
@@ -129,7 +143,10 @@ void LoadAppSettings(WebApplicationBuilder builder)
         "\nCacheExpirationAddSeconds=" + AppSettings.CacheExpirationAddSeconds + 
         "\nCacheExpirationGetSeconds=" + AppSettings.CacheExpirationGetSeconds +
         "\nMainClientUrl=" + AppSettings.MainClientUrl +
-        "\nPathBase=" + AppSettings.PathBase
+        "\nPathBase=" + AppSettings.PathBase +
+        "\nServiceAccountActive=" + (AppSettings.ServiceAccount != null?"Yes":"No")
         );
 
+
+    
 }

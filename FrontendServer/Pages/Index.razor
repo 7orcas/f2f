@@ -100,7 +100,7 @@ else
             client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue(GC.BearerKey, token);
             userParameters.token = token;
 
-            //Get App Config
+            //Get App / User Config
             userParameters.loaded = AppendMarkupString(userParameters.loaded, GC.URL_config);
             var config = await ConfS.Initialise();
 config.DebugMode = true; //DELETE ME
