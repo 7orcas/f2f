@@ -44,7 +44,7 @@ namespace Backend.Base.Config
         {
             var session = HttpContext.Items["session"] as SessionEnt;
             var org = session.Org;
-            var user = session.User;
+            var userAccount = session.UserAccount;
             var userConfig = session.UserConfig;
 
             var langCodeCurrent = userConfig.LangCodeCurrent;
@@ -66,7 +66,7 @@ namespace Backend.Base.Config
                 {
                     OrgId = userConfig.OrgId,
                     OrgDescription = session.Org.Description,
-                    UniqueUserId = session.User.UserAccountId + 987123564,
+                    UniqueUserId = userAccount.Id + 987123564,
                     UniqueSessionId = UniqueSessionId.GetId(),
 
                     Languages = langs.ToArray(),

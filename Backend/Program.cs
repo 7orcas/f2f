@@ -126,9 +126,9 @@ void LoadAppSettings(WebApplicationBuilder builder)
     try
     {
         var acc = new AppServiceAccount();
-        acc.UserId = builder.Configuration["ServiceAccount.UserId"];
-        acc.UserPw = builder.Configuration["ServiceAccount.PW"];
-        acc.AttemptsFile = builder.Configuration["ServiceAccount.AttemptsFile"];
+        acc.UserId = builder.Configuration["ServiceAccount:UserId"];
+        acc.UserPw = builder.Configuration["ServiceAccount:PW"];
+        acc.AttemptsFile = builder.Configuration["ServiceAccount:AttemptsFile"];
 
         if (acc.IsValid())
             AppSettings.ServiceAccount = acc;

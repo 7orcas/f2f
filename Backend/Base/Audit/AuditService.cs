@@ -40,7 +40,7 @@ namespace Backend.Base.Audit
                             EntityTypeId = SqlUtils.GetInt(r, "entityTypeId"),
                             EntityId = SqlUtils.GetIntNull(r, "entityId"),
                             UserId = SqlUtils.GetId(r, "userAccId"),
-                            User = SqlUtils.GetString(r, "xxx"),
+                            User = SqlUtils.GetStringNull(r, "xxx"),
                             Created = SqlUtils.GetDateTime(r, "created"),
                             Crud = SqlUtils.GetStringNull(r, "crud"),
                             Details = SqlUtils.GetStringNull(r, "details")
@@ -50,6 +50,7 @@ namespace Backend.Base.Audit
             foreach (var a in list)
             { 
                 a.EntityType = _entityService.GetEntityTypeName(a.EntityTypeId);
+                if (a.UserId == GC.ServiceLoginId) a.User = GC.ServiceAccountName;
             }
 
             return list;
@@ -108,7 +109,7 @@ namespace Backend.Base.Audit
         {
             LogAuditRecord(session.SourceApp,
                 session.Org.Id,
-                session.User.UserAccountId,
+                session.UserAccount.Id,
                 entityTypeId,
                 entityId,
                 crud,

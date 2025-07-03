@@ -52,7 +52,7 @@ namespace Backend.Base.Permission
         /// <returns></returns>
         public async Task<List<PermissionCrudEnt>> LoadEffectivePermissions(SessionEnt session)
         {
-            return await LoadEffectivePermissionsInt(session.User.UserAccountId, session.Org.Id);
+            return await LoadEffectivePermissionsInt(session.UserAccount.Id, session.Org.Id);
         }
 
 
@@ -148,7 +148,7 @@ namespace Backend.Base.Permission
                             OrgId = GetOrgId(r)
                         });
                     },
-                    new SqlParameter("@userAccId", session.User.UserAccountId),
+                    new SqlParameter("@userAccId", session.UserAccount.Id),
                     new SqlParameter("@orgId", session.Org.Id)
                 );
 
@@ -163,7 +163,7 @@ namespace Backend.Base.Permission
                             OrgId = GetOrgId(r)
                         });
                     },
-                    new SqlParameter("@userAccId", session.User.UserAccountId)
+                    new SqlParameter("@userAccId", session.UserAccount.Id)
                 );
 
                 return list.OrderBy(r => r.Role).ThenBy(r => r.PermissionCode).ToList();
@@ -180,6 +180,7 @@ namespace Backend.Base.Permission
         {
             if (perm == null) return true;
             if (session == null) return false;
+            if (session.UserAccount.IsService()) return true;
 
             if (crud != null && crud.Action == GC.CrudIgnore) return true;
 

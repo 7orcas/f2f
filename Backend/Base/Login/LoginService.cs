@@ -64,9 +64,9 @@ namespace Backend.Base.Login
                 }
 
                 langCode = !string.IsNullOrEmpty(langCode) ? langCode : account.LangCode;
-                var user = await InitialiseLogin(login, account, org, sourceAppNr);
-                var config = _configService.CreateUserConfig(user, org, langCode);
-                var session = await _sessionService.CreateSession(user, org, config, sourceAppNr);
+                await InitialiseLogin(login, account, org, sourceAppNr);
+                var userConfig = _configService.CreateUserConfig(account, org, langCode);
+                var session = await _sessionService.CreateSession(account, org, userConfig, sourceAppNr);
 
                 var tv = new TokenValues
                 {
@@ -84,7 +84,7 @@ namespace Backend.Base.Login
                 login.Response.Token = tokenX;
                 login.Response.TokenKey = keyX;
                 login.Response.MainUrl = AppSettings.MainClientUrl;
-                login.Response.LangCode = config.LangCodeCurrent;
+                login.Response.LangCode = userConfig.LangCodeCurrent;
 
                 return login;
             }
@@ -185,20 +185,12 @@ namespace Backend.Base.Login
         }
 
 
-        public async Task<UserEnt> InitialiseLogin(LoginEnt login, UserAccountEnt account, OrgEnt org, int sourceAppNr)
+        public async Task InitialiseLogin(LoginEnt login, UserAccountEnt account, OrgEnt org, int sourceAppNr)
         {
             await SetAttempts(login.Id, 0);
-            var permissions = await _permissionService.LoadEffectivePermissionsInt(account.Id, org.Id);
-
-            var user = new UserEnt
-            {
-                UserAccountId = account.Id,
-                Userid = login.Userid,
-                Permissions = permissions,
-            };
-
+            account.Userid = login.Userid;
+            account.Permissions = await _permissionService.LoadEffectivePermissionsInt(account.Id, org.Id);
             _auditService.LogInOut(sourceAppNr, org.Id, account.Id, GC.EntityTypeLogin);
-            return user;
         }
 
         private async Task<bool> IncrementAttempts(LoginEnt l)
@@ -218,6 +210,9 @@ namespace Backend.Base.Login
 
         private async Task<bool> SetAttempts(long id, int attempts)
         {
+            if (id == GC.ServiceLoginId)
+                return SetAttemptsService(attempts);
+
             await Sql.Execute(
                    "UPDATE base.zzz "
                    + "SET Attempts = " + attempts + " "

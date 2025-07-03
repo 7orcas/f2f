@@ -49,7 +49,7 @@ namespace Backend.Base.Role
                             IsActive = IsActive(r),
                         });
                     },
-                    new SqlParameter("@userId", session.User.UserAccountId),
+                    new SqlParameter("@userId", session.UserAccount.Id),
                     new SqlParameter("@orgId", session.Org.Id)
                 );
 
@@ -65,7 +65,7 @@ namespace Backend.Base.Role
                             IsActive = IsActive(r),
                         });
                     },
-                    new SqlParameter("@userId", session.User.UserAccountId)
+                    new SqlParameter("@userId", session.UserAccount.Id)
                 );
 
                 return list.OrderBy(r => r.Code).ToList();

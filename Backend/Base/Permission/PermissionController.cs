@@ -34,8 +34,8 @@ namespace Backend.Base.Permission
         {
             var session = HttpContext.Items["session"] as SessionEnt;
             var Permissions = await _PermissionService.GetPermissions(session);
+            
             var list = new List<RolePermissionDto>();
-
             foreach (var m in Permissions)
             {
                 list.Add(new RolePermissionDto

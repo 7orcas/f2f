@@ -22,20 +22,20 @@ namespace Backend.Base.Session
             _memoryCache = memoryCache;
         }
 
-        public async Task<SessionEnt> CreateSession(UserEnt user, OrgEnt org, UserConfig userConfig, int sourceApp)
+        public async Task<SessionEnt> CreateSession(UserAccountEnt userAccount, OrgEnt org, UserConfig userConfig, int sourceApp)
         {
-            var key = user.Userid + "-" + Guid.NewGuid().ToString();
+            var key = userAccount.Userid + "-" + Guid.NewGuid().ToString();
             var ses = new SessionEnt
             {
                 Key = key,
-                User = user,
+                UserAccount = userAccount,
                 Org = org,
                 UserConfig = userConfig,
                 SourceApp = sourceApp,
             };
 
             _memoryCache.Set(Key(key), ses);
-            _log.Information("CreateSession, key=" + key + ", LoginId=" + user.UserAccountId + ", org id=" + org.Id);
+            _log.Information("CreateSession, key=" + key + ", LoginId=" + userAccount.Id + ", org id=" + org.Id);
             return ses;
         }
 
@@ -48,7 +48,7 @@ namespace Backend.Base.Session
                 return;
             }
 
-            _log.Information("RemoveSession, key=" + key + ", LoginId=" + ses.User.UserAccountId + ", org id=" + ses.Org.Id);
+            _log.Information("RemoveSession, key=" + key + ", LoginId=" + ses.UserAccount.Id + ", org id=" + ses.Org.Id);
             _memoryCache.Remove(Key(key));
         }
 

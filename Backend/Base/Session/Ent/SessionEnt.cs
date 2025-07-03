@@ -14,7 +14,7 @@ namespace Backend.Base.Session.Ent
     {
         public string Key { get; set; }
         public OrgEnt Org { get; set; }
-        public UserEnt User { get; set; }
+        public UserAccountEnt UserAccount { get; set; }
         public UserConfig UserConfig { get; set; }
         public int SourceApp {  get; set; }
 
@@ -26,7 +26,7 @@ namespace Backend.Base.Session.Ent
         /// <returns></returns>
         public string GetUserPermissionCrud (long id)
         {
-            var p = User.Permissions.FirstOrDefault(p => p.PermissionId == id);
+            var p = UserAccount.Permissions.FirstOrDefault(p => p.PermissionId == id);
             if (p == null) return null;
             return p.Crud;
         }

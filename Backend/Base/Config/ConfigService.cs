@@ -28,20 +28,20 @@ namespace Backend.Base.Config
         /// <summary>
         /// Created at Login Time
         /// </summary>
-        /// <param name="user"></param>
+        /// <param name="userAccount"></param>
         /// <param name="org"></param>
         /// <param name="requestedLangCode"></param>
         /// <returns></returns>
-        public UserConfig CreateUserConfig(UserEnt user, OrgEnt org, string? requestedLangCode)
+        public UserConfig CreateUserConfig(UserAccountEnt userAccount, OrgEnt org, string? requestedLangCode)
         {
             var orgConfig = _memoryCache.Get<OrgConfig>(GC.CacheKeyOrgConfigPrefix + org.Id);
-            var userLangCode = ValidateLanguageCode(user, orgConfig, requestedLangCode);
+            var userLangCode = ValidateLanguageCode(userAccount, orgConfig, requestedLangCode);
 
             var userConfig = new UserConfig()
             {
                 OrgId = org.Id,
                 LangCodeCurrent = userLangCode,
-                Languages = CreateClientLanguages(user, orgConfig, userLangCode)
+                Languages = CreateClientLanguages(userAccount, orgConfig, userLangCode)
             };
 
             return userConfig;
@@ -50,11 +50,11 @@ namespace Backend.Base.Config
         /// <summary>
         /// Make sure the user is using a valid language code
         /// </summary>
-        /// <param name="user"></param>
+        /// <param name="userAccount"></param>
         /// <param name="orgConfig"></param>
         /// <param name="requestedLangCode"></param>
         /// <returns></returns>
-        private string ValidateLanguageCode(UserEnt user, OrgConfig orgConfig, string? requestedLangCode)
+        private string ValidateLanguageCode(UserAccountEnt userAccount, OrgConfig orgConfig, string? requestedLangCode)
         {
             //Is user using the default org lang code?
             if (requestedLangCode == null) requestedLangCode = orgConfig.LangCodeDefault;
@@ -64,8 +64,8 @@ namespace Backend.Base.Config
             foreach (var lang in orgConfig.Languages)
                 if (requestedLangCode.Equals(lang.LangCode))
                 {
-                    if (user.IsService) return requestedLangCode;
-                    if (user.IsActiveLanguageAdmin && lang.IsActive()) return requestedLangCode;
+                    if (userAccount.IsService()) return requestedLangCode;
+                    if (userAccount.IsActiveLanguageAdmin && lang.IsActive()) return requestedLangCode;
                 }
                     
             return orgConfig.LangCodeDefault;
@@ -75,26 +75,26 @@ namespace Backend.Base.Config
         /// <summary>
         /// Get list of language codes the client is able to view and edit
         /// </summary>
-        /// <param name="user"></param>
+        /// <param name="userAccount"></param>
         /// <param name="orgConfig"></param>
         /// <param name="userLangCode"></param>
         /// <returns></returns>
-        private List<LanguageConfig> CreateClientLanguages(UserEnt user, OrgConfig orgConfig, string userLangCode)
+        private List<LanguageConfig> CreateClientLanguages(UserAccountEnt userAccount, OrgConfig orgConfig, string userLangCode)
         {
             var langList = new List<LanguageConfig>();
 
-            if (!user.IsLanguageAdmin()) return langList;
-            if (!user.IsService && !orgConfig.IsLangCodeEditable) return langList;
+            if (!userAccount.IsLanguageAdmin()) return langList;
+            if (!userAccount.IsService() && !orgConfig.IsLangCodeEditable) return langList;
 
             foreach (var cl in orgConfig.Languages)
             {
-                var up = user.IsService;
+                var up = userAccount.IsService();
                 if (!up && cl.LangCode.Equals(userLangCode)) up = cl.IsEditable;
-                if (!up && user.IsActiveLanguageAdmin) up = cl.IsEditable;
+                if (!up && userAccount.IsActiveLanguageAdmin) up = cl.IsEditable;
 
                 langList.Add(new LanguageConfig { 
                     LangCode = cl.LangCode,
-                    IsReadonly = user.IsService || cl.IsReadonly,
+                    IsReadonly = userAccount.IsService() || cl.IsReadonly,
                     IsEditable = up
                 });
             }

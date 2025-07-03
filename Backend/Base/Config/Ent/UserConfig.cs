@@ -1,6 +1,6 @@
 ﻿
 /// <summary>
-/// Configurations are for user accounts
+/// Configurations are for user account
 /// Created: March 2025
 /// [*Licence*]
 /// Author: John Stewart

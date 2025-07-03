@@ -24,8 +24,10 @@
       "applicationUrl": "https://localhost:7289;http://localhost:5217",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development",
-        "USER": "user",
-        "PASSWORD": "xx123",
+        "USER": "$",
+        "PASSWORD": "$",
+        "xUSER": "user",
+        "xPASSWORD": "xx123",
         "ORG": "1",
         "LANGCODE": "en",
         "AUTO": "true",

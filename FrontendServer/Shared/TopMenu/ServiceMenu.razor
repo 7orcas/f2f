@@ -1,54 +1,19 @@
-﻿SEVICE MENU
+﻿
+<div style="font-weight:bold; text-decoration:underline">
+    SERVICE MENU
+</div>
 
 <nav class="flex-column">
-    <div class="nav-item px-3">
-        <NavLink class="nav-link" href="" Match="NavLinkMatch.All">
-            <span class="oi oi-home" aria-hidden="true"></span> Home
-        </NavLink>
-    </div>
-    <div class="nav-item px-3">
-        <NavLink class="nav-link" href="counter">
-            <span class="oi oi-plus" aria-hidden="true"></span> Counter
-        </NavLink>
-    </div>
-    <div class="nav-item px-3">
-        <NavLink class="nav-link" href="machines">
-            <span class="oi oi-plus" aria-hidden="true"></span> Machines
-        </NavLink>
-    </div>
-    <div class="nav-item px-3">
-        <NavLink class="nav-link" href="permission">
-            <span class="oi oi-plus" aria-hidden="true"></span> Permissions
-        </NavLink>
-    </div>
-    <div class="nav-item px-3">
-        <NavLink class="nav-link" href="role">
-            <span class="oi oi-plus" aria-hidden="true"></span> User Roles
-        </NavLink>
-    </div>
-    <div class="nav-item px-3">
-        <NavLink class="nav-link" href="audit">
-            <span class="oi oi-plus" aria-hidden="true"></span> Audit
-        </NavLink>
-    </div>
-    <div class="nav-item px-3">
-        <NavLink class="nav-link" href="organisation">
-            <span class="oi oi-plus" aria-hidden="true"></span> Organisation
-        </NavLink>
-    </div>
-    <div class="nav-item px-3">
-        <NavLink class="nav-link" href="config">
-            <span class="oi oi-plus" aria-hidden="true"></span> Config
-        </NavLink>
-    </div>
-
-    <div class="nav-item px-3">
-        <NavLink class="nav-link" href="" @onclick="Logout">
-            <span class="oi oi-account-logout" aria-hidden="true"></span> Logout
-        </NavLink>
-    </div>
-
-
+    
+    <MudStack Spacing="1" Style="align-items: flex-start;">
+        <NavLink href="" Match="NavLinkMatch.All">Home</NavLink>
+        <NavLink href="permission">Permissions</NavLink>
+        <NavLink href="role">User Roles</NavLink>
+        <NavLink href="audit">Audit</NavLink>
+        <NavLink href="organisation">Organisation</NavLink>
+        <NavLink href="config">Config</NavLink>
+        <NavLink href="" @onclick="Logout">Logout</NavLink>
+    </MudStack>
 </nav>
 
 
