@@ -10,10 +10,11 @@ namespace Backend.Base.Config.Ent
 {
     public class UserConfig
     {
-        public long OrgId { get; set; }
+        public int OrgId { get; set; }
         public string LangCodeCurrent { get; set; }
         
         public List<LanguageConfig> Languages { get; set; }
+       
     }
 
 }

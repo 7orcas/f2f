@@ -1,16 +1,9 @@
 ﻿@page "/"
 @inherits BasePage
-@inject HttpClient HttpClient
-@inject IHttpClientFactory HttpClientFactory
-@inject NavigationManager NavigationManager
-@inject ConfigService ConfS
-@inject LabelService LS
-@inject IJSRuntime JS
 
 @using GC = FrontendServer.GlobalConstants;
 @using Newtonsoft.Json;
 @using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage
-@inject ProtectedSessionStorage ProtectedSessionStore
 @using sysJ = System.Text.Json
 
 @if (_isLoading)
@@ -37,36 +30,36 @@ else
                 <tr><th></th><th></th></tr>
             </thead>
             <tbody>
-                <tr><td>Org:</td><td><b>@userParameters?.org</b></td></tr>
-                <tr><td>LangCode:</td><td><b>@userParameters?.lang</b></td></tr>
-                <tr><td>UserId:</td><td><b>@userParameters?.userId</b></td></tr>
-                <tr><td>SessionId:</td><td><b>@userParameters?.sessionId</b></td></tr>
-                <tr><td>Loaded:</td><td><b>@userParameters?.loaded</b></td></tr>
-                <tr><td>Token key:</td><td><b>@userParameters?.tokenkey</b></td></tr>
-                <tr><td>Token:</td><td><b>@userParameters?.token</b></td></tr>
+                <tr><td>Org:</td><td><b>@ConfS.loginParameters?.org</b></td></tr>
+                <tr><td>LangCode:</td><td><b>@ConfS.loginParameters?.lang</b></td></tr>
+                <tr><td>UserId:</td><td><b>@ConfS.loginParameters?.userId</b></td></tr>
+                <tr><td>SessionId:</td><td><b>@ConfS.loginParameters?.sessionId</b></td></tr>
+                <tr><td>Loaded:</td><td><b>@ConfS.loginParameters?.loaded</b></td></tr>
+                <tr><td>Token key:</td><td><b>@ConfS.loginParameters?.tokenkey</b></td></tr>
+                <tr><td>Token:</td><td><b>@ConfS.loginParameters?.token</b></td></tr>
             </tbody>
         </table>
     </p>
 }
 
-@code {
-    private string tokenkey = string.Empty;
-    private string token = string.Empty;
-    private string autoOpen = string.Empty;
-    private UserParameters userParameters;
+@inject HttpClient HttpClient
+@inject IHttpClientFactory HttpClientFactory
+@inject NavigationManager NM
+@inject ProtectedSessionStorage PS
+@inject ConfigService ConfS
+@inject LabelService LS
+@inject IJSRuntime JS
 
+@code {
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         if (firstRender && !_isError)
         {
             //Already logged in?
-            var result = await ProtectedSessionStore.GetAsync<string>(GC.TokenCacheKey);
+            var result = await PS.GetAsync<string>(GC.TokenCacheKey);
             if (result.Success)
             {
                 await InitialiseBasePage();
-                var up = GetCacheString("UP");
-                if (up != null)
-                    userParameters = JsonConvert.DeserializeObject<UserParameters>(up);
                 _isLoading = false;
                 StateHasChanged();
                 return;
@@ -74,43 +67,28 @@ else
 
 
             // Get the token key to use to get the actual token
-            var uri = NavigationManager.ToAbsoluteUri(NavigationManager.Uri);
+            var uri = NM.ToAbsoluteUri(NM.Uri);
             var query = Microsoft.AspNetCore.WebUtilities.QueryHelpers.ParseQuery(uri.Query);
-            if (query.TryGetValue("tk", out var value))
-                tokenkey = value;
-            //Must be logged out
-            else
+            if (!query.TryGetValue("tk", out var tokenkey))
             {
                 _isLoading = false;
-                _isError = false;
+                _isError = true;
                 StateHasChanged();
                 return;
             }
 
-            userParameters = new UserParameters();
-            userParameters.tokenkey = tokenkey;
-
-            //Get the token
-            var clientU = HttpClientFactory.CreateClient(GC.UnAuthorizedClientKey);
-            var tokenResponse = await clientU.GetAsync("api/Token/token?key=" + tokenkey);
-            token = await tokenResponse.Content.ReadAsStringAsync();
-            token = token.Substring(LoginTokenDto.TOKEN_PREFIX_LENGTH);
-            await ProtectedSessionStore.SetAsync(GC.TokenCacheKey, token);
-            var client = HttpClientFactory.CreateClient(GC.AuthorizedClientKey);
-            client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue(GC.BearerKey, token);
-            userParameters.token = token;
-
+            var token = await GetToken(tokenkey);
+            await SetClient(token);
+                   
             //Get App / User Config
-            userParameters.loaded = AppendMarkupString(userParameters.loaded, GC.URL_config);
             var config = await ConfS.Initialise();
-config.DebugMode = true; //DELETE ME
+            var parms = ConfS.SetLoginParameters(tokenkey, token);
+            parms.LoadedUrl(GC.URL_config);
             SetConfig(config);
-            userParameters.Add(config);
 
             //Get Labels
             await LS.Initialise();
 
-            PutCacheString("UP", sysJ.JsonSerializer.Serialize(userParameters));
             _isLoading = false;
             StateHasChanged();
 
@@ -118,32 +96,29 @@ config.DebugMode = true; //DELETE ME
             if (query.TryGetValue("open", out var autoOpenX))
             {
                 if (AppPageRoutes.IsRoute(autoOpenX))
-                    NavigationManager.NavigateTo("/" + AppPageRoutes.GetRoute(autoOpenX));
+                    NM.NavigateTo("/" + AppPageRoutes.GetRoute(autoOpenX));
             }
 
         }
     }
 
-    protected override async Task OnInitializedAsync() => _isLoading = true;
-    
-    //Used for development only
-    public class UserParameters
+    private async Task<string> GetToken(string tokenkey)
     {
-        public string tokenkey { get; set; }
-        public string token  { get; set; }
-        public string org  { get; set; }
-        public string lang  { get; set; }
-        public string userId  { get; set; }
-        public string sessionId  { get; set; }
-        public MarkupString loaded { get; set; }
-
-        public void Add(AppConfigDto config)
-        {
-            org = config.OrgDescription;
-            lang = config.Label.LangCode;
-            userId = config.UniqueUserId.ToString();
-            sessionId = config.UniqueSessionId.ToString();
-        }
+        var clientU = HttpClientFactory.CreateClient(GC.UnAuthorizedClientKey);
+        var tokenResponse = await clientU.GetAsync(GC.URL_token + "?key=" + tokenkey);
+        var token = await tokenResponse.Content.ReadAsStringAsync();
+        token = token.Substring(LoginTokenDto.TOKEN_PREFIX_LENGTH);
+        await PS.SetAsync(GC.TokenCacheKey, token);
+        return token;
     }
+
+    private async Task<HttpClient> SetClient(string token)
+    {
+        var client = HttpClientFactory.CreateClient(GC.AuthorizedClientKey);
+        client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue(GC.BearerKey, token);
+        return client;
+    }
+
+    protected override async Task OnInitializedAsync() => _isLoading = true;
 
 }

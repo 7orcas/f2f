@@ -5,30 +5,30 @@
     <MenuButton Title="@items[index + cLabel]" Link="@items[index + cRoute]" />
 }
 
-<MudMenu ActivationEvent="MouseEvent.MouseOver"
-         AnchorOrigin="Origin.BottomCenter"
-         TransformOrigin="Origin.TopCenter"
-         OffsetY="true"
-         Dense="true">
-    <ActivatorContent>
-        <MudButton Class="custom-menu-button"
-                   Link="true"
-                   Color="Color.Inherit"
-                   Variant="Variant.Text">
-            <MudText Typo="Typo.h6">Settings [CM]</MudText>
-        </MudButton>
-    </ActivatorContent>
-    <ChildContent>
-        <MudStack Spacing="1" Style="align-items: flex-start;">
-        @for (int i = 0; i < items.Count(); i += cMax)
-        {
-            var index = i;
-            <MenuButton Title="@items[index + cLabel]" Link="@items[index + cRoute]" />
-        }
-        </MudStack>
-    </ChildContent>
-</MudMenu>
+@if (ConfS.Config.User.IsSystemAdmin)
+{
+    <MudMenu ActivationEvent="MouseEvent.MouseOver"
+             AnchorOrigin="Origin.BottomCenter"
+             TransformOrigin="Origin.TopCenter"
+             OffsetY="true"
+             Dense="true">
+        <ActivatorContent>
+            <MudButton Class="custom-menu-button"
+                       Link="true"
+                       Color="Color.Inherit"
+                       Variant="Variant.Text">
+                <MudText Typo="Typo.h6">@GetLabel("AdminM")</MudText>
+            </MudButton>
+        </ActivatorContent>
+        <ChildContent>
+            <MudStack Spacing="1" Style="align-items: flex-start;">
+                <MenuButton Title="@GetLabel("RoleM")" Link="@AppPageRoutes.RolesRoute" />
+            </MudStack>
+        </ChildContent>
+    </MudMenu>
+}
 
+@inject ConfigService ConfS
 @inject LabelService LS
 @code {
     private int cCode  = 0;
@@ -64,6 +64,8 @@
         for (int i = 0; i < items.Count(); i += 3)
             items[i + cLabel] = LS.GetLabel(items[i + cCode]);
     }
+
+    private string GetLabel(string key) => LS.GetLabel(key);
 
     public void Dispose() => LS.OnLabelsChanged -= RefreshLayout;
 

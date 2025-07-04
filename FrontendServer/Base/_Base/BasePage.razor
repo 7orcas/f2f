@@ -36,7 +36,11 @@
     public async Task InitialiseBasePage()
     {
         if (!ConfS.IsInitialized)
+        {
             await ConfS.Initialise();
+            string? t = await ConfS.GetToken();
+            ConfS.SetLoginParameters(null, t);
+        }
             
         if (!LS.IsInitialized)
             await LS.Initialise();

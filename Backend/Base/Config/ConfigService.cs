@@ -41,7 +41,7 @@ namespace Backend.Base.Config
             {
                 OrgId = org.Id,
                 LangCodeCurrent = userLangCode,
-                Languages = CreateClientLanguages(userAccount, orgConfig, userLangCode)
+                Languages = CreateClientLanguages(userAccount, orgConfig, userLangCode),
             };
 
             return userConfig;

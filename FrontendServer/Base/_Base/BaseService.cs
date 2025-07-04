@@ -20,12 +20,24 @@ namespace FrontendServer.Base._Base
         {
         }
 
-        public async Task<HttpClient> GetClient()
+        public async Task<string?> GetToken()
         {
             try
             {
                 var store = await _session.GetAsync<string>(GC.TokenCacheKey);
-                var token = store.Value;
+                return store.Value;
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+        }
+
+        public async Task<HttpClient?> GetClient()
+        {
+            try
+            {
+                var token = await GetToken();
                 var client = _httpClientFactory.CreateClient(GC.AuthorizedClientKey);
                 client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue(GC.BearerKey, token);
                 return client;

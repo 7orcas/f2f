@@ -64,10 +64,15 @@ namespace Backend.Base.Config
                 SuccessMessage = "Config Ok",
                 Result = new AppConfigDto
                 {
-                    OrgId = userConfig.OrgId,
                     OrgDescription = session.Org.Description,
                     UniqueUserId = userAccount.Id + 987123564,
                     UniqueSessionId = UniqueSessionId.GetId(),
+                    
+                    User = new UserConfigDto 
+                    {
+                        IsService = userAccount.IsService(),
+                        IsSystemAdmin = userAccount.IsService() || userAccount.IsSystemAdmin,
+                    },
 
                     Languages = langs.ToArray(),
                     Label = new LabelConfigDto

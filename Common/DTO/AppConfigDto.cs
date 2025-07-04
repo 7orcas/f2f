@@ -3,12 +3,12 @@ namespace Common.DTO
 {
     public class AppConfigDto : _BaseDto<AppConfigDto>
     {
-        public long OrgId { get; set; }
         public string OrgDescription { get; set; }
         public long UniqueUserId { get; set; }
         public long UniqueSessionId { get; set; }
         public LanguageConfigDto[] Languages { get; set; }
         public LabelConfigDto Label {  get; set; }
+        public UserConfigDto User { get; set; }
         public bool DebugMode { get; set; } = false;
     }
 
@@ -26,6 +26,14 @@ namespace Common.DTO
     {
         public string LangCode { get; set; }
         public bool IsUpdateable { get; set; } = false;
+    }
+
+    public class UserConfigDto
+    {
+        public bool IsService { get; set; } = false;
+        public bool IsSystemAdmin { get; set; } = false;
+        public bool IsCurrentLanguageAdmin { get; set; } = false;
+        public bool IsActiveLanguageAdmin { get; set; } = false;
     }
 
 }
