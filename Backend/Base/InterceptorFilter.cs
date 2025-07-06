@@ -1,13 +1,10 @@
-﻿using Backend.App.Machines;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Controllers;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Serilog.Events;
-using System.Collections.Generic;
 using System.Reflection;
-using System.Reflection.Metadata;
-using System.Security;
 using GC = Backend.GlobalConstants;
+using CGC = Common.GlobalConstants;
 
 namespace Backend.Base
 {
@@ -77,8 +74,8 @@ namespace Backend.Base
                     var r = new _ResponseDto
                     {
                         Valid = false,
-                        ErrorMessage = "Not Authorised",  //ToDo label
-                        StatusCode = 403 // HTTP status code
+                        ErrorMessage = "Not Authorised",  //ToDo label 'NAuth'
+                        StatusCode = CGC.StatusCodeNotAuthorised // HTTP status code
                     };
                     context.Result = new OkObjectResult(r);
                 }

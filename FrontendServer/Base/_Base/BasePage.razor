@@ -24,6 +24,7 @@
     private string? _token;
     public HttpClient? _client;
     public MarkupString? _errorMessage;
+    public int? _statusCode;
     public ErrorBoundary? errorBoundary;
     public Exception? exception;
     private AppConfigDto _config;
@@ -41,7 +42,7 @@
             string? t = await ConfS.GetToken();
             ConfS.SetLoginParameters(null, t);
         }
-            
+
         if (!LS.IsInitialized)
             await LS.Initialise();
 
@@ -53,7 +54,7 @@
     protected override void OnInitialized() => TS.OnThemeChanged += OnThemeChanged;
     private void OnThemeChanged() => InvokeAsync(StateHasChanged);
     public void Dispose() => TS.OnThemeChanged -= OnThemeChanged;
-    
+
     public async Task<HttpClient> SetClient()
     {
         var store = await ProtectedSessionStore.GetAsync<string>(GC.TokenCacheKey);
@@ -83,6 +84,7 @@
             response.EnsureSuccessStatusCode();
             var r = await response.Content.ReadAsStringAsync();
             var dto = JsonConvert.DeserializeObject<_ResponseDto>(r);
+            _statusCode = dto.StatusCode;
             _isLoading = false;
 
             if (dto.Valid)
@@ -92,6 +94,7 @@
         }
         catch
         {
+            _statusCode = -1;
             try
             {
                 var r = await response.Content.ReadAsStringAsync();

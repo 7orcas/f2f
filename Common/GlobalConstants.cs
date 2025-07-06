@@ -10,6 +10,8 @@ namespace Common
 {
     public class GlobalConstants
     {
+        public const int StatusCodeNotAuthorised = 403;
+
         //Field Lengths
         public const int LenCode        = 15;
         public const int LenDescription = 50;

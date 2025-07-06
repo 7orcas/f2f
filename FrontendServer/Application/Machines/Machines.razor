@@ -6,7 +6,7 @@
     <ChildContent>
 
         <Header TitleKey="Machines"
-                SubTitleKey="Home"
+                SubTitleKey="MachSub"
                 PageCode=@_pageCode />
         
 
@@ -15,6 +15,7 @@
             <LoadingWithError 
                 IsLoading=@_isLoading
                 IsError=@_isError
+                StatusCode=@_statusCode
                 Message=@_errorMessage>
                 @exception
             </LoadingWithError>
