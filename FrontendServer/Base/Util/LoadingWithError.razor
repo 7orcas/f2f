@@ -27,9 +27,9 @@ else @if (@IsError)
     }
     else
     {
-        <h1>nAuthX</h1>
+        <h2>@nAuthX</h2>
         <div class="error-content">
-            <div class="title">nAuthA</div>
+            <div class="title">@nAuthA</div>
             <div class="message">@Message</div>
             @ChildContent
         </div>
@@ -52,7 +52,7 @@ else @if (@IsError)
         if (firstRender)
         {
             await InitialiseBasePage();
-            nAuthX = GetLabel("NAuthX");  checked labels
+            nAuthX = GetLabel("NAuthX");  
             nAuthA = GetLabel("NAuthA");
             
             StateHasChanged();
