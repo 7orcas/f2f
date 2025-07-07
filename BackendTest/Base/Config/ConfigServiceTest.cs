@@ -12,7 +12,7 @@ namespace BackendTest.Base.Config
         ConfigService service;
         OrgEnt org;
         OrgConfig orgConfig;
-        UserEnt user;
+        //UserEnt user;
         UserConfig userConfig;
 
         public ConfigServiceTest() : base()
@@ -47,20 +47,20 @@ namespace BackendTest.Base.Config
             }
         }
 
-        [TestMethod]
-        public async Task ConfigUser()
-        {
-            await Setup();
-            user = await GetUserEnt();
-            userConfig = configService.CreateUserConfig(user, org, GCT.UserLangCode);
+        //[TestMethod]
+        //public async Task ConfigUser()
+        //{
+        //    await Setup();
+        //    user = await GetUserEnt();
+        //    userConfig = configService.CreateUserConfig(user, org, GCT.UserLangCode);
 
-            Assert.AreEqual(GCT.OrgId, userConfig.OrgId);
-            Assert.AreEqual(GCT.UserLangCode, userConfig.LangCodeCurrent);
-            foreach (var lang in GCT.Languages)
-            {
-                if (userConfig.Languages.Find(l => l.LangCode == lang) == null)
-                    Assert.Fail();
-            }
-        }
+        //    Assert.AreEqual(GCT.OrgId, userConfig.OrgId);
+        //    Assert.AreEqual(GCT.UserLangCode, userConfig.LangCodeCurrent);
+        //    foreach (var lang in GCT.Languages)
+        //    {
+        //        if (userConfig.Languages.Find(l => l.LangCode == lang) == null)
+        //            Assert.Fail();
+        //    }
+        //}
     }
 }

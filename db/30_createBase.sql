@@ -52,16 +52,6 @@ CREATE TABLE base.userAcc
 	FOREIGN KEY (zzzId)          REFERENCES base.zzz(id),
 	FOREIGN KEY (orgId)         REFERENCES base.org(id)
 );
-CREATE TABLE base.permission
-(
-	id          BIGINT             PRIMARY KEY IDENTITY (1, 1) NOT NULL,
-	code        NVARCHAR (100)  NOT NULL,
-	descr       NVARCHAR (MAX)  NULL,
-	encoded     NVARCHAR (MAX)  NULL,
-	updated     DATETIME        NOT NULL DEFAULT GETDATE(),
-	isActive    BIT             NOT NULL DEFAULT 1,
-	CONSTRAINT permission_uq_code UNIQUE (code)
-);
 CREATE TABLE base.role
 (
 	id          BIGINT             PRIMARY KEY IDENTITY (10000, 1) NOT NULL,
@@ -78,13 +68,12 @@ CREATE TABLE base.rolePermission
 (
 	id           BIGINT             PRIMARY KEY IDENTITY (10000, 1) NOT NULL,
     roleId       BIGINT           NOT NULL,
-    permissionId BIGINT             NOT NULL,
-	crud         NVARCHAR (10)   NULL,
+    permission  NVARCHAR (10)       NOT NULL,
+	crud         NVARCHAR (10)   NOT NULL,
 	updated     DATETIME         NOT NULL DEFAULT GETDATE(),
 	isActive    BIT              NOT NULL DEFAULT 1,
 	FOREIGN KEY (roleId)         REFERENCES base.role(id),
-	FOREIGN KEY (permissionId)   REFERENCES base.permission(id),
-	CONSTRAINT rolePermission_uq_role_persmission UNIQUE (roleId, permissionId)
+	CONSTRAINT rolePermission_uq_role_persmission UNIQUE (roleId, permission)
 );
 CREATE TABLE base.userAccRole
 (

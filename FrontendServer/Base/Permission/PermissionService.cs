@@ -1,107 +1,82 @@
 using System.Collections.Generic;
 using System.Net.Http;
+using System.Reflection.Emit;
+using FrontendServer.Base.Label;
+using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage;
+using MudBlazor;
 using Newtonsoft.Json;
+using static MudBlazor.CategoryTypes;
 using GC = FrontendServer.GlobalConstants;
+
+/// <summary>
+/// Permission and CRUD settings
+/// Created: July 2025
+/// [*Licence*]
+/// Author: John Stewart
+/// </summary>
 
 namespace FrontendServer.Base.Permission
 {
-
-    //May not need this
-
-    public class PermissionService
+    public class PermissionService : BaseService
     {
-        private readonly IHttpClientFactory _httpClientFactory;
+        public List<RolePermissionDto> AllPermissions {  get; private set; }
+        public List<PermissionDto> Permissions { get; private set; }
 
-        public PermissionService(IHttpClientFactory httpClientFactory)
+
+        public PermissionService(ProtectedSessionStorage session,
+            ConfigService configService,
+            IHttpClientFactory httpClientFactory)
         {
+            _session = session;
+            _configService = configService;
             _httpClientFactory = httpClientFactory;
         }
 
-
-        public async Task<(List<RolePermissionDto> permissions, string message)> PermissionsAsync(string token)
+        public async Task Initialise()
         {
-            var client = _httpClientFactory.CreateClient(GC.AuthorizedClientKey);
-
-            //var tokenResponse = await client.GetAsync("api/Token");
-            //var token = await tokenResponse.Content.ReadAsStringAsync();
-
-            client.DefaultRequestHeaders.Authorization =
-                new System.Net.Http.Headers.AuthenticationHeaderValue(GC.BearerKey, token);
-
-            var list = new List<RolePermissionDto>();
-            var message = "";
-
-            var response = await client.GetAsync(GC.URL_perm_list);
-            if (response.IsSuccessStatusCode)
+            try
             {
-                var result = await response.Content.ReadAsStringAsync();
-                var responseDto = JsonConvert.DeserializeObject<_ResponseDto>(result);
+                if (!_configService.IsInitialized)
+                    await _configService.Initialise();
 
-                if (responseDto.Valid)
-                    list = JsonConvert.DeserializeObject<List<RolePermissionDto>>(responseDto.Result.ToString());
-                else
-                    message = responseDto.ErrorMessage;
+                var config = _configService.Config;
+                var client = await GetClient();
 
+                var response = await client.GetAsync(GC.URL_perm_list);
+                if (response.IsSuccessStatusCode)
+                {
+                    var result = await response.Content.ReadAsStringAsync();
+                    var responseDto = JsonConvert.DeserializeObject<_ResponseDto>(result);
 
-                return (list, message);
-
-                //successMessage = responseDto.SuccessMessage;
-                //successMessage += "  Token:" + token.Token;
-
-                //NavigationManager.NavigateTo("https://localhost:7170", true);
-                // Save token, e.g., in localStorage if this were Blazor WebAssembly
+                    if (responseDto.Valid)
+                        AllPermissions = JsonConvert.DeserializeObject<List<RolePermissionDto>>(responseDto.Result.ToString());
+                }
             }
-            else
+            catch
             {
-                //errorMessage = "Invalid username or password + "
-                //    + test;
-
             }
-            //ToDo label
-            return (list, "Opps, something went wrong?");
-        }
 
-        public async Task<(List<PermissionDto> permissions, string message)> PermissionEffectiveAsync(string token)
-        {
-            var client = _httpClientFactory.CreateClient(GC.AuthorizedClientKey);
-
-            //var tokenResponse = await client.GetAsync("api/Token");
-            //var token = await tokenResponse.Content.ReadAsStringAsync();
-
-            client.DefaultRequestHeaders.Authorization =
-                new System.Net.Http.Headers.AuthenticationHeaderValue(GC.BearerKey, token);
-
-            var list = new List<PermissionDto>();
-            var message = "";
-
-            var response = await client.GetAsync(GC.URL_perm_eff);
-            if (response.IsSuccessStatusCode)
+            try
             {
-                var result = await response.Content.ReadAsStringAsync();
-                var responseDto = JsonConvert.DeserializeObject<_ResponseDto>(result);
+                if (!_configService.IsInitialized)
+                    await _configService.Initialise();
 
-                if (responseDto.Valid)
-                    list = JsonConvert.DeserializeObject<List<PermissionDto>>(responseDto.Result.ToString());
-                else
-                    message = responseDto.ErrorMessage;
+                var config = _configService.Config;
+                var client = await GetClient();
 
+                var response1 = await client.GetAsync(GC.URL_perm_eff);
+                if (response1.IsSuccessStatusCode)
+                {
+                    var result = await response1.Content.ReadAsStringAsync();
+                    var responseDto = JsonConvert.DeserializeObject<_ResponseDto>(result);
 
-                return (list, message);
-
-                //successMessage = responseDto.SuccessMessage;
-                //successMessage += "  Token:" + token.Token;
-
-                //NavigationManager.NavigateTo("https://localhost:7170", true);
-                // Save token, e.g., in localStorage if this were Blazor WebAssembly
+                    if (responseDto.Valid)
+                        Permissions = JsonConvert.DeserializeObject<List<PermissionDto>>(responseDto.Result.ToString());
+                }
             }
-            else
+            catch
             {
-                //errorMessage = "Invalid username or password + "
-                //    + test;
-
             }
-            //ToDo label
-            return (list, "Opps, something went wrong?");
         }
 
     }

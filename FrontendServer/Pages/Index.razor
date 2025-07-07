@@ -47,6 +47,7 @@ else
 @inject NavigationManager NM
 @inject ProtectedSessionStorage PS
 @inject ConfigService ConfS
+@inject PermissionService PermS
 @inject LabelService LS
 @inject IJSRuntime JS
 
@@ -79,14 +80,15 @@ else
 
             var token = await GetToken(tokenkey);
             await SetClient(token);
-                   
+
             //Get App / User Config
             var config = await ConfS.Initialise();
             var parms = ConfS.SetLoginParameters(tokenkey, token);
             parms.LoadedUrl(GC.URL_config);
             SetConfig(config);
 
-            //Get Labels
+            //Get stuff
+            await PermS.Initialise();
             await LS.Initialise();
 
             _isLoading = false;

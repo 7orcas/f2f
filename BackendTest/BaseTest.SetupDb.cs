@@ -67,11 +67,11 @@ namespace BackendTest
         {
             PermissionEnt[] perms = new PermissionEnt[MaxPermissions];
             for (int i = 0; i < MaxPermissions; i++)
-                perms[i] = new PermissionEnt { Id = -1 + i*-1, Code = "perm" + (i+1) };
+                perms[i] = new PermissionEnt { Id = -1 + i*-1, Permission = "perm" + (i+1) };
 
             string sql = "";
             foreach (var rec in perms)
-                sql += "INSERT INTO " + tP + " (id, code) VALUES (" + rec.Id + ",'" + rec.Code + "');";
+                sql += "INSERT INTO " + tP + " (id, code) VALUES (" + rec.Id + ",'" + rec.Permission + "');";
             await Sql.Execute(IdentityInsert(tP, sql));
 
 

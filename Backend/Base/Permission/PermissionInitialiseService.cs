@@ -1,4 +1,5 @@
 ﻿using GC = Backend.GlobalConstants;
+using CGC = Common.GlobalConstants;
 using Microsoft.Extensions.Caching.Memory;
 
 /// <summary>
@@ -30,18 +31,11 @@ namespace Backend.Base.Permission
         {
             var list = new List<PermissionEnt>();
 
-            var sql = "SELECT * " +
-                    "FROM base.permission ";
-
-            await Sql.Run(sql,
-                r => {
-                    var l = new PermissionEnt();
-                    l.Id = GetId(r, "id");
-                    l.Code = GetStringNull(r, "code");
-                    l.Description = GetStringNull(r, "descr");
-                    list.Add(l);
-                }
-            );
+            foreach (var p in CGC.Perms)
+                list.Add(new PermissionEnt 
+                { 
+                    Permission = p
+                });
 
             _memoryCache.Set(GC.CacheKeyPermList, list);
         }

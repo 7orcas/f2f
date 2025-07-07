@@ -2,11 +2,12 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using GC = Backend.GlobalConstants;
+using CGC = Common.GlobalConstants;
 
 namespace Backend.Base.Permission
 {
     [Authorize]
-    [PermissionAtt("perms")]
+    [PermissionAtt(CGC.PermPerm)]
     [ApiController]
     [Route("api/[controller]")]
     public class PermissionController : BaseController
@@ -40,10 +41,9 @@ namespace Backend.Base.Permission
             {
                 list.Add(new RolePermissionDto
                 {
-                    Role = m.Role,
                     OrgId = m.OrgId,
-                    PermissionCode = m.PermissionCode,
-                    PermissionDescr = m.PermissionsDescr,
+                    Role = m.Role,
+                    Permission = m.Permission,
                     Crud = m.Crud
                 });
             }
@@ -69,11 +69,12 @@ namespace Backend.Base.Permission
 
             foreach (var m in Permissions)
             {
-                var per = PermList.FirstOrDefault(p => p.Id == m.PermissionId);
+                var per = PermList.FirstOrDefault(p => p.Permission == m.Permission);
+                if (per == null) continue;
 
                 list.Add(new PermissionDto
                 {
-                    Permission = per.Code,
+                    Permission = per.Permission,
                     Crud = m.Crud
                 });
             }

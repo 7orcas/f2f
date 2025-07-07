@@ -1,10 +1,11 @@
-﻿@page "/permission"
+﻿@attribute [Route(BasePageRoutes.PermRoute)]
+@inherits BasePage
 @attribute [Authorize]
 
 @inject HttpClient HttpClient
 @inject NavigationManager NavigationManager
 @inject IHttpClientFactory HttpClientFactory
-@inject PermissionService PermissionService
+
 
 @using GC = FrontendServer.GlobalConstants;
 @using Newtonsoft.Json;
@@ -12,148 +13,100 @@
 @inject ProtectedSessionStorage ProtectedSessionStore
 
 
-<h3>All Permissions</h3>
+<Header @key="_pageCode"
+        TitleKey="UserPerm"
+        SubTitleKey="UserPermSub"
+        PageCode=@_pageCode
+        />
 
-@if (_isLoading)
+@if (_isLoading || _isError || _isSaving)
 {
-    <div>loading....</div>
-}
-else if (_isError)
-{
-    <div>@message</div>
-}        
-else
-{
-    <table class="table">
-        <thead>
-            <tr>
-                <th>Role</th>
-                <th>OrgId</th>
-                <th>PermissionCode</th>
-                <th>PermissionDescr</th>
-                <th>CRUD</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var perms in permissions)
-            {
-                <tr>
-                    <td>@perms.Role</td>
-                    <td>@perms.OrgId</td>
-                    <td>@perms.PermissionCode</td>
-                    <td>@perms.PermissionDescr</td>
-                    <td>@perms.Crud</td>
-                </tr>
-            }
-        </tbody>
-    </table>
-}
-
-
-<h3>Effective Permissions</h3>
-
-@if (_isLoading)
-{
-    <div>loading....</div>
-}
-else if (_isError)
-{
-    <div>@message</div>
+    <LoadingWithError IsLoading=@_isLoading
+                      IsSaving=@_isSaving
+                      IsError=@_isError
+                      Message=@_errorMessage>
+        @exception
+    </LoadingWithError>
 }
 else
 {
-    <table class="table">
-        <thead>
-            <tr>
-                <th>Permission</th>
-                <th>CRUD</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var perms in effective)
-            {
-                <tr>
-                    <td>@perms.Permission</td>
-                    <td>@perms.Crud</td>
-                </tr>
-            }
-        </tbody>
-    </table>
+    <MudGrid>
+
+        <MudItem xs="8">
+            <MudPaper Elevation="0" Outlined="@_debugOutlined">
+                <MudExpansionPanels MultiExpansion="true">
+                    <MudExpansionPanel Expanded="@_expandFirstPanel">
+                        <TitleContent>
+                            <Label Size="GC.TextSize.Large" Key="PermEff"></Label>
+                            <div class="d-flex">
+                            </div>
+                        </TitleContent>
+                        <ChildContent>
+                            <div style="table-layout: fixed; width: 400px;">
+                                <MudTable Items="@effective">
+                                    <HeaderContent>
+                                        <MudTh><Label Key="Perm" /></MudTh>
+                                        <MudTh><Label Key="Crud" /></MudTh>
+                                    </HeaderContent>
+                                    <RowTemplate>
+                                        <MudTd DataLabel="Column 1">@context.Permission</MudTd>
+                                        <MudTd DataLabel="Column 2">@context.Crud</MudTd>
+                                    </RowTemplate>
+                                </MudTable>
+                            </div>
+                        </ChildContent>
+                    </MudExpansionPanel>
+
+                    <MudExpansionPanel>
+                        <TitleContent>
+                            <Label Size="GC.TextSize.Large" Key="PermAll"></Label>
+                        </TitleContent>
+                        <ChildContent>
+                            <div style="table-layout: fixed; width: 400px;">
+                                <MudTable Items="@permissions">
+                                    <HeaderContent>
+                                        <MudTh><Label Key="Role" /></MudTh>
+                                        <MudTh><Label Key="OrgNr" /></MudTh>
+                                        <MudTh><Label Key="Perm" /></MudTh>
+                                        <MudTh><Label Key="Crud" /></MudTh>
+                                    </HeaderContent>
+                                    <RowTemplate>
+                                        <MudTd DataLabel="Column 1">@context.Role</MudTd>
+                                        <MudTd DataLabel="Column 2">@context.OrgId</MudTd>
+                                        <MudTd DataLabel="Column 3">@context.Permission</MudTd>
+                                        <MudTd DataLabel="Column 4">@context.Crud</MudTd>
+                                    </RowTemplate>
+                                </MudTable>
+                            </div>
+                        </ChildContent>
+                    </MudExpansionPanel>
+                </MudExpansionPanels>
+            </MudPaper>
+        </MudItem>
+    </MudGrid>
 }
 
-
-
-
+@inject PermissionService PS
 @code {
-    private List<RolePermissionDto>? permissions;
+    private bool _expandFirstPanel = true;
     private List<PermissionDto>? effective;
-    private bool _isLoading = true;
-    private bool _isError = false;
-    private string message;
-    private string token;
+    private List<RolePermissionDto>? permissions;
 
-    private void ThrowException()
-    {
-        throw new InvalidOperationException("This is a test exception.");
-    }
-
-    private void Recover()
-    {
-        //        errorBoundary.Recover();
-    }
-
-    protected override async Task OnInitializedAsync()
-    {
-        /*
-        string token = null;
-        var result = await ProtectedSessionStore.GetAsync<string>("token");
-        if (result.Success)
-        token = result.Value;
-        */
-        // Func<Task> lambda = async () => machines = await MachineService.MachinesAsync(token);
-        // await Run(lambda);
-        // machines = await MachineService.MachinesAsync(token);
-        // _isLoading = false;
-
-    }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         if (firstRender)
         {
-            var store = await ProtectedSessionStore.GetAsync<string>(GC.TokenCacheKey);
-            if (store.Success)
-                token = store.Value;
-            else
-                NavigationManager.NavigateTo("https://localhost:7289", true);
+            await InitialiseBasePage();
+            _pageCode = BasePageRoutes.PermPageCode;
 
-            var result = await PermissionService.PermissionsAsync(token);
-            permissions = result.permissions;
-            message = result.message;
+            permissions = PS.AllPermissions;
+            effective = PS.Permissions;
 
-            var result2 = await PermissionService.PermissionEffectiveAsync(token);
-            effective = result2.permissions;
-
-            _isError = !string.IsNullOrEmpty(message);
+            _isError = effective == null;
             _isLoading = false;
             StateHasChanged();
         }
     }
-
-    public async Task Run(Func<Task> action)
-    {
-        try
-        {
-            await action();
-        }
-        catch (Exception x)
-        {
-            //exception = x;
-            //_isError = true;
-        }
-        finally
-        {
-            _isLoading = false;
-        }
-    }
+   
 }

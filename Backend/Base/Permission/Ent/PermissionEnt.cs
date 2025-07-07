@@ -10,8 +10,6 @@ namespace Backend.Base.Permission.Ent
 {
     public class PermissionEnt
     {   
-        public long Id { get; set; }
-        public string Code { get; set; }
-        public string Description { get; set; }
+        public string Permission { get; set; }
     }
 }

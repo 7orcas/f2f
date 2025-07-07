@@ -2,11 +2,9 @@
 {
     public class RolePermissionDto
     {
+        public int OrgId { get; set; }
         public string Role { get; set; }
-        public long OrgId { get; set; }
-        public string PermissionCode { get; set; }
-        public string PermissionDescr { get; set; }
+        public string Permission { get; set; }
         public string Crud { get; set; }
-
     }
 }

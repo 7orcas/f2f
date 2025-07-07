@@ -24,6 +24,7 @@ INSERT INTO base.userAcc (id, zzzId, orgId,langCode) VALUES (2, 2, 1,'en');
 INSERT INTO base.userAcc (id, zzzId, orgId,langCode) VALUES (3, 2, 2,'de');
 SET IDENTITY_INSERT base.userAcc OFF;
 
+/*
 SET IDENTITY_INSERT base.permission ON;
 INSERT INTO base.permission (id, code, descr) VALUES (10,  'label',         'Language Labels');
 INSERT INTO base.permission (id, code, descr) VALUES (20,  'profs',         'Professionals');
@@ -36,7 +37,7 @@ INSERT INTO base.permission (id, code, descr) VALUES (80,  'machine',   'Machine
 INSERT INTO base.permission (id, code, descr) VALUES (90,  'audit',         'Audit');
 --INSERT INTO base.permission (id, code, descr) VALUES (100,  'lang',         'Lang');
 SET IDENTITY_INSERT base.permission OFF;
-
+*/
 
 SET IDENTITY_INSERT base.role ON;
 INSERT INTO base.role (id, orgId, code, descr) VALUES (1, 0, 'Admin', 'Full Admin Access');
@@ -49,18 +50,17 @@ SET IDENTITY_INSERT base.role OFF;
 
 SET IDENTITY_INSERT base.rolePermission ON;
 
-INSERT INTO base.rolePermission (id, roleId, permissionId, crud) VALUES (1, 1, 10, 'crud');
-INSERT INTO base.rolePermission (id, roleId, permissionId, crud) VALUES (2, 1, 20, 'crud');
-INSERT INTO base.rolePermission (id, roleId, permissionId, crud) VALUES (3, 1, 30, 'r');
-INSERT INTO base.rolePermission (id, roleId, permissionId, crud) VALUES (4, 1, 40, 'cru');
-INSERT INTO base.rolePermission (id, roleId, permissionId, crud) VALUES (5, 1, 50, 'crud');
-INSERT INTO base.rolePermission (id, roleId, permissionId, crud) VALUES (6, 1, 60, 'crud');
-INSERT INTO base.rolePermission (id, roleId, permissionId, crud) VALUES (7, 1, 70, 'crud');
-INSERT INTO base.rolePermission (id, roleId, permissionId, crud) VALUES (8, 1, 80, 'cd');
-INSERT INTO base.rolePermission (id, roleId, permissionId, crud) VALUES (9, 4, 80, 'd');
-INSERT INTO base.rolePermission (id, roleId, permissionId, crud) VALUES (10, 5, 80, 'ur');
-INSERT INTO base.rolePermission (id, roleId, permissionId, crud) VALUES (11, 6, 80, 'rd');
-INSERT INTO base.rolePermission (id, roleId, permissionId, crud) VALUES (12, 1, 90, 'r');
+INSERT INTO base.rolePermission (id, roleId, permission, crud) VALUES (1, 1, 'label', 'crud');
+INSERT INTO base.rolePermission (id, roleId, permission, crud) VALUES (2, 1, 'profs', 'crud');
+INSERT INTO base.rolePermission (id, roleId, permission, crud) VALUES (3, 1, 'org', 'r');
+INSERT INTO base.rolePermission (id, roleId, permission, crud) VALUES (4, 1, 'perm', 'cru');
+INSERT INTO base.rolePermission (id, roleId, permission, crud) VALUES (5, 1, 'role', 'crud');
+INSERT INTO base.rolePermission (id, roleId, permission, crud) VALUES (6, 1, 'user', 'crud');
+INSERT INTO base.rolePermission (id, roleId, permission, crud) VALUES (7, 1, 'ref', 'crud');
+INSERT INTO base.rolePermission (id, roleId, permission, crud) VALUES (8, 1, 'machine', 'cd');
+INSERT INTO base.rolePermission (id, roleId, permission, crud) VALUES (9, 4, 'machine', 'd');
+INSERT INTO base.rolePermission (id, roleId, permission, crud) VALUES (10, 5, 'machine', 'ur');
+INSERT INTO base.rolePermission (id, roleId, permission, crud) VALUES (11, 6, 'machine', 'rd');
 --INSERT INTO base.rolePermission (id, roleId, permissionId, crud) VALUES (13, 1, 100, 'r');
 
 SET IDENTITY_INSERT base.rolePermission OFF;
@@ -73,6 +73,8 @@ INSERT INTO base.userAccRole (id, userAccId, roleId) VALUES (4, 2, 4);
 INSERT INTO base.userAccRole (id, userAccId, roleId) VALUES (5, 2, 5);
 INSERT INTO base.userAccRole (id, userAccId, roleId) VALUES (6, 2, 6);
 INSERT INTO base.userAccRole (id, userAccId, roleId) VALUES (7, 3, 1);
+INSERT INTO base.userAccRole (id, userAccId, roleId) VALUES (8, 3, 5);
+INSERT INTO base.userAccRole (id, userAccId, roleId) VALUES (9, 3, 6);
 SET IDENTITY_INSERT base.userAccRole OFF;
 
 

@@ -1,11 +1,12 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using GC = Backend.GlobalConstants;
+using CGC = Common.GlobalConstants;
 
 namespace Backend.App.Machines
 {
     [Authorize]
-    [PermissionAtt("machine")]
+    [PermissionAtt(CGC.PermMach)]
     [ApiController]
     [Route("api/[controller]")]
     public class MachineController : BaseController

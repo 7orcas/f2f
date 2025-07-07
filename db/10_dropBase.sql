@@ -8,7 +8,6 @@ drop table if exists base.langCode;
 drop table if exists base.langKey;
 
 drop table if exists base.rolePermission;
-drop table if exists base.permission;
 
 drop table if exists base.zzzRole;
 drop table if exists base.userAccRole;

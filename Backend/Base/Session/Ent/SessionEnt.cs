@@ -22,11 +22,11 @@ namespace Backend.Base.Session.Ent
         /// Return the user's crud value for the permission
         /// Return null if permission not loaded
         /// </summary>
-        /// <param name="id"></param>
+        /// <param name="perm"></param>
         /// <returns></returns>
-        public string GetUserPermissionCrud (long id)
+        public string GetUserPermissionCrud (string perm)
         {
-            var p = UserAccount.Permissions.FirstOrDefault(p => p.PermissionId == id);
+            var p = UserAccount.Permissions.FirstOrDefault(p => p.Permission == perm);
             if (p == null) return null;
             return p.Crud;
         }
