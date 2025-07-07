@@ -32,7 +32,7 @@ namespace Backend.Base.Org
                     "SELECT * FROM base.org ",
                     r => {
                         var org = new OrgEnt();
-                        org.Id = GetInt(r, "id");
+                        org.Nr = GetInt(r, "nr");
                         org.Code = GetCode(r);
                         org.Description = GetDescription(r);
                         org.Updated = GetUpdated(r);
@@ -43,9 +43,9 @@ namespace Backend.Base.Org
             return list;
         }
 
-        public async Task<OrgEnt> GetOrg(int id)
+        public async Task<OrgEnt> GetOrg(int nr)
         {
-            var org = _memoryCache.Get<OrgEnt>(GC.CacheKeyOrgPrefix + id);
+            var org = _memoryCache.Get<OrgEnt>(GC.CacheKeyOrgPrefix + nr);
             if (org != null) return org;
 
             try
@@ -55,9 +55,9 @@ namespace Backend.Base.Org
                     + "WHERE nr = @nr ",
                     r => {
                         org = OrgLoad.Load(r);
-                        _memoryCache.Set(GC.CacheKeyOrgPrefix + org.Id, org);
+                        _memoryCache.Set(GC.CacheKeyOrgPrefix + org.Nr, org);
                     },
-                    new SqlParameter("@nr", id)
+                    new SqlParameter("@nr", nr)
                 );
                                 
                 return org;
@@ -81,9 +81,9 @@ namespace Backend.Base.Org
                         Update("isActive", org.IsActive) +
                         Update("langCode", org.LangCode) +
                         NoComma(Update("langLabelVariant", org.LangLabelVariant)) +
-                    " WHERE id = " + org.Id
+                    " WHERE id = " + org.Nr
             );
-            _memoryCache.Set(GC.CacheKeyOrgPrefix + org.Id, org);
+            _memoryCache.Set(GC.CacheKeyOrgPrefix + org.Nr, org);
         }
 
     }

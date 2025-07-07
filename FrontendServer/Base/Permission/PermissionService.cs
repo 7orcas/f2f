@@ -1,11 +1,5 @@
-using System.Collections.Generic;
-using System.Net.Http;
-using System.Reflection.Emit;
-using FrontendServer.Base.Label;
 using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage;
-using MudBlazor;
 using Newtonsoft.Json;
-using static MudBlazor.CategoryTypes;
 using GC = FrontendServer.GlobalConstants;
 
 /// <summary>

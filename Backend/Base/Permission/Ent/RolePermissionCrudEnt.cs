@@ -9,8 +9,9 @@
     public class RolePermissionCrudEnt
     {
         public string Role {  get; set; }
-        public string Permission { get; set; }
+        public int PermissionNr { get; set; }
+        public string LangKey { get; set; }
         public string Crud { get; set; }
-        public int OrgId { get; set; }
+        public int OrgNr { get; set; }
     }
 }

@@ -1,13 +1,13 @@
-﻿using Backend.Base.Session.Ent;
-using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Serilog.Events;
 using GC = Backend.GlobalConstants;
+using CGC = Common.GlobalConstants;
 
 namespace Backend.Base.Label
 {
     [Authorize]
-    [PermissionAtt("label")]
+    [PermissionAtt(CGC.PerLabel)]
     [ApiController]
     [Route("api/[controller]")]
     public class LabelController : BaseController

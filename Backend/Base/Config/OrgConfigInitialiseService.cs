@@ -56,12 +56,12 @@ namespace Backend.Base.Config
                 //Config Org
                 var oConfig = new OrgConfig()
                 {
-                    OrgId = org.Id,
+                    orgNr = org.Nr,
                     LangCodeDefault = org.LangCode,
                     Languages = lConfigs
                 };
 
-                _memoryCache.Set(GC.CacheKeyOrgConfigPrefix + org.Id, oConfig);
+                _memoryCache.Set(GC.CacheKeyOrgConfigPrefix + org.Nr, oConfig);
             }
         }
 
@@ -73,7 +73,7 @@ namespace Backend.Base.Config
                     r => {
                         var org = OrgLoad.Load(r);
                         list.Add(org);
-                        _memoryCache.Set(GC.CacheKeyOrgPrefix + org.Id, org);
+                        _memoryCache.Set(GC.CacheKeyOrgPrefix + org.Nr, org);
                     }
                 );
             return list;

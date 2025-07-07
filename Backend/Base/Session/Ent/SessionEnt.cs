@@ -24,9 +24,9 @@ namespace Backend.Base.Session.Ent
         /// </summary>
         /// <param name="perm"></param>
         /// <returns></returns>
-        public string GetUserPermissionCrud (string perm)
+        public string GetUserPermissionCrud (int permNr)
         {
-            var p = UserAccount.Permissions.FirstOrDefault(p => p.Permission == perm);
+            var p = UserAccount.Permissions.FirstOrDefault(p => p.Nr == permNr);
             if (p == null) return null;
             return p.Crud;
         }

@@ -1,28 +1,28 @@
 BEGIN TRANSACTION;
 
 SET IDENTITY_INSERT app.machineGroup ON;
-INSERT INTO app.machineGroup (id, orgId, code, descr) VALUES (1, 1, 'MG1', 'Machine Group 1');
-INSERT INTO app.machineGroup (id, orgId, code, descr) VALUES (2, 2, 'MG2', 'Machine Group 2');
+INSERT INTO app.machineGroup (id, orgNr, code, descr) VALUES (1, 1, 'MG1', 'Machine Group 1');
+INSERT INTO app.machineGroup (id, orgNr, code, descr) VALUES (2, 2, 'MG2', 'Machine Group 2');
 SET IDENTITY_INSERT app.machineGroup OFF;
 
 SET IDENTITY_INSERT app.machine ON;
-INSERT INTO app.machine (id, orgId, machineGroupId, stationPairs, code, descr, classification) VALUES (1, 1, 1, 12, 'M1-1', 'Machine 11',2);
-INSERT INTO app.machine (id, orgId, machineGroupId, stationPairs, code, descr) VALUES (2, 1, 1, 15, 'M1-2', 'Machine 12');
+INSERT INTO app.machine (id, orgNr, machineGroupId, stationPairs, code, descr, classification) VALUES (1, 1, 1, 12, 'M1-1', 'Machine 11',2);
+INSERT INTO app.machine (id, orgNr, machineGroupId, stationPairs, code, descr) VALUES (2, 1, 1, 15, 'M1-2', 'Machine 12');
 
-INSERT INTO app.machine (id, orgId, machineGroupId, stationPairs, code, descr, classification) VALUES (100, 2, 2, 12, 'M2-1', 'Machine 21',2);
-INSERT INTO app.machine (id, orgId, machineGroupId, stationPairs, code, descr) VALUES (102, 2, 2, 15, 'M2-2', 'Machine 22');
+INSERT INTO app.machine (id, orgNr, machineGroupId, stationPairs, code, descr, classification) VALUES (100, 2, 2, 12, 'M2-1', 'Machine 21',2);
+INSERT INTO app.machine (id, orgNr, machineGroupId, stationPairs, code, descr) VALUES (102, 2, 2, 15, 'M2-2', 'Machine 22');
 
-INSERT INTO app.machine (id, orgId, machineGroupId, stationPairs, code, descr) VALUES (103, 1, 2, 12, 'M2-1', 'Machine 21');
-INSERT INTO app.machine (id, orgId, machineGroupId, stationPairs, code, descr) VALUES (104, 1, 2, 15, 'M4-2', 'Machine 22');
+INSERT INTO app.machine (id, orgNr, machineGroupId, stationPairs, code, descr) VALUES (103, 1, 2, 12, 'M2-1', 'Machine 21');
+INSERT INTO app.machine (id, orgNr, machineGroupId, stationPairs, code, descr) VALUES (104, 1, 2, 15, 'M4-2', 'Machine 22');
 
-INSERT INTO app.machine (id, orgId, machineGroupId, stationPairs, code, descr) VALUES (105, 1, 2, 12, 'M5-1', 'Machine 21');
-INSERT INTO app.machine (id, orgId, machineGroupId, stationPairs, code, descr) VALUES (106, 1, 2, 15, 'M6-2', 'Machine 22');
+INSERT INTO app.machine (id, orgNr, machineGroupId, stationPairs, code, descr) VALUES (105, 1, 2, 12, 'M5-1', 'Machine 21');
+INSERT INTO app.machine (id, orgNr, machineGroupId, stationPairs, code, descr) VALUES (106, 1, 2, 15, 'M6-2', 'Machine 22');
 
-INSERT INTO app.machine (id, orgId, machineGroupId, stationPairs, code, descr) VALUES (107, 1, 2, 12, 'M7-1', 'Machine 21');
-INSERT INTO app.machine (id, orgId, machineGroupId, stationPairs, code, descr) VALUES (108, 1, 2, 15, 'M8-2', 'Machine 22');
+INSERT INTO app.machine (id, orgNr, machineGroupId, stationPairs, code, descr) VALUES (107, 1, 2, 12, 'M7-1', 'Machine 21');
+INSERT INTO app.machine (id, orgNr, machineGroupId, stationPairs, code, descr) VALUES (108, 1, 2, 15, 'M8-2', 'Machine 22');
 
-INSERT INTO app.machine (id, orgId, machineGroupId, stationPairs, code, descr) VALUES (109, 1, 2, 12, 'M9-1', 'Machine 21');
-INSERT INTO app.machine (id, orgId, machineGroupId, stationPairs, code, descr) VALUES (110, 1, 2, 15, 'M10-2', 'Machine 22');
+INSERT INTO app.machine (id, orgNr, machineGroupId, stationPairs, code, descr) VALUES (109, 1, 2, 12, 'M9-1', 'Machine 21');
+INSERT INTO app.machine (id, orgNr, machineGroupId, stationPairs, code, descr) VALUES (110, 1, 2, 15, 'M10-2', 'Machine 22');
 
 SET IDENTITY_INSERT app.machine OFF;
 

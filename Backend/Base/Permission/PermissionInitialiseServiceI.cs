@@ -12,6 +12,6 @@ namespace Backend.Base.Permission
     public interface PermissionInitialiseServiceI
     {
         void InitialisePermissions();
-        List<PermissionEnt> GetPermissions();
+        Dictionary<int, PermissionEnt> GetPermissions();
     }
 }

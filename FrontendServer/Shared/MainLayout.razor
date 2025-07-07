@@ -26,7 +26,7 @@ else
                                        Edge="Edge.Start"
                                        OnClick="@ToggleDrawer" />
                     }
-                    <MenuButton Title="Blue [CM]" Link="@AppPageRoutes.HomeRoute" />
+                    <MenuButton Title="@ConfS.Config.OrgDescription" Link="@AppPageRoutes.HomeRoute" />
                 </div>
 
                 <!-- Center: Menu items -->
@@ -42,8 +42,9 @@ else
                              OffsetY="true"
                              Dense="true">
                         <ActivatorContent>
-                            <MudIconButton Icon="@Icons.Material.Filled.Settings"
-                                           Color="Color.Inherit"/>
+                            <MudIconButton Icon="@Icons.Material.Filled.ManageAccounts"
+                                           Color="Color.Inherit"
+                                           Size="Size.Large"/>
                         </ActivatorContent>
                         <ChildContent>
                             <MudStack Spacing="1" Style="align-items: flex-start;">
@@ -52,19 +53,19 @@ else
                                            OnClick="@Logout"
                                            Color="Color.Inherit"
                                            Variant="Variant.Text">
-                                    <MudText Typo="Typo.h6">Logout [CM]</MudText>
+                                    <MudText Typo="Typo.h6">@GetLabel("Logout")</MudText>
                                 </MudButton>
 
-                                <div style="margin-left:10px;">
+                                <div style="margin-left:9px;">
                                     <MudSwitch @bind-Value="_isDarkMode"
                                                T="bool"
                                                LabelPlacement="Placement.Start"
                                                 >
-                                        <MudText Typo="Typo.h6">Light/Dark Mode</MudText>
+                                        <MudText Typo="Typo.h6">@GetLabel("LDM")</MudText>
                                     </MudSwitch>
                                 </div>
-                                <MenuButton Title="Change Password [CM]" Link="@AppPageRoutes.ChangePWRoute" />
-                                <MenuButton Title="User Config [CM]" Link="@AppPageRoutes.ConfigRoute" />
+                                <MenuButton Title="@GetLabel("ChgPw")" Link="@AppPageRoutes.ChangePWRoute" />
+                                <MenuButton Title="@GetLabel("Config")" Link="@AppPageRoutes.ConfigRoute" />
                             </MudStack>
                         </ChildContent>
                     </MudMenu>
@@ -99,8 +100,8 @@ else
 @inject LogoutService LgS
 @inject ProtectedSessionStorage PS
 @code {
+    private string lOrg = "";
 
-    //public bool _isLoading = true;
     private bool _drawerOpen = false;
     private bool _isDarkModeBacking = false;
 
@@ -128,8 +129,8 @@ else
         }
     }
 
-    private string lOrg = "Organisations";
-    private string lMac = "Machines";
+    // private string lOrg = "Organisations";
+    // private string lMac = "Machines";
 
     private MudTheme _theme = new MudTheme
         {
@@ -165,11 +166,15 @@ else
 
     private void RefreshLayout() 
     {
-        lOrg = LS.GetLabel("Orgs");
-        lMac = LS.GetLabel("Machines");
+        // lOrg = LS.GetLabel("Orgs");
+        // lMac = LS.GetLabel("Machines");
         InvokeAsync(StateHasChanged);
     }
 
+    private string GetLabel(string key)
+    {
+        return LS.GetLabel(key);
+    }
 
     private void ToggleDrawer() => _drawerOpen = !_drawerOpen;
     private async Task Logout() => await LgS.LogoutAsync();

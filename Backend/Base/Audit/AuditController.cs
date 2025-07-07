@@ -1,11 +1,12 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using GC = Backend.GlobalConstants;
+using CGC = Common.GlobalConstants;
 
 namespace Backend.Base.Audit
 {
     [Authorize]
-    [PermissionAtt("audit")]
+    [PermissionAtt(CGC.PerAudit)]
     [ApiController]
     [Route("api/[controller]")]
     public class AuditController : BaseController
@@ -34,7 +35,7 @@ namespace Backend.Base.Audit
                 list.Add(new AuditDto
                 {
                     Id = e.Id,
-                    OrgId = e.OrgId,
+                    orgNr = e.orgNr,
                     Source = e.Source,
                     EntityType = e.EntityType,
                     EntityId = e.EntityId,

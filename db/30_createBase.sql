@@ -19,7 +19,7 @@ CREATE TABLE cntrl.token (
 */
 
 CREATE TABLE base.org (
-    id          INT             PRIMARY KEY IDENTITY (1, 1) NOT NULL,
+    nr          INT             PRIMARY KEY IDENTITY (1, 1) NOT NULL,
 	code        NVARCHAR (100)  NOT NULL,
 	descr       NVARCHAR (MAX)  NOT NULL,
 	encoded     NVARCHAR (MAX)  NULL,
@@ -43,37 +43,37 @@ CREATE TABLE base.userAcc
 (
 	id             BIGINT             PRIMARY KEY IDENTITY (10000, 1) NOT NULL,
 	zzzId        BIGINT             NOT NULL,
-	orgId       INT                   NOT NULL,
+	orgNr       INT                   NOT NULL,
 	langCode       NVARCHAR (4)  NULL,
  	lastlogin      DATETIME        NOT NULL DEFAULT GETDATE(),
 	classification INT             NULL DEFAULT (0),
 	isAdmin        BIT             NOT NULL DEFAULT 0,
 	isActive       BIT             NOT NULL DEFAULT 1,
 	FOREIGN KEY (zzzId)          REFERENCES base.zzz(id),
-	FOREIGN KEY (orgId)         REFERENCES base.org(id)
+	FOREIGN KEY (orgNr)         REFERENCES base.org(nr)
 );
 CREATE TABLE base.role
 (
 	id          BIGINT             PRIMARY KEY IDENTITY (10000, 1) NOT NULL,
-	orgId       INT            NOT NULL,
+	orgNr       INT            NOT NULL,
 	code        NVARCHAR (100)  NOT NULL,
 	descr       NVARCHAR (MAX)  NULL,
 	encoded     NVARCHAR (MAX)  NULL,
 	updated     DATETIME        NOT NULL DEFAULT GETDATE(),
 	isActive    BIT             NOT NULL DEFAULT 1,
-	FOREIGN KEY (orgId)    REFERENCES      base.org(id),
-	CONSTRAINT role_uq_code UNIQUE (orgId, code)
+	FOREIGN KEY (orgNr)    REFERENCES      base.org(nr),
+	CONSTRAINT role_uq_code UNIQUE (orgNr, code)
 );
 CREATE TABLE base.rolePermission
 (
 	id           BIGINT             PRIMARY KEY IDENTITY (10000, 1) NOT NULL,
     roleId       BIGINT           NOT NULL,
-    permission  NVARCHAR (10)       NOT NULL,
+    permissionNr  INT       NOT NULL,
 	crud         NVARCHAR (10)   NOT NULL,
 	updated     DATETIME         NOT NULL DEFAULT GETDATE(),
 	isActive    BIT              NOT NULL DEFAULT 1,
 	FOREIGN KEY (roleId)         REFERENCES base.role(id),
-	CONSTRAINT rolePermission_uq_role_persmission UNIQUE (roleId, permission)
+	CONSTRAINT rolePermission_uq_role_persmission UNIQUE (roleId, permissionNr)
 );
 CREATE TABLE base.userAccRole
 (
@@ -119,7 +119,7 @@ CREATE TABLE base.langLabel
 );
 CREATE TABLE base.audit (
     id                       BIGINT                 PRIMARY KEY IDENTITY (1, 1) NOT NULL,
-	orgId                 INT                 NOT NULL,
+	orgNr                 INT                 NOT NULL,
 	source              INT                 NOT NULL,
 	entityTypeId    INT                 NOT NULL,
 	entityId            BIGINT                 NULL,

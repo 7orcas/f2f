@@ -34,12 +34,12 @@ namespace Backend.Base.Config
         /// <returns></returns>
         public UserConfig CreateUserConfig(UserAccountEnt userAccount, OrgEnt org, string? requestedLangCode)
         {
-            var orgConfig = _memoryCache.Get<OrgConfig>(GC.CacheKeyOrgConfigPrefix + org.Id);
+            var orgConfig = _memoryCache.Get<OrgConfig>(GC.CacheKeyOrgConfigPrefix + org.Nr);
             var userLangCode = ValidateLanguageCode(userAccount, orgConfig, requestedLangCode);
 
             var userConfig = new UserConfig()
             {
-                OrgId = org.Id,
+                orgNr = org.Nr,
                 LangCodeCurrent = userLangCode,
                 Languages = CreateClientLanguages(userAccount, orgConfig, userLangCode),
             };

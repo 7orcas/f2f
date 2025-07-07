@@ -31,36 +31,36 @@ namespace Backend.Base.Role
             var list = new List<UserAccountRoleEnt>();
             try
             {
-                var sql = "SELECT r.id, r.code, r.descr, r.orgId, zr.updated, zr.isActive " +
+                var sql = "SELECT r.id, r.code, r.descr, r.orgNr, zr.updated, zr.isActive " +
                     "FROM base.userAccRole zr " +
                         "INNER JOIN base.role r ON r.Id = zr.roleId " +
                     "WHERE zr.userAccId = @userId " +
                     "AND r.isActive = 1 ";
                 var by = " ORDER BY r.code ";
 
-                await Sql.Run(sql + "AND r.orgId = @orgId" + by,
+                await Sql.Run(sql + "AND r.orgNr = @orgNr" + by,
                     r => {
                         list.Add(new UserAccountRoleEnt() {
                             RoleId = GetId(r),
                             Code = GetCode(r),
                             Description = GetDescription(r),
-                            OrgId = GetOrgId(r),
+                            orgNr = GetOrgNr(r),
                             Updated = GetUpdated(r),
                             IsActive = IsActive(r),
                         });
                     },
                     new SqlParameter("@userId", session.UserAccount.Id),
-                    new SqlParameter("@orgId", session.Org.Id)
+                    new SqlParameter("@orgNr", session.Org.Nr)
                 );
 
-                await Sql.Run(sql + "AND r.orgId = " + GC.BaseOrgId + by,
+                await Sql.Run(sql + "AND r.orgNr = " + GC.BaseorgNr + by,
                     r => {
                         list.Add(new UserAccountRoleEnt()
                         {
                             RoleId = GetId(r),
                             Code = GetCode(r),
                             Description = GetDescription(r),
-                            OrgId = GetOrgId(r),
+                            orgNr = GetOrgNr(r),
                             Updated = GetUpdated(r),
                             IsActive = IsActive(r),
                         });

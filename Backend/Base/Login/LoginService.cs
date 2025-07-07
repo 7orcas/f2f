@@ -37,11 +37,11 @@ namespace Backend.Base.Login
             _sessionService = sessionService;
         }
 
-        public async Task<LoginEnt> LoginUser(string userid, string password, int orgId, int sourceAppNr, string? langCode)
+        public async Task<LoginEnt> LoginUser(string userid, string password, int orgNr, int sourceAppNr, string? langCode)
         {
             try
             {
-                var result = await GetLogin(userid, orgId);
+                var result = await GetLogin(userid, orgNr);
                 var login = result.Login;
                 if (login == null) 
                     login = new LoginEnt();
@@ -54,7 +54,7 @@ namespace Backend.Base.Login
                     return login;
                 }
 
-                var org = await _orgService.GetOrg(orgId);
+                var org = await _orgService.GetOrg(orgNr);
                 var err = await Validate(login, password, org);
                 if (err != null)
                 {
@@ -72,7 +72,7 @@ namespace Backend.Base.Login
                 {
                     Username = userid,
                     SessionKey = session.Key,
-                    Org = orgId,
+                    Org = orgNr,
                 };
 
                 var tokenX = _tokenService.CreateToken(tv);
@@ -99,7 +99,7 @@ namespace Backend.Base.Login
 
         //Each login to an org requires an account record
         //Users can have multiple accounts
-        public async Task<(LoginEnt? Login, UserAccountEnt? Account)> GetLogin(string userid, int orgId)
+        public async Task<(LoginEnt? Login, UserAccountEnt? Account)> GetLogin(string userid, int orgNr)
         {
             var login = null as LoginEnt;
             var account = null as UserAccountEnt;
@@ -136,14 +136,14 @@ namespace Backend.Base.Login
                 await Sql.Run(
                     "SELECT * FROM base.userAcc " +
                         "WHERE zzzId = @zzzId " +
-                        "AND orgId = @orgId",
+                        "AND orgNr = @orgNr",
                     r =>
                     {
                         account = new UserAccountEnt
                         {
                             Id = GetId(r),
                             LoginId = GetId(r, "zzzId"),
-                            OrgId = GetOrgId(r),
+                            orgNr = GetOrgNr(r),
                             LangCode = GetStringNull(r, "langCode"),
                             Lastlogin = GetDateTime(r, "lastlogin"),
                             IsActive = IsActive(r),
@@ -152,11 +152,11 @@ namespace Backend.Base.Login
                         };
                     },
                     new SqlParameter("@zzzId", login.Id),
-                    new SqlParameter("@orgId", orgId)
+                    new SqlParameter("@orgNr", orgNr)
                 );
 
                 if (login.IsService() && account == null)
-                    account = UserAccountEnt.GetServiceAccount(orgId);
+                    account = UserAccountEnt.GetServiceAccount(orgNr);
 
             }
             catch { }
@@ -189,8 +189,8 @@ namespace Backend.Base.Login
         {
             await SetAttempts(login.Id, 0);
             account.Userid = login.Userid;
-            account.Permissions = await _permissionService.LoadEffectivePermissionsInt(account.Id, org.Id);
-            _auditService.LogInOut(sourceAppNr, org.Id, account.Id, GC.EntityTypeLogin);
+            account.Permissions = await _permissionService.LoadEffectivePermissionsInt(account.Id, org.Nr);
+            _auditService.LogInOut(sourceAppNr, org.Nr, account.Id, GC.EntityTypeLogin);
         }
 
         private async Task<bool> IncrementAttempts(LoginEnt l)

@@ -1,12 +1,12 @@
-﻿using Backend.App.Machines;
-using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using GC = Backend.GlobalConstants;
+using CGC = Common.GlobalConstants;
 
 namespace Backend.Base.Role
 {
     [Authorize]
-    [PermissionAtt("role")]
+    [PermissionAtt(CGC.PerRole)]
     [ApiController]
     [Route("api/[controller]")]
     public class RoleController : BaseController
@@ -38,7 +38,7 @@ namespace Backend.Base.Role
                 list.Add(new UserRoleDto
                 {
                     RoleId = m.RoleId,
-                    OrgId = m.OrgId.HasValue? m.OrgId.Value : GC.BaseOrgId,
+                    orgNr = m.orgNr.HasValue? m.orgNr.Value : GC.BaseorgNr,
                     Code = m.Code,
                     Description = m.Description,
                     Updated = m.Updated,

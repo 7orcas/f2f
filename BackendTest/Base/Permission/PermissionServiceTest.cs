@@ -24,7 +24,7 @@ namespace BackendTest.Base.Permission
         [TestMethod]
         public async Task LoadPermissions()
         {
-            var list = await service.LoadEffectivePermissionsInt(GCT.UserId, GCT.OrgId);
+            var list = await service.LoadEffectivePermissionsInt(GCT.UserId, GCT.orgNr);
             Assert.AreEqual(MaxRoles, list.Count);
             
             bool v = true;

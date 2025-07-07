@@ -2,17 +2,17 @@
 
 CREATE TABLE app.machineGroup (
     id                     BIGINT             PRIMARY KEY IDENTITY (10000, 1) NOT NULL,
-	orgId                  INT             NOT NULL,
+	orgNr                  INT             NOT NULL,
 	code                   NVARCHAR (100)  NOT NULL,
 	descr                  NVARCHAR (MAX)  NULL,
 	encoded                NVARCHAR (MAX)  NULL,
 	updated                DATETIME        NOT NULL DEFAULT GETDATE(),
 	isActive    BIT             NOT NULL DEFAULT 1
-	FOREIGN KEY (orgId)    REFERENCES      base.org(id)
+	FOREIGN KEY (orgNr)    REFERENCES      base.org(nr)
 );
 CREATE TABLE app.machine (
     id                     BIGINT             PRIMARY KEY IDENTITY (10000, 1) NOT NULL,
-	orgId                  INT             NOT NULL,
+	orgNr                  INT             NOT NULL,
 	classification         INT             NULL,
 	machineGroupId         BIGINT             NULL,
 	stationPairs           INT             NOT NULL,
@@ -21,7 +21,7 @@ CREATE TABLE app.machine (
 	encoded                NVARCHAR (MAX)  NULL,
 	updated                DATETIME        NOT NULL DEFAULT GETDATE(),
 	isActive    BIT             NOT NULL DEFAULT 1
-	FOREIGN KEY (orgId)    REFERENCES      base.org(id),
+	FOREIGN KEY (orgNr)    REFERENCES      base.org(nr),
 	FOREIGN KEY (machineGroupId) REFERENCES app.machineGroup(id)
 );
 

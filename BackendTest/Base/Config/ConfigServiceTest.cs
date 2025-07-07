@@ -31,14 +31,14 @@ namespace BackendTest.Base.Config
         {
             org = await orgService.GetOrg(GCT.OrgNr);
             await orgConfigInitialiseService.InitialiseOrgConfigs();
-            orgConfig = memoryCache.Get<OrgConfig>(GC.CacheKeyOrgConfigPrefix + GCT.OrgId);
+            orgConfig = memoryCache.Get<OrgConfig>(GC.CacheKeyOrgConfigPrefix + GCT.orgNr);
         }
 
         [TestMethod]
         public async Task ConfigOrgs()
         {
             await Setup();
-            Assert.AreEqual(GCT.OrgId, orgConfig.OrgId);
+            Assert.AreEqual(GCT.orgNr, orgConfig.orgNr);
             Assert.AreEqual(GCT.OrgLangCode, orgConfig.LangCodeDefault);
             foreach (var lang in GCT.Languages)
             {
@@ -54,7 +54,7 @@ namespace BackendTest.Base.Config
         //    user = await GetUserEnt();
         //    userConfig = configService.CreateUserConfig(user, org, GCT.UserLangCode);
 
-        //    Assert.AreEqual(GCT.OrgId, userConfig.OrgId);
+        //    Assert.AreEqual(GCT.orgNr, userConfig.orgNr);
         //    Assert.AreEqual(GCT.UserLangCode, userConfig.LangCodeCurrent);
         //    foreach (var lang in GCT.Languages)
         //    {

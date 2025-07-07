@@ -75,8 +75,8 @@ namespace Backend.Base.Token
 
                 // Extract claims
                 tv.SessionKey = principal.FindFirst("Key")?.Value.ToString();
-                int.TryParse(principal.FindFirst("Org")?.Value, out int orgId);
-                tv.Org = orgId;
+                int.TryParse(principal.FindFirst("Org")?.Value, out int orgNr);
+                tv.Org = orgNr;
                 _log.Debug("Decode token, SessionKey=" + tv.SessionKey);
                 return tv;
             }

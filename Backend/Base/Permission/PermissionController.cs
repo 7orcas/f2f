@@ -1,5 +1,4 @@
-﻿using Backend.App.Machines;
-using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using GC = Backend.GlobalConstants;
 using CGC = Common.GlobalConstants;
@@ -7,7 +6,7 @@ using CGC = Common.GlobalConstants;
 namespace Backend.Base.Permission
 {
     [Authorize]
-    [PermissionAtt(CGC.PermPerm)]
+    [PermissionAtt(CGC.PerPerm)]
     [ApiController]
     [Route("api/[controller]")]
     public class PermissionController : BaseController
@@ -35,15 +34,21 @@ namespace Backend.Base.Permission
         {
             var session = HttpContext.Items["session"] as SessionEnt;
             var Permissions = await _PermissionService.GetPermissions(session);
-            
+            var PermDic = _PermissionInitialiseService.GetPermissions();
+
             var list = new List<RolePermissionDto>();
             foreach (var m in Permissions)
             {
+                var lk = "?";
+                if (PermDic.ContainsKey(m.PermissionNr))
+                    lk = (PermDic[m.PermissionNr]).LangKey;
+
                 list.Add(new RolePermissionDto
                 {
-                    OrgId = m.OrgId,
+                    OrgNr = m.OrgNr,
                     Role = m.Role,
-                    Permission = m.Permission,
+                    PermissionNr = m.PermissionNr,
+                    LangKey = lk,
                     Crud = m.Crud
                 });
             }
@@ -63,23 +68,24 @@ namespace Backend.Base.Permission
         {
             var session = HttpContext.Items["session"] as SessionEnt;
             var Permissions = await _PermissionService.LoadEffectivePermissions(session);
-            var PermList = _PermissionInitialiseService.GetPermissions();
+            var PermDic = _PermissionInitialiseService.GetPermissions();
 
             var list = new List<PermissionDto>();
 
             foreach (var m in Permissions)
             {
-                var per = PermList.FirstOrDefault(p => p.Permission == m.Permission);
-                if (per == null) continue;
+                if (!PermDic.ContainsKey(m.Nr)) continue;
+                var per = PermDic[m.Nr];
 
                 list.Add(new PermissionDto
                 {
-                    Permission = per.Permission,
+                    PermissionNr = per.Nr,
+                    LangKey = per.LangKey,
                     Crud = m.Crud
                 });
             }
 
-            list = list.OrderBy(r => r.Permission).ToList();
+            list = list.OrderBy(r => r.PermissionNr).ToList();
 
             var r = new _ResponseDto
             {

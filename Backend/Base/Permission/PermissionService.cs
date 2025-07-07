@@ -1,23 +1,17 @@
-﻿using Azure.Core;
-using GC = Backend.GlobalConstants;
-using Backend.Base.Permission.Ent;
-using Backend.Base.Entity;
-using System.Runtime.CompilerServices;
-using Microsoft.Data.SqlClient;
-using System.Security.Cryptography;
+﻿using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Caching.Memory;
-using Microsoft.AspNetCore.DataProtection.KeyManagement;
+using GC = Backend.GlobalConstants;
 
 namespace Backend.Base.Permission
 {
     /// <summary>
     /// Manage loading and processing permissions for logged user
     /// Tables and relationships:
-    ///  - base.role: roles, contains BaseOrgId general roles and OrgId specific roles
-    ///  - hardcoded permissions in controllers (not OrgId related)
+    ///  - base.role: roles, contains BaseorgNr general roles and orgNr specific roles
+    ///  - hardcoded permissions in controllers (not orgNr related)
     ///  - base.rolePermission: relation between role and permission with allowed crud value
-    ///  - base.zzz: user login with allowed OrgIds
-    ///  - base.zzzRole: relation bewteen zzz (user) and role (BaseOrgId and OrgId user is logging into)
+    ///  - base.zzz: user login with allowed orgNrs
+    ///  - base.zzzRole: relation bewteen zzz (user) and role (BaseorgNr and orgNr user is logging into)
     /// </summary>
     /// <author>John Stewart</author>
     /// <created>March 3, 2025</created>
@@ -34,12 +28,13 @@ namespace Backend.Base.Permission
         }
 
 
-        public PermissionEnt GetPermissionEnt (string perm)
+        public PermissionEnt GetPermissionEnt (int permNr)
         {
-            if (_memoryCache.TryGetValue(GC.CacheKeyPermList, out var cachedValue))
+            if (_memoryCache.TryGetValue(GC.CacheKeyPermDic, out var cachedValue))
             {
-                var list = cachedValue as List<PermissionEnt>;
-                return list.Find(p => p.Permission.Equals(perm));
+                var dic = cachedValue as Dictionary<int, PermissionEnt>;
+                if (dic != null && dic.ContainsKey(permNr)) 
+                    return dic[permNr];
             }
             return null;
         }
@@ -52,7 +47,7 @@ namespace Backend.Base.Permission
         /// <returns></returns>
         public async Task<List<PermissionCrudEnt>> LoadEffectivePermissions(SessionEnt session)
         {
-            return await LoadEffectivePermissionsInt(session.UserAccount.Id, session.Org.Id);
+            return await LoadEffectivePermissionsInt(session.UserAccount.Id, session.Org.Nr);
         }
 
 
@@ -61,35 +56,35 @@ namespace Backend.Base.Permission
         /// The specific org's permissions are used if exist, then org 0 permission's are the default
         /// </summary>
         /// <param name="userAccountId"></param>
-        /// <param name="orgId"></param>
+        /// <param name="orgNr"></param>
         /// <returns></returns>
-        public async Task<List<PermissionCrudEnt>> LoadEffectivePermissionsInt(long userAccountId, long orgId)
+        public async Task<List<PermissionCrudEnt>> LoadEffectivePermissionsInt(long userAccountId, long orgNr)
         {
-            var perms = new Dictionary<string, PermissionCrudEnt>(); //permision / crud
+            var perms = new Dictionary<int, PermissionCrudEnt>(); //permission number / crud
             try
             {
-                var sql = "SELECT rp.permission, rp.crud " +
+                var sql = "SELECT rp.permissionNr, rp.crud " +
                     "FROM base.rolePermission rp " +
                         "INNER JOIN base.userAccRole ur ON ur.roleId = rp.roleId " +
                         "INNER JOIN base.role r ON r.Id = rp.roleId " +
                     "WHERE ur.userAccId = @userAccId ";
 
-                await Sql.Run(sql + "AND r.orgId = @orgId",
+                await Sql.Run(sql + "AND r.orgNr = @orgNr",
                     r =>
                     {
                         AddPermission(
-                            GetString(r, "permission"),
+                            GetInt(r, "permissionNr"),
                             GetString(r, "crud"),
                             perms);
                     },
                     new SqlParameter("@userAccId", userAccountId),
-                    new SqlParameter("@orgId", orgId)
+                    new SqlParameter("@orgNr", orgNr)
                 );
 
-                await Sql.Run(sql + "AND r.orgId = " + GC.BaseOrgId,
+                await Sql.Run(sql + "AND r.orgNr = " + GC.BaseorgNr,
                     r => {
                         AddPermission(
-                            GetString(r, "permission"),
+                            GetInt(r, "permissionNr"),
                             GetString(r, "crud"),
                             perms);
                     },
@@ -105,17 +100,17 @@ namespace Backend.Base.Permission
             }
         }
 
-        private void AddPermission (string permission, string crud, Dictionary<string, PermissionCrudEnt> perms)
+        private void AddPermission (int nr, string crud, Dictionary<int, PermissionCrudEnt> perms)
         {
-            if (!perms.ContainsKey(permission))
-                perms[permission] = new PermissionCrudEnt
+            if (!perms.ContainsKey(nr))
+                perms[nr] = new PermissionCrudEnt
                 {
-                    Permission = permission,
+                    Nr = nr,
                     Crud = crud
                 };
             else
             {
-                perms[permission].AddCrud(crud);
+                perms[nr].AddCrud(crud);
             }
         }
 
@@ -125,47 +120,49 @@ namespace Backend.Base.Permission
         /// The specifig org's permissions are used if exist, then org 0 permission's are the default
         /// </summary>
         /// <param name="userId"></param>
-        /// <param name="orgId"></param>
+        /// <param name="orgNr"></param>
         /// <returns></returns>
         public async Task<List<RolePermissionCrudEnt>> GetPermissions(SessionEnt session)
         {
             var list = new List<RolePermissionCrudEnt>();
             try
             {
-                var sql = "SELECT r.code as role, rp.permission, rp.crud, r.orgId " +
+                var sql = "SELECT r.code as role, rp.permissionNr, rp.crud, r.orgNr " +
                     "FROM base.rolePermission rp " +
                         "INNER JOIN base.userAccRole uar ON uar.roleId = rp.roleId " +
                         "INNER JOIN base.role r ON r.Id = rp.roleId " +
                     "WHERE uar.userAccId = @userAccId ";
-                var by = " ORDER BY r.code, rp.permission ";
+                var by = " ORDER BY r.code, rp.permissionNr ";
 
-                await Sql.Run(sql + "AND r.orgId = @orgId" + by,
+                await Sql.Run(sql + "AND r.orgNr = @orgNr" + by,
                     r => {
                         list.Add(new RolePermissionCrudEnt() { 
                             Role = GetStringNull(r, "role"),
-                            Permission = GetString(r, "permission"),
+                            PermissionNr = GetInt(r, "permissionNr"),
                             Crud = GetString(r, "crud"),
-                            OrgId = GetOrgId(r)
+                            OrgNr = GetOrgNr(r)
                         });
                     },
                     new SqlParameter("@userAccId", session.UserAccount.Id),
-                    new SqlParameter("@orgId", session.Org.Id)
+                    new SqlParameter("@orgNr", session.Org.Nr)
                 );
 
-                await Sql.Run(sql + "AND r.orgId = " + GC.BaseOrgId + by,
+                await Sql.Run(sql + "AND r.orgNr = " + GC.BaseorgNr + by,
                     r => {
                         list.Add(new RolePermissionCrudEnt()
                         {
                             Role = GetStringNull(r, "role"),
-                            Permission = GetString(r, "permission"),
+                            PermissionNr = GetInt(r, "permissionNr"),
                             Crud = GetString(r, "crud"),
-                            OrgId = GetOrgId(r)
+                            OrgNr = GetOrgNr(r)
                         });
                     },
                     new SqlParameter("@userAccId", session.UserAccount.Id)
                 );
 
-                return list.OrderBy(r => r.Role).ThenBy(r => r.Permission).ToList();
+
+
+                return list.OrderBy(r => r.Role).ThenBy(r => r.PermissionNr).ToList();
             }
             catch
             {
@@ -175,18 +172,18 @@ namespace Backend.Base.Permission
         }
 
 
-        public bool IsAuthorizedToAccessEndPoint(SessionEnt session, PermissionAtt perm, CrudAtt crud)
+        public bool IsAuthorizedToAccessEndPoint(SessionEnt session, PermissionAtt permAtt, CrudAtt crud)
         {
-            if (perm == null) return true;
+            if (permAtt == null) return true;
             if (session == null) return false;
             if (session.UserAccount.IsService()) return true;
 
             if (crud != null && crud.Action == GC.CrudIgnore) return true;
 
-            var ent = GetPermissionEnt(perm.Name);
-            if (ent == null) return false;
+            var permEnt = GetPermissionEnt(permAtt.Nr);
+            if (permEnt == null) return false;
 
-            var userCrud = session.GetUserPermissionCrud(ent.Permission);
+            var userCrud = session.GetUserPermissionCrud(permEnt.Nr);
             if (userCrud == null) return false; //permission not found in user profile
             if (crud == null) return true;
 

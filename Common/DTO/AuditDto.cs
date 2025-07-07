@@ -9,7 +9,7 @@ namespace Common.DTO
     public class AuditDto
     {
         public long Id { get; set; }
-        public long OrgId { get; set; }
+        public long orgNr { get; set; }
         public int Source { get; set; }
         public string EntityType { get; set; }
         public long? EntityId { get; set; }

@@ -5,7 +5,7 @@ namespace Backend.Base.Audit.Ent
     public class AuditEnt
     {
         public long Id {  get; set; }
-        public long OrgId { get; set; }
+        public long orgNr { get; set; }
         public int Source {  get; set; }
         public int EntityTypeId {  get; set; }
         public long? EntityId { get; set; }

@@ -4,7 +4,7 @@
     {
         public const string ConnString            = "Server=np:localhost;Database=blue;TrustServerCertificate=True;Authentication=Active Directory Integrated;";
 
-        public const int OrgId                    = -99;
+        public const int orgNr                    = -99;
         public const int OrgNr                    = 204;
         public const string OrgLangCode           = "en";
         public const int UserId                   = -2;

@@ -53,9 +53,9 @@ namespace BackendTest
     public class AuditTest : AuditServiceI
     {
         public Task<List<AuditList>> GetEvents(SessionEnt session) { throw new NotImplementedException(); }
-        public void LogInOut(int sourceApp, int orgId, int loginId, int entity) { }
+        public void LogInOut(int sourceApp, int orgNr, int loginId, int entity) { }
 
-        public void LogInOut(int sourceApp, long orgId, long loginId, int entityTypeId)
+        public void LogInOut(int sourceApp, long orgNr, long loginId, int entityTypeId)
         {
             throw new NotImplementedException();
         }

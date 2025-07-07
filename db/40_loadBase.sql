@@ -1,10 +1,10 @@
 BEGIN TRANSACTION;
 
 SET IDENTITY_INSERT base.org ON;
-INSERT INTO base.org (id, code, descr) VALUES (0, 'Org Base', 'Base Organisation');
-INSERT INTO base.org (id, code, descr,langCode,langLabelVariant,encoded) VALUES (1, 'Org 1', 'Org 1 Description','en',1,'{Languages:[{LangCode:"en",IsEditable:true},{LangCode:"de",IsEditable:true},{LangCode:"c1",IsEditable:false},{LangCode:"c2",IsEditable:false}]}');
-INSERT INTO base.org (id, code, descr,langCode,langLabelVariant,encoded) VALUES (2, 'Org 2', 'Org 2 Description','en',2,'{Languages:[{LangCode:"de",IsEditable:true}]}');
-INSERT INTO base.org (id, code, descr,langCode) VALUES (3, 'Org 3', 'Org 3 Description','de');
+INSERT INTO base.org (nr, code, descr) VALUES (0, 'Org Base', 'Base Organisation');
+INSERT INTO base.org (nr, code, descr,langCode,langLabelVariant,encoded) VALUES (1, 'Org 1', 'Org 1 Description','en',1,'{Languages:[{LangCode:"en",IsEditable:true},{LangCode:"de",IsEditable:true},{LangCode:"c1",IsEditable:false},{LangCode:"c2",IsEditable:false}]}');
+INSERT INTO base.org (nr, code, descr,langCode,langLabelVariant,encoded) VALUES (2, 'Org 2', 'Org 2 Description','en',2,'{Languages:[{LangCode:"de",IsEditable:true}]}');
+INSERT INTO base.org (nr, code, descr,langCode) VALUES (3, 'Org 3', 'Org 3 Description','de');
 SET IDENTITY_INSERT base.org OFF;
 
 
@@ -19,9 +19,9 @@ INSERT INTO base.zzz (id, xxx, yyy) VALUES (2, 'user', 'xx123');
 SET IDENTITY_INSERT base.zzz OFF;
 
 SET IDENTITY_INSERT base.userAcc ON;
-INSERT INTO base.userAcc (id, zzzId, orgId,langCode) VALUES (1, 1, 1,'de');
-INSERT INTO base.userAcc (id, zzzId, orgId,langCode) VALUES (2, 2, 1,'en');
-INSERT INTO base.userAcc (id, zzzId, orgId,langCode) VALUES (3, 2, 2,'de');
+INSERT INTO base.userAcc (id, zzzId, orgNr,langCode) VALUES (1, 1, 1,'de');
+INSERT INTO base.userAcc (id, zzzId, orgNr,langCode) VALUES (2, 2, 1,'en');
+INSERT INTO base.userAcc (id, zzzId, orgNr,langCode) VALUES (3, 2, 2,'de');
 SET IDENTITY_INSERT base.userAcc OFF;
 
 /*
@@ -40,28 +40,28 @@ SET IDENTITY_INSERT base.permission OFF;
 */
 
 SET IDENTITY_INSERT base.role ON;
-INSERT INTO base.role (id, orgId, code, descr) VALUES (1, 0, 'Admin', 'Full Admin Access');
-INSERT INTO base.role (id, orgId, code) VALUES (2, 0, 'Org RO');
-INSERT INTO base.role (id, orgId, code) VALUES (3, 0, 'LangEdit');
-INSERT INTO base.role (id, orgId, code) VALUES (4, 0, 'Machines0');
-INSERT INTO base.role (id, orgId, code) VALUES (5, 1, 'Machines1');
-INSERT INTO base.role (id, orgId, code) VALUES (6, 2, 'Machines2');
+INSERT INTO base.role (id, orgNr, code, descr) VALUES (1, 0, 'Admin', 'Full Admin Access');
+INSERT INTO base.role (id, orgNr, code) VALUES (2, 0, 'Org RO');
+INSERT INTO base.role (id, orgNr, code) VALUES (3, 0, 'LangEdit');
+INSERT INTO base.role (id, orgNr, code) VALUES (4, 0, 'Machines0');
+INSERT INTO base.role (id, orgNr, code) VALUES (5, 1, 'Machines1');
+INSERT INTO base.role (id, orgNr, code) VALUES (6, 2, 'Machines2');
 SET IDENTITY_INSERT base.role OFF;
 
 SET IDENTITY_INSERT base.rolePermission ON;
 
-INSERT INTO base.rolePermission (id, roleId, permission, crud) VALUES (1, 1, 'label', 'crud');
-INSERT INTO base.rolePermission (id, roleId, permission, crud) VALUES (2, 1, 'profs', 'crud');
-INSERT INTO base.rolePermission (id, roleId, permission, crud) VALUES (3, 1, 'org', 'r');
-INSERT INTO base.rolePermission (id, roleId, permission, crud) VALUES (4, 1, 'perm', 'cru');
-INSERT INTO base.rolePermission (id, roleId, permission, crud) VALUES (5, 1, 'role', 'crud');
-INSERT INTO base.rolePermission (id, roleId, permission, crud) VALUES (6, 1, 'user', 'crud');
-INSERT INTO base.rolePermission (id, roleId, permission, crud) VALUES (7, 1, 'ref', 'crud');
-INSERT INTO base.rolePermission (id, roleId, permission, crud) VALUES (8, 1, 'machine', 'cd');
-INSERT INTO base.rolePermission (id, roleId, permission, crud) VALUES (9, 4, 'machine', 'd');
-INSERT INTO base.rolePermission (id, roleId, permission, crud) VALUES (10, 5, 'machine', 'ur');
-INSERT INTO base.rolePermission (id, roleId, permission, crud) VALUES (11, 6, 'machine', 'rd');
---INSERT INTO base.rolePermission (id, roleId, permissionId, crud) VALUES (13, 1, 100, 'r');
+INSERT INTO base.rolePermission (id, roleId, permissionNr, crud) VALUES (1, 1, 3, 'crud');
+--INSERT INTO base.rolePermission (id, roleId, permissionNr, crud) VALUES (2, 1, 102, 'crud');
+INSERT INTO base.rolePermission (id, roleId, permissionNr, crud) VALUES (3, 1, 1, 'r');
+INSERT INTO base.rolePermission (id, roleId, permissionNr, crud) VALUES (4, 1, 2, 'cru');
+INSERT INTO base.rolePermission (id, roleId, permissionNr, crud) VALUES (5, 1, 5, 'crud');
+INSERT INTO base.rolePermission (id, roleId, permissionNr, crud) VALUES (6, 1, 6, 'crud');
+--INSERT INTO base.rolePermission (id, roleId, permissionNr, crud) VALUES (7, 1, 'ref', 'crud');
+INSERT INTO base.rolePermission (id, roleId, permissionNr, crud) VALUES (8, 1, 101, 'cd');
+INSERT INTO base.rolePermission (id, roleId, permissionNr, crud) VALUES (9, 4, 101, 'd');
+INSERT INTO base.rolePermission (id, roleId, permissionNr, crud) VALUES (10, 5, 101, 'ur');
+INSERT INTO base.rolePermission (id, roleId, permissionNr, crud) VALUES (11, 6, 101, 'rd');
+--INSERT INTO base.rolePermission (id, roleId, permissionNrId, crud) VALUES (13, 1, 100, 'r');
 
 SET IDENTITY_INSERT base.rolePermission OFF;
 

@@ -123,7 +123,7 @@ namespace Backend.Base
 
                 var p = methodInfo.GetCustomAttribute<PermissionAtt>();
                 if (p != null)
-                    logstring += ", perm: " + p.Name;
+                    logstring += ", perm: " + p.Nr;
 
                 var c = methodInfo.GetCustomAttribute<CrudAtt>();
                 if (c != null)

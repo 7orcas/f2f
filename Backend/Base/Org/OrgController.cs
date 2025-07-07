@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System.Text;
 using GC = Backend.GlobalConstants;
+using CGC = Common.GlobalConstants;
 
 /// <summary>
 /// Organisation controller
@@ -13,7 +13,7 @@ using GC = Backend.GlobalConstants;
 namespace Backend.Base.Org
 {
     [Authorize]
-    [PermissionAtt("org")]
+    [PermissionAtt(CGC.PerOrg)]
     [ApiController]
     [Route("api/[controller]")]
     public class OrgController : BaseController
@@ -44,7 +44,7 @@ namespace Backend.Base.Org
             {
                 list.Add(new OrgDto
                     {
-                        Id = org.Id,
+                        Id = org.Nr,
                         Code = org.Code,
                         Description = org.Description,
                         Updated = org.Updated,
@@ -64,14 +64,14 @@ namespace Backend.Base.Org
         /// <summary>
         /// Get Org
         /// </summary>
-        /// <param name="id"></param>
+        /// <param name="nr"></param>
         /// <returns></returns>
         [CrudAtt(GC.CrudIgnore)] //ToDo
         [AuditListAtt(GC.EntityTypeOrg)]
-        [HttpGet("get/{id}")]
-        public async Task<IActionResult> GetOrg(int id)
+        [HttpGet("get/{nr}")]
+        public async Task<IActionResult> GetOrg(int nr)
         {
-            var org = await _orgService.GetOrg(id);
+            var org = await _orgService.GetOrg(nr);
             var enc = org.Encoding;
 
             var langDtos = new List<OrgLangDto>();
@@ -90,7 +90,7 @@ namespace Backend.Base.Org
                 SuccessMessage = "Config Ok",
                 Result = new OrgDto
                 {
-                    Id = org.Id,
+                    Id = org.Nr,
                     Code = org.Code,
                     Description = org.Description,
                     Updated = org.Updated,
@@ -144,7 +144,7 @@ namespace Backend.Base.Org
 
             var org = new OrgEnt
             {
-                Id = dto.Id,
+                Nr = dto.Id,
                 Code = dto.Code,
                 Description = dto.Description,
                 Updated = dto.Updated,

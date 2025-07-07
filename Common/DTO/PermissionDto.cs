@@ -2,7 +2,8 @@
 {
     public class PermissionDto
     {
-        public string Permission { get; set; }
+        public int PermissionNr { get; set; }
+        public string LangKey { get; set; }
         public string Crud { get; set; }
     }
 }

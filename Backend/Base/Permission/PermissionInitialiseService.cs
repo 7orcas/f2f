@@ -29,28 +29,34 @@ namespace Backend.Base.Permission
         /// <returns></returns>
         public async void InitialisePermissions()
         {
-            var list = new List<PermissionEnt>();
+            var dic = new Dictionary<int, PermissionEnt>(); //permission nr, entity
 
-            foreach (var p in CGC.Perms)
-                list.Add(new PermissionEnt 
+            for (int i=0; i<CGC.Permissions.Length; i += 2)
+            {
+                var nr = (int)CGC.Permissions[i];
+                var langKey = (string)CGC.Permissions[i + 1];
+
+                dic.Add(nr, new PermissionEnt 
                 { 
-                    Permission = p
+                    Nr = nr,
+                    LangKey = langKey,
                 });
+            }
 
-            _memoryCache.Set(GC.CacheKeyPermList, list);
+            _memoryCache.Set(GC.CacheKeyPermDic, dic);
         }
 
         /// <summary>
         /// Get all permissions 
         /// </summary>
         /// <returns></returns>
-        public List<PermissionEnt> GetPermissions()
+        public Dictionary<int, PermissionEnt> GetPermissions()
         {
-            if (_memoryCache.TryGetValue(GC.CacheKeyPermList, out var cachedValue))
+            if (_memoryCache.TryGetValue(GC.CacheKeyPermDic, out var cachedValue))
             {
-                return cachedValue as List<PermissionEnt>;
+                return cachedValue as Dictionary<int, PermissionEnt>;
             }
-            return new List<PermissionEnt>();
+            return new Dictionary<int, PermissionEnt>();
         }
 
 

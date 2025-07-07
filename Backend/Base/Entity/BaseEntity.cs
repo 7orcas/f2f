@@ -11,7 +11,7 @@ namespace Backend.Base.Entity
     public abstract class BaseEntity : BaseEncode
     {
         public long Id { get; set; }
-        public long OrgId { get; set; }
+        public long orgNr { get; set; }
         public string Code { get; set; }
         public string? Description { get; set; }
         public DateTime Updated { get; set; }

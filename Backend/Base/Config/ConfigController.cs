@@ -2,7 +2,9 @@
 using Backend.Base.Label.Ent;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System;
 using GC = Backend.GlobalConstants;
+using CGC = Common.GlobalConstants;
 
 /// <summary>
 /// Configuration is a combination of the org config and the user settings.
@@ -15,7 +17,7 @@ using GC = Backend.GlobalConstants;
 namespace Backend.Base.Config
 {
     [Authorize]
-    [PermissionAtt("config")]
+    [PermissionAtt(CGC.PerConfig)]
     [ApiController]
     [Route("api/[controller]")]
     public class ConfigController : BaseController

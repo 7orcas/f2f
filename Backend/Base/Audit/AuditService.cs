@@ -35,7 +35,7 @@ namespace Backend.Base.Audit
                         list.Add(new AuditList()
                         {
                             Id = SqlUtils.GetId(r),
-                            OrgId = SqlUtils.GetOrgId(r),
+                            orgNr = SqlUtils.GetOrgNr(r),
                             Source = SqlUtils.GetInt(r, "source"),
                             EntityTypeId = SqlUtils.GetInt(r, "entityTypeId"),
                             EntityId = SqlUtils.GetIntNull(r, "entityId"),
@@ -86,13 +86,13 @@ namespace Backend.Base.Audit
             });
         }
 
-        public void LogInOut(int sourceApp, long orgId, long userAccId, int entityTypeId)
+        public void LogInOut(int sourceApp, long orgNr, long userAccId, int entityTypeId)
         {
             Task.Run(async () =>
             {
                 try
                 {
-                    LogAuditRecord(sourceApp, orgId, userAccId, entityTypeId, null, null, null);
+                    LogAuditRecord(sourceApp, orgNr, userAccId, entityTypeId, null, null, null);
                 }
                 catch (Exception ex)
                 {
@@ -108,7 +108,7 @@ namespace Backend.Base.Audit
             string details)
         {
             LogAuditRecord(session.SourceApp,
-                session.Org.Id,
+                session.Org.Nr,
                 session.UserAccount.Id,
                 entityTypeId,
                 entityId,
@@ -118,7 +118,7 @@ namespace Backend.Base.Audit
 
         private async void LogAuditRecord(
             int sourceApp,
-            long orgId,
+            long orgNr,
             long userAccId,
             int entityTypeId,
             long? entityId, 
@@ -127,9 +127,9 @@ namespace Backend.Base.Audit
         {
             await Sql.Execute(
                     "INSERT INTO base.Audit " +
-                        "(orgId, source, entityTypeId, entityId, userAccId, crud, details) " +
+                        "(orgNr, source, entityTypeId, entityId, userAccId, crud, details) " +
                     "VALUES (" + 
-                        orgId + "," +
+                        orgNr + "," +
                         sourceApp + "," +
                         entityTypeId + "," +
                         (entityId == null? "null" : entityId) + "," +

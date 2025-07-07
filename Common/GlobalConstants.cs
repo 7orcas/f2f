@@ -19,26 +19,28 @@ namespace Common
 
 
         //Permissions
-        public const string PermOrg     = "org";
-        public const string PermPerm    = "perm";
-        public const string PermLabel   = "label";
-        public const string PermLang    = "lang";
-        public const string PermRole    = "role";
-        public const string PermUser    = "user";
-        public const string PermAudit   = "audit";
+        public const int PerOrg     = 1;
+        public const int PerPerm    = 2;
+        public const int PerLabel   = 3;
+        public const int PerLang    = 4;
+        public const int PerRole    = 5;
+        public const int PerUser    = 6;
+        public const int PerAudit   = 7;
+        public const int PerConfig  = 8;
 
-        public const string PermMach    = "machine";
+        public const int PerMach    = 101;
 
-        public static readonly string[] Perms = {
-            PermOrg,
-            PermPerm,
-            PermLabel,
-            PermLang,
-            PermRole,
-            PermUser,
-            PermAudit,
+        public static readonly object[] Permissions = {
+            PerOrg,      "Org",
+            PerPerm,     "Perm", 
+            PerLabel,    "Label",
+            PerLang,     "Lang",
+            PerRole,     "Role",
+            PerUser,     "User",
+            PerAudit,    "Audit",
+            PerConfig,   "Conf",
 
-            PermMach
+            PerMach,     "Machine"
         };
 
     }

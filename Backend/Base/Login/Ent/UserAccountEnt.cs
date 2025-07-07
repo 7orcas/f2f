@@ -14,7 +14,7 @@ namespace Backend.Base.Login.Ent
     {
         public long Id { get; set; }
         public long LoginId { get; set; }
-        public int OrgId { get; set; }
+        public int orgNr { get; set; }
         public string? LangCode { get; set; }
         public int? Classification {  get; set; }
         public DateTime Lastlogin { get; set; }
@@ -44,13 +44,13 @@ namespace Backend.Base.Login.Ent
          * Special service account
          * Account does not have to be in the database
          */
-        public static UserAccountEnt GetServiceAccount(int orgId)
+        public static UserAccountEnt GetServiceAccount(int orgNr)
         {
             return new UserAccountEnt
             {
                 Id = GC.ServiceAccountId,
                 LoginId = GC.ServiceLoginId,
-                OrgId = orgId,
+                orgNr = orgNr,
                 LangCode = GC.LangCodeDefault,
                 Lastlogin = DateTime.Now,
                 IsActive = true,

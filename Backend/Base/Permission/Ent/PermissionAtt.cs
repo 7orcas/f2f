@@ -3,12 +3,12 @@
     [AttributeUsage (AttributeTargets.Method | AttributeTargets.Class, AllowMultiple = false)]
     public class PermissionAtt : Attribute
     {
-        public string Name { get; }
+        public int Nr { get; }
         public string Crud { get; }
 
-        public PermissionAtt(string name)
+        public PermissionAtt(int nr)
         {
-            Name = name;
+            Nr = nr;
         }
     }
 }

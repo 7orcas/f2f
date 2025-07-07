@@ -24,7 +24,7 @@ public abstract class BaseService : SqlUtils
     public T ReadBaseEntity<T>(SqlDataReader r) where T : BaseEntity, new()
     {
         var entity = new T();
-        entity.OrgId = GetOrgId(r);
+        entity.orgNr = GetOrgNr(r);
         entity.Id = GetId(r);
         entity.Code = GetCode(r);
         entity.Description = GetDescription(r);

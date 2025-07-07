@@ -20,6 +20,6 @@ namespace Backend.Base.Role.Ent
 
         [NotMapped] public string? Code { get; set; }
         [NotMapped] public string? Description { get; set; }
-        [NotMapped] public int? OrgId { get; set; }
+        [NotMapped] public int? orgNr { get; set; }
     }
 }
