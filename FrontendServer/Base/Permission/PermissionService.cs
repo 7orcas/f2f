@@ -13,7 +13,7 @@ namespace FrontendServer.Base.Permission
 {
     public class PermissionService : BaseService
     {
-        public List<RolePermissionDto> AllPermissions {  get; private set; }
+        public List<UserRolePermissionDto> AllPermissions {  get; private set; }
         public List<PermissionDto> Permissions { get; private set; }
 
 
@@ -26,7 +26,7 @@ namespace FrontendServer.Base.Permission
             _httpClientFactory = httpClientFactory;
         }
 
-        public async Task Initialise()
+        public async Task Initialise(LoginParameters lps)
         {
             try
             {
@@ -43,7 +43,10 @@ namespace FrontendServer.Base.Permission
                     var responseDto = JsonConvert.DeserializeObject<_ResponseDto>(result);
 
                     if (responseDto.Valid)
-                        AllPermissions = JsonConvert.DeserializeObject<List<RolePermissionDto>>(responseDto.Result.ToString());
+                    {
+                        AllPermissions = JsonConvert.DeserializeObject<List<UserRolePermissionDto>>(responseDto.Result.ToString());
+                        lps.LoadedUrl(GC.URL_perm_list);
+                    }
                 }
             }
             catch
@@ -65,7 +68,10 @@ namespace FrontendServer.Base.Permission
                     var responseDto = JsonConvert.DeserializeObject<_ResponseDto>(result);
 
                     if (responseDto.Valid)
+                    {
                         Permissions = JsonConvert.DeserializeObject<List<PermissionDto>>(responseDto.Result.ToString());
+                        lps.LoadedUrl(GC.URL_perm_eff);
+                    }
                 }
             }
             catch

@@ -1,7 +1,5 @@
-﻿using Backend.Base.Entity;
-using Microsoft.Data.SqlClient;
+﻿using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Caching.Memory;
-using System.Security.Cryptography;
 using GC = Backend.GlobalConstants;
 
 /// <summary>

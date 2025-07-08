@@ -2,7 +2,7 @@
 {
     public class GlobalConstants
     {
-        public const int BaseorgNr   = 0;
+        public const int BaseOrgNr   = 0;
         public const int NewRecordId = -9;
 
         public const int AppClient          = 1; //defined in FrontendLogin as well
@@ -22,6 +22,7 @@
         public const string CacheKeyOrgPrefix       = "OS_";
         public const string CacheKeyOrgConfigPrefix = "CS_";
         public const string CacheKeySessionPrefix   = "SS_";
+        public const string CacheKeyLabelPrefix     = "LK_";
         public const string CacheKeyPermDic         = "PS_dic";
 
         //Entity Type Id

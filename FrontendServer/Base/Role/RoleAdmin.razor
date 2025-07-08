@@ -1,0 +1,161 @@
+﻿@attribute [Route(BasePageRoutes.RoleRoute)]
+@inherits BasePage
+@attribute [Authorize]
+
+@using System.Net
+@using MudBlazor
+@using FrontendServer.Base.Util
+@using System.Text;
+@using sysJ = System.Text.Json
+@using GC = FrontendServer.GlobalConstants;
+@using CGC = Common.GlobalConstants;
+@using FrontendServer.Base._Base;
+
+<ConfirmNavigation List="roles" />
+
+<Header TitleKey="Roles"
+        SubTitleKey="RoleSub"
+        PageCode=@BasePageRoutes.RolePageCode
+        TBSave="SaveAsync"
+        TBSaveLabel="SaveChg" />
+
+@if (_isLoading || _isError || _isSaving)
+{
+    <LoadingWithError IsLoading=@_isLoading
+                      IsSaving=@_isSaving
+                      IsError=@_isError
+                      Message=@_errorMessage>
+        @exception
+    </LoadingWithError>
+}
+
+<MudGrid>
+
+    <!-- Left Side: List -->
+    @if (showList)
+    {
+        <MudItem xs="1">
+            <Label Size="GC.TextSize.Section" Key="Roles"></Label>
+            <MudPaper Elevation="0" Outlined="true">
+                <MudList T="OrgDto">
+                    @for (int i = 0; i < roles.Count; i++)
+                    {
+                        var index = i;
+                        <div class="@GetListRowOddEvenClass(i)">
+                            <MudListItem Value="@roles[i]"
+                                         OnClick="() => OnItemSelected(index)"
+                                         Text="@roles[i].Code" />
+                        </div>
+                    }
+                </MudList>
+            </MudPaper>
+        </MudItem>
+    }
+
+
+    <!-- Right Side: Details -->
+    @if (roleDto != null)
+    {
+        <MudItem xs="8">
+            <Text Size="GC.TextSize.Section">@roleDto.Description</Text>
+            <MudPaper Elevation="0" Outlined="@_debugOutlined">
+                <div style="table-layout: fixed; width: 400px;">
+                    <MudTable Items="@roleDto.RolePermissions">
+                        <HeaderContent>
+                            <MudTh><Label Key="Perm" /></MudTh>
+                            <MudTh><Label Key="Crud" /></MudTh>
+                        </HeaderContent>
+                        <RowTemplate>
+                            <MudTd DataLabel="Column 1">@context.Permission</MudTd>
+                            <MudTd DataLabel="Column 2">@context.Crud</MudTd>
+                        </RowTemplate>
+                        
+                    </MudTable>
+                </div>
+            </MudPaper>
+        </MudItem>
+    }
+</MudGrid>
+
+
+@code {
+    private bool showList = false;
+    private List<RoleDto> roles;
+    private RoleDto? roleDto;
+    private bool tbSave;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            await InitialiseBasePage();
+            _pageCode = BasePageRoutes.OrgPageCode;
+
+            roles = await GetAsync<List<RoleDto>>(GC.URL_role_list);
+
+            if (roles.Count > 0)
+                Load(0, true);
+
+            showList = roles.Count > 1;
+            tbSave = !_isLoading && !_isError;
+            StateHasChanged();
+        }
+    }
+
+    private async void OnItemSelected(int index) => Load(index, false);
+
+    private async void Load(int index, bool force)
+    {
+        var dto = roles[index];
+        if (!dto.IsLoaded || force)
+        {
+            roleDto = await GetAsync<RoleDto>(GC.URL_role + dto.Id);
+            roleDto.HashMe();
+            roleDto.IsLoaded = true;
+            roles[index] = roleDto;
+        }
+        else
+            roleDto = dto;
+        StateHasChanged();
+    }
+
+    private async Task SaveAsync()
+    {
+        // _isSaving = true;
+        // var curIndex = roleDto != null ? list.FindIndex(d => d.Id == roleDto.Id) : -1;
+        // // var client = await SetClient();
+        // for (int i = 0; i < list.Count; i++)
+        // {
+        //     var dto = list[i];
+        //     if (dto.IsLoaded && dto.HasChanged())
+        //     {
+
+        //         // var json = sysJ.JsonSerializer.Serialize(dto);
+        //         // var content = new StringContent(json, Encoding.UTF8, "application/json");
+        //         // var response = await client.PostAsync(GC.URL_org_update, content);
+
+        //         var response = await PostAsync<OrgDto>(GC.URL_org_update, dto);
+
+        //         if (response.StatusCode == HttpStatusCode.OK)
+        //         {
+        //             var o = await GetAsync<OrgDto>(GC.URL_org + dto.Id);
+        //             list[i] = o.HashMe().SetLoaded();
+        //         }
+        //     }
+        // }
+        // _isSaving = false;
+
+        // if (curIndex != -1)
+        //     OnItemSelected(curIndex);
+    }
+
+    //ToDo
+    private async void Export()
+    {
+
+    }
+
+    private string Label(string key) => GetLabel(key);
+    protected override async Task OnInitializedAsync() => _isLoading = true;
+
+}

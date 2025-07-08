@@ -17,17 +17,23 @@ insert into base.langCode (code,descr) select 'c6', 'xxx'
 insert into base.langCode (code,descr) select 'c7', 'xxx'
 insert into base.langCode (code,descr) select 'c8', 'xxx'
 
-DROP TABLE IF EXISTS zzImportLabelsBase;
+DROP TABLE IF EXISTS zzImportLabelsBaseEn;
+DROP TABLE IF EXISTS zzImportLabelsBaseDe;
 DROP TABLE IF EXISTS zzLangLabel;
 
 --Base Labels
-CREATE TABLE zzImportLabelsBase (
+CREATE TABLE zzImportLabelsBaseEn (
+    langKey   NVARCHAR (100)  NOT NULL,
+	label       NVARCHAR (MAX)  NOT NULL,
+	tooltip  NVARCHAR (MAX)  NULL
+);
+CREATE TABLE zzImportLabelsBaseDe (
     langKey   NVARCHAR (100)  NOT NULL,
 	label       NVARCHAR (MAX)  NOT NULL,
 	tooltip  NVARCHAR (MAX)  NULL
 );
 
-BULK INSERT zzImportLabelsBase
+BULK INSERT zzImportLabelsBaseEn
 FROM 'C:\src\f2f\db\Labels\BaseEn.txt'
 WITH (
     FIELDTERMINATOR = ',',
@@ -35,7 +41,20 @@ WITH (
     FIRSTROW = 1
 );
 
-INSERT INTO base.langKey (code) SELECT DISTINCT langKey FROM zzImportLabelsBase;
+BULK INSERT zzImportLabelsBaseDe
+FROM 'C:\src\f2f\db\Labels\BaseDe.txt'
+WITH (
+    FIELDTERMINATOR = ',',
+    ROWTERMINATOR = '\n',
+    FIRSTROW = 1
+);
+
+UPDATE zzImportLabelsBaseEn SET label = REPLACE (label, '||', ',') WHERE label LIKE '%||%';
+UPDATE zzImportLabelsBaseEn SET tooltip = REPLACE (tooltip, '||', ',') WHERE tooltip LIKE '%||%';
+UPDATE zzImportLabelsBaseDe SET label = REPLACE (label, '||', ',') WHERE label LIKE '%||%';
+UPDATE zzImportLabelsBaseDe SET tooltip = REPLACE (tooltip, '||', ',') WHERE tooltip LIKE '%||%';
+
+INSERT INTO base.langKey (code) SELECT DISTINCT langKey FROM zzImportLabelsBaseEn;
 
 SELECT 0 AS langKeyId
 		,'en' AS langCode
@@ -43,7 +62,16 @@ SELECT 0 AS langKeyId
 		,label AS code
 		,tooltip
 	INTO zzLangLabel
-	FROM zzImportLabelsBase;
+	FROM zzImportLabelsBaseEn;
+
+INSERT INTO zzLangLabel (langKeyId,langCode,langKey,code,tooltip)
+	SELECT 0 AS langKeyId
+		,'de' AS langCode
+		,langKey
+		,label AS code
+		,tooltip
+	FROM zzImportLabelsBaseDe;
+
 	
 UPDATE zzLangLabel SET langKeyId = 
 	(SELECT l.id FROM base.langKey l
@@ -81,7 +109,8 @@ INSERT INTO base.langLabel (langKeyId,langCode,code,tooltip)
 
 UPDATE base.langLabel SET Tooltip = null WHERE Tooltip = 'NULL';
 
-DROP TABLE IF EXISTS zzImportLabelsBase;
+DROP TABLE IF EXISTS zzImportLabelsBaseEn;
+DROP TABLE IF EXISTS zzImportLabelsBaseDe;
 DROP TABLE IF EXISTS zzLangLabel;
 
 SELECT 'Keys', Count(*) FROM base.langKey;

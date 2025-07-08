@@ -82,7 +82,7 @@ else
                                         <MudTd DataLabel="Column 5">@context.Crud</MudTd>
                                     </RowTemplate>
                                 </MudTable>
-                            </div>
+                             </div>
                         </ChildContent>
                     </MudExpansionPanel>
                 </MudExpansionPanels>
@@ -95,7 +95,7 @@ else
 @code {
     private bool _expandFirstPanel = true;
     private List<PermissionDto>? effective;
-    private List<RolePermissionDto>? permissions;
+    private List<UserRolePermissionDto>? permissions;
 
 
     protected override async Task OnAfterRenderAsync(bool firstRender)

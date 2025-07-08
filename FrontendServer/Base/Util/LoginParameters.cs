@@ -16,6 +16,7 @@ namespace FrontendServer.Base.Util
         public string? token { get; set; }
         public string? org { get; set; }
         public string? lang { get; set; }
+        public int? langVariant { get; set; }
         public string? userId { get; set; }
         public string? sessionId { get; set; }
         public MarkupString loaded { get; set; }
@@ -25,6 +26,7 @@ namespace FrontendServer.Base.Util
             if (config == null) { throw new ArgumentNullException("config"); }
             org = config.OrgDescription;
             lang = config.Label.LangCode;
+            langVariant = config.Label.Variant;
             userId = config.UniqueUserId.ToString();
             sessionId = config.UniqueSessionId.ToString();
         }

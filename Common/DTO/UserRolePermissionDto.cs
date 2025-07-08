@@ -1,6 +1,6 @@
 ﻿namespace Common.DTO
 {
-    public class RolePermissionDto
+    public class UserRolePermissionDto
     {
         public int OrgNr { get; set; }
         public string Role { get; set; }

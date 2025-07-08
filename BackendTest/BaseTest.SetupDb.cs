@@ -77,11 +77,11 @@ namespace BackendTest
 
             RoleEnt[] roles = new RoleEnt[MaxRoles];
             for (int i = 0; i< MaxRoles; i++)
-                roles[i] = new RoleEnt { Id = -1 + i*-1, Code = "role" + (i + 1), orgNr = GCT.orgNr };
+                roles[i] = new RoleEnt { Id = -1 + i*-1, Code = "role" + (i + 1), OrgNr = GCT.orgNr };
 
             sql = "";
             foreach (var rec in roles)
-                sql += "INSERT INTO " + tR + " (id, code, orgNr) VALUES (" + rec.Id + ",'" + rec.Code + "'," + rec.orgNr + ");";
+                sql += "INSERT INTO " + tR + " (id, code, orgNr) VALUES (" + rec.Id + ",'" + rec.Code + "'," + rec.OrgNr + ");";
             await Sql.Execute(IdentityInsert(tR, sql));
 
 

@@ -1,14 +1,39 @@
-﻿using Backend.Base.Label.Ent;
-using Microsoft.Data.SqlClient;
+﻿using Microsoft.Data.SqlClient;
+using Microsoft.Extensions.Caching.Memory;
 using System.Collections.Generic;
-using System.Diagnostics;
+using GC = Backend.GlobalConstants;
 
 namespace Backend.Base.Label
 {
     public class LabelService : BaseService, LabelServiceI
     {
-        public LabelService(IServiceProvider serviceProvider) : base(serviceProvider)
+        private readonly IMemoryCache _memoryCache;
+
+        public LabelService(IServiceProvider serviceProvider,
+            IMemoryCache memoryCache) 
+            : base(serviceProvider)
         {
+            _memoryCache = memoryCache;
+        }
+
+        public async Task<Dictionary<string, LangLabel>> GetLanguageLabelDic(string langCode, int? variant)
+        {
+            var dic = _memoryCache.Get<Dictionary<string, LangLabel>>(CacheKey(langCode, variant));
+            if (dic != null) return dic;
+
+            await GetLanguageLabelList(langCode, variant);
+            return _memoryCache.Get<Dictionary<string, LangLabel>>(CacheKey(langCode, variant));
+        }
+
+        private async Task SetLanguageLabelDic(string langCode, int? variant, List<LangLabel> list)
+        {
+            var dic = list.ToDictionary(x => x.LangKeyCode, x => x);
+            _memoryCache.Set(CacheKey(langCode, variant), dic);
+        }
+
+        private string CacheKey(string langCode, int? variant)
+        {
+            return GC.CacheKeyLabelPrefix + langCode + (variant.HasValue ? variant : 0);
         }
 
         /*
@@ -16,6 +41,9 @@ namespace Backend.Base.Label
          */
         public async Task<List<LangLabel>> GetLanguageLabelList(string langCode, int? variant)
         {
+            var dic = _memoryCache.Get<Dictionary<string, LangLabel>>(CacheKey(langCode, variant));
+            if (dic != null) return dic.Values.ToList(); 
+
             var list = await GetLabelList(null, langCode, null, null, null);
             if (variant.HasValue)
             {
@@ -35,6 +63,7 @@ namespace Backend.Base.Label
                 }
             }
 
+            await SetLanguageLabelDic(langCode, variant, list);
             return list;
         }
 

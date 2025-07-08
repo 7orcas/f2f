@@ -44,7 +44,7 @@
         }
 
         if (!LS.IsInitialized)
-            await LS.Initialise();
+            await LS.Initialise(ConfS.loginParameters);
 
         _config = ConfS.Config;
         _labels = LS.Labels;

@@ -81,7 +81,7 @@ namespace Backend.Base.Permission
                     new SqlParameter("@orgNr", orgNr)
                 );
 
-                await Sql.Run(sql + "AND r.orgNr = " + GC.BaseorgNr,
+                await Sql.Run(sql + "AND r.orgNr = " + GC.BaseOrgNr,
                     r => {
                         AddPermission(
                             GetInt(r, "permissionNr"),
@@ -147,7 +147,7 @@ namespace Backend.Base.Permission
                     new SqlParameter("@orgNr", session.Org.Nr)
                 );
 
-                await Sql.Run(sql + "AND r.orgNr = " + GC.BaseorgNr + by,
+                await Sql.Run(sql + "AND r.orgNr = " + GC.BaseOrgNr + by,
                     r => {
                         list.Add(new RolePermissionCrudEnt()
                         {

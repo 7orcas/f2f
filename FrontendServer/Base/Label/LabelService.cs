@@ -29,6 +29,7 @@ namespace FrontendServer.Base.Config
         private Dictionary<string, LangLabelDto> labels;
 
         public event Action? OnLabelsChanged;
+        private bool IsInitialising = false;
 
         public Dictionary<string, LangLabelDto>? Labels => labels;
         public void SetLabels(Dictionary<string, LangLabelDto> labels)
@@ -46,7 +47,7 @@ namespace FrontendServer.Base.Config
         public string GetLabelHighlightNoKey(string labelCode) => IsLabel(labelCode) ? labels[labelCode].Label : "[" + labelCode + "]";
         public string? GetTooltip(string labelCode) => IsTooltip(labelCode) ? labels[labelCode].Tooltip : null;
 
-        public async Task<Dictionary<string, LangLabelDto>> Initialise()
+        public async Task<Dictionary<string, LangLabelDto>> Initialise(LoginParameters lps)
         {
             try
             {
@@ -56,8 +57,9 @@ namespace FrontendServer.Base.Config
                 var config = _configService.Config;
                 var client = await GetClient();
 
-                if (!_labelCacheService.HasLabels(config.Label.LangCode, config.Label.Variant))
+                if (!_labelCacheService.HasLabels(config.Label.LangCode, config.Label.Variant) && !IsInitialising)
                 {
+                    IsInitialising = true;
                     var url = GC.URL_label_clientlist
                                 + config.Label.LangCode
                                 + (config.Label.Variant.HasValue ? "/" + config.Label.Variant : "");
@@ -73,7 +75,9 @@ namespace FrontendServer.Base.Config
                         foreach (var l in labels)
                             dic.Add(l.LangKeyCode, l);
                         _labelCacheService.PutLabels(config.Label.LangCode, config.Label.Variant, dic);
+                        lps.LoadedUrl(url);
                     }
+                    IsInitialising = false;
                 }
                 var labelsX = _labelCacheService.GetLabels(config.Label.LangCode, config.Label.Variant);
                 SetLabels(labelsX);

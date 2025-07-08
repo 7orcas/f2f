@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using GC = Backend.GlobalConstants;
 using CGC = Common.GlobalConstants;
+using System.Runtime.ConstrainedExecution;
 
 namespace Backend.Base.Permission
 {
@@ -33,17 +34,21 @@ namespace Backend.Base.Permission
         public async Task<IActionResult> Get()
         {
             var session = HttpContext.Items["session"] as SessionEnt;
-            var Permissions = await _PermissionService.GetPermissions(session);
-            var PermDic = _PermissionInitialiseService.GetPermissions();
+            var permissions = await _PermissionService.GetPermissions(session);
+            var permDic = _PermissionInitialiseService.GetPermissions();
+            var langDic = await _labelService.GetLanguageLabelDic(session.UserConfig.LangCodeCurrent, session.Org.LangLabelVariant);
 
-            var list = new List<RolePermissionDto>();
-            foreach (var m in Permissions)
+            var list = new List<UserRolePermissionDto>();
+            foreach (var m in permissions)
             {
                 var lk = "?";
-                if (PermDic.ContainsKey(m.PermissionNr))
-                    lk = (PermDic[m.PermissionNr]).LangKey;
+                if (permDic.ContainsKey(m.PermissionNr))
+                {
+                    lk = (permDic[m.PermissionNr]).LangKey;
+                    lk = GetLabel(lk, langDic);
+                }
 
-                list.Add(new RolePermissionDto
+                list.Add(new UserRolePermissionDto
                 {
                     OrgNr = m.OrgNr,
                     Role = m.Role,
@@ -67,20 +72,21 @@ namespace Backend.Base.Permission
         public async Task<IActionResult> GetEffective()
         {
             var session = HttpContext.Items["session"] as SessionEnt;
-            var Permissions = await _PermissionService.LoadEffectivePermissions(session);
-            var PermDic = _PermissionInitialiseService.GetPermissions();
+            var permissions = await _PermissionService.LoadEffectivePermissions(session);
+            var permDic = _PermissionInitialiseService.GetPermissions();
+            var langDic = await _labelService.GetLanguageLabelDic(session.UserConfig.LangCodeCurrent, session.Org.LangLabelVariant);
 
             var list = new List<PermissionDto>();
 
-            foreach (var m in Permissions)
+            foreach (var m in permissions)
             {
-                if (!PermDic.ContainsKey(m.Nr)) continue;
-                var per = PermDic[m.Nr];
+                if (!permDic.ContainsKey(m.Nr)) continue;
+                var per = permDic[m.Nr];
 
                 list.Add(new PermissionDto
                 {
                     PermissionNr = per.Nr,
-                    LangKey = per.LangKey,
+                    LangKey = GetLabel(per.LangKey, langDic),
                     Crud = m.Crud
                 });
             }

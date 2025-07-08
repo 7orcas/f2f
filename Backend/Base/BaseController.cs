@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using Common.DTO;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Controllers;
 using Microsoft.AspNetCore.Mvc.Filters;
@@ -25,6 +26,13 @@ namespace Backend.Base
             _labelService = scope.ServiceProvider.GetRequiredService<LabelServiceI>();
         }
 
+        protected string GetLabel (string langKey, Dictionary<string, LangLabel> labels)
+        {
+            if (labels.ContainsKey(langKey)) 
+                return (labels[langKey]).Code;
+            return langKey;
+        }
+
         protected bool IsSame (int? i1, int? i2)
         {
             if (i1 == null && i2 == null) return true;
@@ -32,6 +40,17 @@ namespace Backend.Base
             return i1 == i2;
         }
 
+        protected T LoadDto<T>(BaseEntity e) where T : _BaseFieldsDto<T>, new()
+        {
+            var dto = new T();
+            dto.Id = e.Id;
+            dto.orgNr = e.OrgNr;
+            dto.Code = e.Code;
+            dto.Description = e.Description;
+            dto.Updated = e.Updated;
+            dto.IsActive = e.IsActive;
+            return dto;
+        }
 
         protected void LogEvent(LogEventLevel level, string message, SessionEnt sessionEnt)
         {

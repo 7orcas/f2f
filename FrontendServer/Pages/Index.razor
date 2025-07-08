@@ -32,6 +32,7 @@ else
             <tbody>
                 <tr><td>Org:</td><td><b>@ConfS.loginParameters?.org</b></td></tr>
                 <tr><td>LangCode:</td><td><b>@ConfS.loginParameters?.lang</b></td></tr>
+                <tr><td>LangVariant:</td><td><b>@ConfS.loginParameters?.langVariant</b></td></tr>
                 <tr><td>UserId:</td><td><b>@ConfS.loginParameters?.userId</b></td></tr>
                 <tr><td>SessionId:</td><td><b>@ConfS.loginParameters?.sessionId</b></td></tr>
                 <tr><td>Loaded:</td><td><b>@ConfS.loginParameters?.loaded</b></td></tr>
@@ -83,13 +84,13 @@ else
 
             //Get App / User Config
             var config = await ConfS.Initialise();
-            var parms = ConfS.SetLoginParameters(tokenkey, token);
-            parms.LoadedUrl(GC.URL_config);
+            var lps = ConfS.SetLoginParameters(tokenkey, token);
+            lps.LoadedUrl(GC.URL_config);
             SetConfig(config);
 
             //Get stuff
-            await PermS.Initialise();
-            await LS.Initialise();
+            await LS.Initialise(lps);
+            await PermS.Initialise(lps);
 
             _isLoading = false;
             StateHasChanged();
