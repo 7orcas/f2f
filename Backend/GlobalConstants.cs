@@ -8,13 +8,6 @@
         public const int AppClient          = 1; //defined in FrontendLogin as well
         public const string LangCodeDefault = "en";
 
-        public const string CrudCreate   = "c";
-        public const string CrudRead     = "r";
-        public const string CrudUpdate   = "u";
-        public const string CrudDelete   = "d";
-        public const string CrudReadList = "l";
-        public const string CrudIgnore   = "x"; //Don't need a permission crud setting
-
         public const string DateTimeFormat = "yyyy-MM-dd HH:mm:ss";
 
         //IMemoryCache keys

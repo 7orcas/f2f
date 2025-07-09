@@ -4,22 +4,29 @@
 @inject NavigationManager NavigationManager
 @inject IHttpClientFactory HttpClientFactory
 @inject CacheService CS
-@inject ProtectedSessionStorage ProtectedSessionStore
+@inject ProtectedSessionStorage PS
 @inject ConfigService ConfS
 @inject LabelService LS
 @inject ThemeService TS
-
+@inject PermissionService PermS
 
 @using GC = FrontendServer.GlobalConstants;
+@using CGC = Common.GlobalConstants;
 @using Newtonsoft.Json;
 @using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage
 
 @code {
     [Inject] protected IJSRuntime JS { get; set; }
 
+    public bool _stateChangedToggle = false;
     public bool _isLoading = false;
     public bool _isError = false;
     public bool _isSaving = false;
+    public bool _isCrudC = false;
+    public bool _isCrudR = false;
+    public bool _isCrudU = false;
+    public bool _isCrudD = false;
+    public bool _isCrudRO = true;
     public string? _pageCode;
     private string? _token;
     public HttpClient? _client;
@@ -50,14 +57,45 @@
         _labels = LS.Labels;
     }
 
+    //Force an update
+    public void ForceStateHasChanged()
+    {
+        _stateChangedToggle = !_stateChangedToggle;
+        StateHasChanged();
+    }
+
     //DarkMode
     protected override void OnInitialized() => TS.OnThemeChanged += OnThemeChanged;
     private void OnThemeChanged() => InvokeAsync(StateHasChanged);
     public void Dispose() => TS.OnThemeChanged -= OnThemeChanged;
 
+    //Permissions
+    public void SetCrud (int permissionNr)
+    {
+        if (ConfS.Config.User.IsService)
+        {
+            _isCrudC = _isCrudR = _isCrudU = _isCrudD = true;
+            _isCrudRO = false;
+            return;
+        }
+
+        _isCrudRO = true;
+
+        var p = PermS.GetPermission(permissionNr);
+        if (p == null || 
+            string.IsNullOrEmpty(p.Crud)) return;
+
+        _isCrudC = p.Crud.Contains(CGC.CrudCreate);
+        _isCrudR = p.Crud.Contains(CGC.CrudRead);
+        _isCrudU = p.Crud.Contains(CGC.CrudUpdate);
+        _isCrudD = p.Crud.Contains(CGC.CrudDelete);
+        _isCrudRO = !_isCrudC && !_isCrudU && !_isCrudD;
+    }
+
+    //Http Client
     public async Task<HttpClient> SetClient()
     {
-        var store = await ProtectedSessionStore.GetAsync<string>(GC.TokenCacheKey);
+        var store = await PS.GetAsync<string>(GC.TokenCacheKey);
         if (store.Success)
             _token = store.Value;
         else

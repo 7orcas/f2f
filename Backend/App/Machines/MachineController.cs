@@ -24,7 +24,7 @@ namespace Backend.App.Machines
             _machineService = machineService;
         }
 
-        [CrudAtt(GC.CrudRead)]
+        [CrudAtt(CGC.CrudRead)]
         [AuditListAtt(GC.EntityTypeMachine)]
         [HttpGet("list")]
         public async Task<IActionResult> Get()

@@ -1,4 +1,5 @@
 ﻿using GC = Backend.GlobalConstants;
+using CGC = Common.GlobalConstants;
 
 /// <summary>
 /// Audit of:
@@ -62,7 +63,7 @@ namespace Backend.Base.Audit
             {
                 try
                 {
-                    LogAuditRecord(session, entityTypeId, entityId, GC.CrudRead, null);
+                    LogAuditRecord(session, entityTypeId, entityId, CGC.CrudRead, null);
                 }
                 catch (Exception ex) 
                 { 
@@ -77,7 +78,7 @@ namespace Backend.Base.Audit
             {
                 try
                 {
-                    LogAuditRecord(session, entityTypeId, null, GC.CrudReadList, query);
+                    LogAuditRecord(session, entityTypeId, null, CGC.CrudReadList, query);
                 }
                 catch (Exception ex)
                 {

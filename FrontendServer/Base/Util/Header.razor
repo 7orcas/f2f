@@ -45,6 +45,7 @@
     [Parameter] public string TitleKey { get; set; }
     [Parameter] public string SubTitleKey { get; set; }
     [Parameter] public string PageCode { get; set; }
+    [Parameter] public bool IsReadOnly { get; set; } = false;
     [Parameter] public string TBSaveLabel { get; set; }
     [Parameter] public EventCallback TBSave { get; set; }
     [Parameter] public EventCallback TBExport { get; set; }
@@ -62,6 +63,7 @@
             isSubTitle = string.IsNullOrEmpty(SubTitleKey);
 
             isToolbar = TBSave.HasDelegate || TBExport.HasDelegate;
+            isToolbar = isToolbar && !IsReadOnly;
 
             if (string.IsNullOrEmpty(TBSaveLabel))
                 TBSaveLabel = "SaveRec";

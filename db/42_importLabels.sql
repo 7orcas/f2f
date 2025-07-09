@@ -17,61 +17,64 @@ insert into base.langCode (code,descr) select 'c6', 'xxx'
 insert into base.langCode (code,descr) select 'c7', 'xxx'
 insert into base.langCode (code,descr) select 'c8', 'xxx'
 
-DROP TABLE IF EXISTS zzImportLabelsBaseEn;
-DROP TABLE IF EXISTS zzImportLabelsBaseDe;
+DROP TABLE IF EXISTS zzImportLabelsBase;
+DROP TABLE IF EXISTS zzImportLabelsBaseX;
 DROP TABLE IF EXISTS zzLangLabel;
 
 --Base Labels
-CREATE TABLE zzImportLabelsBaseEn (
+CREATE TABLE zzImportLabelsBase (
+	langKey   NVARCHAR (100)  NOT NULL,
+	label       NVARCHAR (MAX)  NOT NULL
+);
+CREATE TABLE zzImportLabelsBaseX (
+	langCode   NVARCHAR (100)  NOT NULL,
     langKey   NVARCHAR (100)  NOT NULL,
-	label       NVARCHAR (MAX)  NOT NULL,
-	tooltip  NVARCHAR (MAX)  NULL
-);
-CREATE TABLE zzImportLabelsBaseDe (
-    langKey   NVARCHAR (100)  NOT NULL,
-	label       NVARCHAR (MAX)  NOT NULL,
-	tooltip  NVARCHAR (MAX)  NULL
+	label       NVARCHAR (MAX)  NULL,
+	tooltip       NVARCHAR (MAX)  NULL
 );
 
-BULK INSERT zzImportLabelsBaseEn
-FROM 'C:\src\f2f\db\Labels\BaseEn.txt'
-WITH (
-    FIELDTERMINATOR = ',',
-    ROWTERMINATOR = '\n',
-    FIRSTROW = 1
-);
+BULK INSERT zzImportLabelsBase FROM 'C:\src\f2f\db\Labels\BaseEn.txt' WITH (FIELDTERMINATOR = ',', ROWTERMINATOR = '\n', FIRSTROW = 1);
+INSERT INTO zzImportLabelsBaseX (langCode,langKey,label) SELECT 'en',langKey,label FROM zzImportLabelsBase;
+DELETE FROM zzImportLabelsBase;
 
-BULK INSERT zzImportLabelsBaseDe
-FROM 'C:\src\f2f\db\Labels\BaseDe.txt'
-WITH (
-    FIELDTERMINATOR = ',',
-    ROWTERMINATOR = '\n',
-    FIRSTROW = 1
-);
+BULK INSERT zzImportLabelsBase FROM 'C:\src\f2f\db\Labels\BaseDe.txt' WITH (FIELDTERMINATOR = ',', ROWTERMINATOR = '\n', FIRSTROW = 1);
+INSERT INTO zzImportLabelsBaseX (langCode,langKey,label) SELECT 'de',langKey,label FROM zzImportLabelsBase;
+DELETE FROM zzImportLabelsBase;
 
-UPDATE zzImportLabelsBaseEn SET label = REPLACE (label, '||', ',') WHERE label LIKE '%||%';
-UPDATE zzImportLabelsBaseEn SET tooltip = REPLACE (tooltip, '||', ',') WHERE tooltip LIKE '%||%';
-UPDATE zzImportLabelsBaseDe SET label = REPLACE (label, '||', ',') WHERE label LIKE '%||%';
-UPDATE zzImportLabelsBaseDe SET tooltip = REPLACE (tooltip, '||', ',') WHERE tooltip LIKE '%||%';
+BULK INSERT zzImportLabelsBase FROM 'C:\src\f2f\db\Labels\BaseTtEn.txt' WITH (FIELDTERMINATOR = ',', ROWTERMINATOR = '\n', FIRSTROW = 1);
+INSERT INTO zzImportLabelsBaseX (langCode,langKey,tooltip) SELECT 'en',langKey,label FROM zzImportLabelsBase;
+DELETE FROM zzImportLabelsBase;
 
-INSERT INTO base.langKey (code) SELECT DISTINCT langKey FROM zzImportLabelsBaseEn;
+BULK INSERT zzImportLabelsBase FROM 'C:\src\f2f\db\Labels\BaseTtDe.txt' WITH (FIELDTERMINATOR = ',', ROWTERMINATOR = '\n', FIRSTROW = 1);
+INSERT INTO zzImportLabelsBaseX (langCode,langKey,tooltip) SELECT 'de',langKey,label FROM zzImportLabelsBase;
+DELETE FROM zzImportLabelsBase;
+
+DELETE FROM zzImportLabelsBaseX WHERE langKey = '<LAST>';
+
+UPDATE zzImportLabelsBaseX SET label = REPLACE (label, '||', ',') WHERE label LIKE '%||%';
+UPDATE zzImportLabelsBaseX SET tooltip = REPLACE (tooltip, '||', ',') WHERE tooltip LIKE '%||%';
+
+UPDATE zzImportLabelsBaseX 
+	SET tooltip = (SELECT TOP 1 tooltip 
+					FROM zzImportLabelsBaseX x 
+					WHERE x.langCode = zzImportLabelsBaseX.langCode 
+					AND x.langKey = zzImportLabelsBaseX.langKey 
+					AND x.tooltip IS NOT NULL
+					) WHERE zzImportLabelsBaseX.tooltip IS NULL;
+
+DELETE FROM zzImportLabelsBaseX WHERE label IS NULL;
+
+--select * from zzImportLabelsBaseX where langKey = 'SaveRec'
+
+INSERT INTO base.langKey (code) SELECT DISTINCT langKey FROM zzImportLabelsBaseX;
 
 SELECT 0 AS langKeyId
-		,'en' AS langCode
+		,langCode
 		,langKey
 		,label AS code
 		,tooltip
 	INTO zzLangLabel
-	FROM zzImportLabelsBaseEn;
-
-INSERT INTO zzLangLabel (langKeyId,langCode,langKey,code,tooltip)
-	SELECT 0 AS langKeyId
-		,'de' AS langCode
-		,langKey
-		,label AS code
-		,tooltip
-	FROM zzImportLabelsBaseDe;
-
+	FROM zzImportLabelsBaseX;
 	
 UPDATE zzLangLabel SET langKeyId = 
 	(SELECT l.id FROM base.langKey l

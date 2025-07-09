@@ -2,20 +2,15 @@
 @inherits BasePage
 @attribute [Authorize]
 
-@using System.Net
-@using MudBlazor
-@using FrontendServer.Base.Util
-@using System.Text;
-@using sysJ = System.Text.Json
-@using GC = FrontendServer.GlobalConstants;
-@using CGC = Common.GlobalConstants;
-@using FrontendServer.Base._Base;
 
 <ConfirmNavigation List="roles" />
 
-<Header TitleKey="Roles"
+<!-- @key Forces a refresh -->
+<Header @key="_stateChangedToggle"
+        TitleKey="Roles"
         SubTitleKey="RoleSub"
         PageCode=@BasePageRoutes.RolePageCode
+        IsReadOnly="@_isCrudRO"
         TBSave="SaveAsync"
         TBSaveLabel="SaveChg" />
 
@@ -30,7 +25,7 @@
 }
 
 <MudGrid Class="mt-4">
-
+    
     <!-- Left Side: List -->
     @if (showList)
     {
@@ -48,8 +43,16 @@
                         <MudTh><Label Key="Active" /></MudTh>
                     </HeaderContent>
                     <RowTemplate>
-                        <MudTd DataLabel="Column 1" @onclick="() => OnItemSelected(context)">@context.Code</MudTd>
-                        <MudTd DataLabel="Column 2">@context.IsActive</MudTd>
+                        <MudTd DataLabel="Column 1"
+                               Class="@(selections.Contains(context) ? "selected-row" : null)"
+                               @onclick="() => OnItemSelected(context)">
+                               @context.Code
+                        </MudTd>
+                        <MudTd DataLabel="Column 2">
+                            <MudCheckBox T="bool"
+                                         ReadOnly="@(!_isCrudU)"
+                                         @bind-Value="context.IsActive"/>
+                        </MudTd>
                     </RowTemplate>
 
                 </MudTable>
@@ -59,39 +62,97 @@
 
 
     <!-- Right Side: Details -->
-    @if (roleDto != null)
+    @if (selections.Count > 0)
     {
         <MudItem xs="8">
-            @* <Text Size="GC.TextSize.Section">@roleDto.Description</Text> *@
             <MudPaper Elevation="0" Outlined="@_debugOutlined">
-                <MudTable Items="@roleDto.RolePermissions"
-                        Height="@tableHeight"
-                        FixedHeader="true"
-                        Hover="true"
-                        Bordered="true"
-                        Striped="true">
+                <div style="max-height: @tableHeight; overflow-y: auto;">
 
-                    <HeaderContent>
-                        <MudTh><Label Key="Perm" /></MudTh>
-                        <MudTh><Label Key="Crud" /></MudTh>
-                    </HeaderContent>
-                    <RowTemplate>
-                        <MudTd DataLabel="Column 1">@context.Permission</MudTd>
-                        <MudTd DataLabel="Column 2">@context.Crud</MudTd>
-                    </RowTemplate>
+                    <table class="mud-table mud-table-hover mud-table-bordered mud-table-striped full-width-table" style="width: 100%;">
+
+                        <!-- Header -->
+                        <thead class="mud-table-head">
+                            <tr class="mud-table-row">
+
+                                <th class="mud-table-cell sticky-header" rowspan="2"><Label Key="Perm"/></th>
+                                @for (int i = 0; i < selections.Count; i++)
+                                {
+                                    <th class="mud-table-cell sticky-header" style="text-align: center;" colspan="4">@selections[i].Code</th>
+                                }
+                            </tr>
+                            <tr class="mud-table-row">
+                                @foreach (var role in selections)
+                                {
+                                    <th class="mud-table-cell sticky-header" style="text-align: center;"><Label Key="Crud.C" /></th>
+                                    <th class="mud-table-cell sticky-header" style="text-align: center;"><Label Key="Crud.R" /></th>
+                                    <th class="mud-table-cell sticky-header" style="text-align: center;"><Label Key="Crud.U" /></th>
+                                    <th class="mud-table-cell sticky-header" style="text-align: center;"><Label Key="Crud.D" /></th>
+                                }
+                            </tr>
+
+                        </thead>
+                        <tbody class="mud-table-body">
+
+                            @foreach (var permission in selections.First().RolePermissions)
+                            {
+                                <tr class="mud-table-row">
+
+                                    <td class="mud-table-cell">@permission.Permission</td>
+                                    @foreach (var role in selections)
+                                    {
+                                        var matching = role.RolePermissions.FirstOrDefault(p => p.PermissionNr == permission.PermissionNr);
+                                        <td class="mud-table-cell">
+                                            <MudCheckBox T="bool" 
+                                                         Value="@IsCrud(matching, CGC.CrudCreate)"
+                                                         ValueChanged="@(v => SetCrud(matching, CGC.CrudCreate, v))"
+                                                         ReadOnly="@(!_isCrudU)" />
+                                        </td>
+                                        <td class="mud-table-cell">
+                                            <MudCheckBox T="bool" 
+                                                         Value="@IsCrud(matching, CGC.CrudRead)"
+                                                         ValueChanged="@(v => SetCrud(matching, CGC.CrudRead, v))"
+                                                         ReadOnly="@(!_isCrudU)" />
+                                        </td>
+                                        <td class="mud-table-cell">
+                                            <MudCheckBox T="bool" 
+                                                         Value="@IsCrud(matching, CGC.CrudUpdate)"
+                                                         ValueChanged="@(v => SetCrud(matching, CGC.CrudUpdate, v))"
+                                                         ReadOnly="@(!_isCrudU)" />
+                                        </td>
+                                        <td class="mud-table-cell">
+                                            <MudCheckBox T="bool" 
+                                                         Value="@IsCrud(matching, CGC.CrudDelete)"
+                                                         ValueChanged="@(v => SetCrud(matching, CGC.CrudDelete, v))"
+                                                         ReadOnly="@(!_isCrudU)" />
+                                        </td>
+
+                                    }
+                                </tr>
+                            }
+                        </tbody>
                         
-                </MudTable>
+                    </table>
+                </div>
             </MudPaper>
         </MudItem>
     }
 </MudGrid>
 
+@using System.Net
+@using MudBlazor
+@using FrontendServer.Base.Util
+@using System.Text;
+@using sysJ = System.Text.Json
+@using GC = FrontendServer.GlobalConstants;
+@using CGC = Common.GlobalConstants;
+@using FrontendServer.Base._Base;
 
 @code {
     private string tableHeight = "70vh";
+    private int maxSelections = 3;
     private bool showList = false;
     private List<RoleDto> roles;
-    private RoleDto? roleDto;
+    private List<RoleDto> selections = new List<RoleDto>();
     private bool tbSave;
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
@@ -102,9 +163,10 @@
             _pageCode = BasePageRoutes.OrgPageCode;
 
             roles = await GetAsync<List<RoleDto>>(GC.URL_role_list);
+            SetCrud(CGC.PerRole);
 
-            // if (roles.Count > 0)
-            //     Load(roles[0], true);
+            if (roles.Count > 0)
+                Select(roles[0], true);
 
             showList = roles.Count > 1;
             tbSave = !_isLoading && !_isError;
@@ -112,22 +174,58 @@
         }
     }
 
-    private async void OnItemSelected(RoleDto r) => Load(r, false);
+    private async void OnItemSelected(RoleDto r) => Select(r, false);
 
-    private async void Load(RoleDto dto, bool force)
+    private async void Select(RoleDto dto, bool force)
     {
+        int index = -1;
         if (!dto.IsLoaded || force)
         {
-            roleDto = await GetAsync<RoleDto>(GC.URL_role + dto.Id);
+            var roleDto = await GetAsync<RoleDto>(GC.URL_role + dto.Id);
             roleDto.HashMe();
             roleDto.IsLoaded = true;
-            int index = roles.FindIndex(r => r.Id == roleDto.Id);
+            index = roles.FindIndex(r => r.Id == dto.Id);
             roles[index] = roleDto;
+            dto = roleDto;
         }
-        else
-            roleDto = dto;
-        StateHasChanged();
+
+        index = selections.FindIndex(r => r.Id == dto.Id);
+
+        //Already selected?
+        if (index >= 0)
+            selections.RemoveAt(index);
+        else 
+        {
+            if (selections.Count >= maxSelections)
+                selections.RemoveAt(0);
+
+            selections.Add(dto);
+        }
+
+        ForceStateHasChanged();
     }
+
+    private bool IsCrud(RolePermissionDto p, string crudChar) => !string.IsNullOrEmpty(p.Crud) && p.Crud.Contains(crudChar);
+
+    private void SetCrud(RolePermissionDto? match, string crudChar, bool value)
+    {
+        if (match == null) return;
+
+        var crud = match.Crud ?? "";
+        if (!value)
+            crud = crud.Replace(crudChar, "");
+        else
+            crud += crudChar;
+
+        var crudx = "";
+        if (crud.Contains(CGC.CrudCreate)) crudx += CGC.CrudCreate;
+        if (crud.Contains(CGC.CrudRead)) crudx += CGC.CrudRead;
+        if (crud.Contains(CGC.CrudUpdate)) crudx += CGC.CrudUpdate;
+        if (crud.Contains(CGC.CrudDelete)) crudx += CGC.CrudDelete;
+        match.Crud = crudx;
+    }
+
+
 
     private async Task SaveAsync()
     {

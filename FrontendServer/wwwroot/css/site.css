@@ -142,3 +142,33 @@ a, .btn-link {
     .custom-menu-button:hover {
         cursor: pointer;
     }
+
+.full-width-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+    .full-width-table th,
+    .full-width-table td {
+        border: 1px solid rgba(0, 0, 0, 0.12); /* Matches MudBlazor's divider color */
+        padding: 16px;
+    }
+    .full-width-table tbody tr:nth-child(odd) {
+        background-color: var(--mud-palette-table-lines); /* Matches MudBlazor's default striped color */
+    }
+
+.sticky-header {
+    position: sticky;
+    top: 0;
+    background-color: var(--mud-palette-surface);
+    z-index: 2;
+}
+
+.selected-row {
+    background-color: var(--mud-palette-primary-hover) !important;
+    color: var(--mud-palette-text-primary) !important;
+    font-weight: bold !important;
+}
+
+
+

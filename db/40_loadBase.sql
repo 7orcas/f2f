@@ -47,8 +47,8 @@ INSERT INTO base.role (id, orgNr, code) VALUES (4, 0, 'Machines0');
 INSERT INTO base.role (id, orgNr, code) VALUES (5, 1, 'Machines1');
 INSERT INTO base.role (id, orgNr, code) VALUES (6, 2, 'Machines2');
 
-INSERT INTO base.role (id, orgNr, code) VALUES (7, 0, 'Role1');
-INSERT INTO base.role (id, orgNr, code) VALUES (8, 0, 'Role2');
+INSERT INTO base.role (id, orgNr, code, isActive) VALUES (7, 0, 'Role1', 0);
+INSERT INTO base.role (id, orgNr, code, isActive) VALUES (8, 0, 'Role2', 0);
 INSERT INTO base.role (id, orgNr, code) VALUES (9, 0, 'Role3');
 INSERT INTO base.role (id, orgNr, code) VALUES (10, 0, 'Role4');
 INSERT INTO base.role (id, orgNr, code) VALUES (11, 0, 'Role5');

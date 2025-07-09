@@ -28,7 +28,7 @@ namespace Backend.Base.Role
             _PermissionInitialiseService = PermissionInitialiseService;
         }
 
-        [CrudAtt(GC.CrudRead)]
+        [CrudAtt(CGC.CrudRead)]
         [AuditListAtt(GC.EntityTypeRole)]
         [HttpGet("userroles")]
         public async Task<IActionResult> GetUserRoles()
@@ -58,7 +58,7 @@ namespace Backend.Base.Role
             return Ok(r);
         }
 
-        [CrudAtt(GC.CrudRead)]
+        [CrudAtt(CGC.CrudRead)]
         [AuditListAtt(GC.EntityTypeRole)]
         [HttpGet("roles")]
         public async Task<IActionResult> GetRoles()
@@ -83,7 +83,7 @@ namespace Backend.Base.Role
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        [CrudAtt(GC.CrudRead)] //ToDo
+        [CrudAtt(CGC.CrudRead)] //ToDo
         [AuditListAtt(GC.EntityTypeRole)]
         [HttpGet("get/{id}")]
         public async Task<IActionResult> GetRole(long id)

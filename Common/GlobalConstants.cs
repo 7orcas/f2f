@@ -19,6 +19,13 @@ namespace Common
 
 
         //Permissions
+        public const string CrudCreate   = "c";
+        public const string CrudRead     = "r";
+        public const string CrudUpdate   = "u";
+        public const string CrudDelete   = "d";
+        public const string CrudReadList = "l";
+        public const string CrudIgnore   = "x"; //Don't need a permission crud setting
+
         public const int PerOrg     = 1;
         public const int PerPerm    = 2;
         public const int PerLabel   = 3;

@@ -28,7 +28,7 @@ namespace Backend.Base.Label
         /// </summary>
         /// <param name="langCode"></param>
         /// <returns></returns>
-        [CrudAtt(GC.CrudRead)]
+        [CrudAtt(CGC.CrudRead)]
         [AuditListAtt(GC.EntityTypeLangLabelList)]
         [HttpGet("clientlist/{langCode}/{variant}")]
         public async Task<IActionResult> GetClientLabelList(string langCode, int? variant)
@@ -73,7 +73,7 @@ namespace Backend.Base.Label
         /// </summary>
         /// <param name="LangKeyCode"></param>
         /// <returns></returns>
-        [CrudAtt(GC.CrudRead)]
+        [CrudAtt(CGC.CrudRead)]
         [AuditListAtt(GC.EntityTypeLangLabelRelated)]
         [HttpGet("relatedlist/{LangKeyCode}")]
         public async Task<IActionResult> GetRelatedLabels(string langKeyCode)

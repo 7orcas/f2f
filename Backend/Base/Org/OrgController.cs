@@ -31,7 +31,7 @@ namespace Backend.Base.Org
             _orgService = orgService;
         }
 
-        [CrudAtt(GC.CrudIgnore)]  //ToDo
+        [CrudAtt(CGC.CrudIgnore)]  //ToDo
         [AuditListAtt(GC.EntityTypeOrg)]
         [HttpGet("list")]
         public async Task<IActionResult> Get()
@@ -66,7 +66,7 @@ namespace Backend.Base.Org
         /// </summary>
         /// <param name="nr"></param>
         /// <returns></returns>
-        [CrudAtt(GC.CrudIgnore)] //ToDo
+        [CrudAtt(CGC.CrudIgnore)] //ToDo
         [AuditListAtt(GC.EntityTypeOrg)]
         [HttpGet("get/{nr}")]
         public async Task<IActionResult> GetOrg(int nr)
@@ -117,7 +117,7 @@ namespace Backend.Base.Org
         /// Update Org
         /// </summary>
         /// <returns></returns>
-        [CrudAtt(GC.CrudIgnore)]
+        [CrudAtt(CGC.CrudIgnore)]
         [AuditListAtt(GC.EntityTypeOrg)]
         [HttpPost("update")]
         public async Task<IActionResult> UpdateOrg([FromBody] OrgDto dto)

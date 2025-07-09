@@ -26,6 +26,12 @@ namespace FrontendServer.Base.Permission
             _httpClientFactory = httpClientFactory;
         }
 
+        public PermissionDto? GetPermission(int permissionNr)
+        {
+            return Permissions.Find(p => p.PermissionNr == permissionNr);
+        }
+
+
         public async Task Initialise(LoginParameters lps)
         {
             try
