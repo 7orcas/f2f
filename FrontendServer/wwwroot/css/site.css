@@ -10,8 +10,34 @@
 }
 
 
-html, body {
+html, body, #app {
     font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    height: 100%;
+    margin: 0;
+}
+
+.layout-root {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.main-content-fill-screen {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+.main-toolbar-button {
+    text-transform: none;
+}
+
+.fill-container {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    overflow: auto;
 }
 
 h1:focus {
@@ -106,17 +132,6 @@ a, .btn-link {
 
 .list-odd-row-dm {
     background-color: red !important; 
-}
-
-
-.main-content-fill-screen {
-    flex: 1 1 auto;
-    display: flex;
-    flex-direction: column;
-}
-
-.main-toolbar-button{
-    text-transform: none;
 }
 
 .custom-menu-button {

@@ -46,6 +46,32 @@ INSERT INTO base.role (id, orgNr, code) VALUES (3, 0, 'LangEdit');
 INSERT INTO base.role (id, orgNr, code) VALUES (4, 0, 'Machines0');
 INSERT INTO base.role (id, orgNr, code) VALUES (5, 1, 'Machines1');
 INSERT INTO base.role (id, orgNr, code) VALUES (6, 2, 'Machines2');
+
+INSERT INTO base.role (id, orgNr, code) VALUES (7, 0, 'Role1');
+INSERT INTO base.role (id, orgNr, code) VALUES (8, 0, 'Role2');
+INSERT INTO base.role (id, orgNr, code) VALUES (9, 0, 'Role3');
+INSERT INTO base.role (id, orgNr, code) VALUES (10, 0, 'Role4');
+INSERT INTO base.role (id, orgNr, code) VALUES (11, 0, 'Role5');
+INSERT INTO base.role (id, orgNr, code) VALUES (12, 0, 'Role6');
+INSERT INTO base.role (id, orgNr, code) VALUES (13, 0, 'Role7');
+INSERT INTO base.role (id, orgNr, code) VALUES (14, 0, 'Role8');
+INSERT INTO base.role (id, orgNr, code) VALUES (15, 0, 'Role9');
+INSERT INTO base.role (id, orgNr, code) VALUES (16, 0, 'Role10');
+INSERT INTO base.role (id, orgNr, code) VALUES (17, 0, 'Role11');
+INSERT INTO base.role (id, orgNr, code) VALUES (18, 0, 'Role12');
+INSERT INTO base.role (id, orgNr, code) VALUES (19, 0, 'Role13');
+INSERT INTO base.role (id, orgNr, code) VALUES (20, 0, 'Role14');
+INSERT INTO base.role (id, orgNr, code) VALUES (21, 0, 'Role15');
+INSERT INTO base.role (id, orgNr, code) VALUES (22, 0, 'Role16');
+INSERT INTO base.role (id, orgNr, code) VALUES (23, 0, 'Role17');
+INSERT INTO base.role (id, orgNr, code) VALUES (24, 0, 'Role18');
+INSERT INTO base.role (id, orgNr, code) VALUES (25, 0, 'Role19');
+INSERT INTO base.role (id, orgNr, code) VALUES (26, 0, 'Role20');
+INSERT INTO base.role (id, orgNr, code) VALUES (27, 0, 'Role21');
+INSERT INTO base.role (id, orgNr, code) VALUES (28, 0, 'Role22');
+INSERT INTO base.role (id, orgNr, code) VALUES (29, 0, 'Role23');
+INSERT INTO base.role (id, orgNr, code) VALUES (30, 0, 'Role24');
+
 SET IDENTITY_INSERT base.role OFF;
 
 SET IDENTITY_INSERT base.rolePermission ON;

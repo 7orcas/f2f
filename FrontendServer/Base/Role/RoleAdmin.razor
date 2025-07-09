@@ -29,25 +29,30 @@
     </LoadingWithError>
 }
 
-<MudGrid>
+<MudGrid Class="mt-4">
 
     <!-- Left Side: List -->
     @if (showList)
     {
-        <MudItem xs="1">
-            <Label Size="GC.TextSize.Section" Key="Roles"></Label>
+        <MudItem xs="2">
             <MudPaper Elevation="0" Outlined="true">
-                <MudList T="OrgDto">
-                    @for (int i = 0; i < roles.Count; i++)
-                    {
-                        var index = i;
-                        <div class="@GetListRowOddEvenClass(i)">
-                            <MudListItem Value="@roles[i]"
-                                         OnClick="() => OnItemSelected(index)"
-                                         Text="@roles[i].Code" />
-                        </div>
-                    }
-                </MudList>
+                <MudTable Items="@roles"
+                          Height="@tableHeight"
+                          FixedHeader="true"
+                          Hover="true"
+                          Bordered="true"
+                          Striped="true">
+
+                    <HeaderContent>
+                        <MudTh><Label Key="Role" /></MudTh>
+                        <MudTh><Label Key="Active" /></MudTh>
+                    </HeaderContent>
+                    <RowTemplate>
+                        <MudTd DataLabel="Column 1" @onclick="() => OnItemSelected(context)">@context.Code</MudTd>
+                        <MudTd DataLabel="Column 2">@context.IsActive</MudTd>
+                    </RowTemplate>
+
+                </MudTable>
             </MudPaper>
         </MudItem>
     }
@@ -57,21 +62,25 @@
     @if (roleDto != null)
     {
         <MudItem xs="8">
-            <Text Size="GC.TextSize.Section">@roleDto.Description</Text>
+            @* <Text Size="GC.TextSize.Section">@roleDto.Description</Text> *@
             <MudPaper Elevation="0" Outlined="@_debugOutlined">
-                <div style="table-layout: fixed; width: 400px;">
-                    <MudTable Items="@roleDto.RolePermissions">
-                        <HeaderContent>
-                            <MudTh><Label Key="Perm" /></MudTh>
-                            <MudTh><Label Key="Crud" /></MudTh>
-                        </HeaderContent>
-                        <RowTemplate>
-                            <MudTd DataLabel="Column 1">@context.Permission</MudTd>
-                            <MudTd DataLabel="Column 2">@context.Crud</MudTd>
-                        </RowTemplate>
+                <MudTable Items="@roleDto.RolePermissions"
+                        Height="@tableHeight"
+                        FixedHeader="true"
+                        Hover="true"
+                        Bordered="true"
+                        Striped="true">
+
+                    <HeaderContent>
+                        <MudTh><Label Key="Perm" /></MudTh>
+                        <MudTh><Label Key="Crud" /></MudTh>
+                    </HeaderContent>
+                    <RowTemplate>
+                        <MudTd DataLabel="Column 1">@context.Permission</MudTd>
+                        <MudTd DataLabel="Column 2">@context.Crud</MudTd>
+                    </RowTemplate>
                         
-                    </MudTable>
-                </div>
+                </MudTable>
             </MudPaper>
         </MudItem>
     }
@@ -79,6 +88,7 @@
 
 
 @code {
+    private string tableHeight = "70vh";
     private bool showList = false;
     private List<RoleDto> roles;
     private RoleDto? roleDto;
@@ -93,8 +103,8 @@
 
             roles = await GetAsync<List<RoleDto>>(GC.URL_role_list);
 
-            if (roles.Count > 0)
-                Load(0, true);
+            // if (roles.Count > 0)
+            //     Load(roles[0], true);
 
             showList = roles.Count > 1;
             tbSave = !_isLoading && !_isError;
@@ -102,16 +112,16 @@
         }
     }
 
-    private async void OnItemSelected(int index) => Load(index, false);
+    private async void OnItemSelected(RoleDto r) => Load(r, false);
 
-    private async void Load(int index, bool force)
+    private async void Load(RoleDto dto, bool force)
     {
-        var dto = roles[index];
         if (!dto.IsLoaded || force)
         {
             roleDto = await GetAsync<RoleDto>(GC.URL_role + dto.Id);
             roleDto.HashMe();
             roleDto.IsLoaded = true;
+            int index = roles.FindIndex(r => r.Id == roleDto.Id);
             roles[index] = roleDto;
         }
         else

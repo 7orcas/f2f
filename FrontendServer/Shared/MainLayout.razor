@@ -1,95 +1,99 @@
 ﻿@inherits LayoutComponentBase
 
-<MudThemeProvider DefaultScrollbar="true" @bind-IsDarkMode="_isDarkMode" Theme="_theme" />
-<MudPopoverProvider />
-<MudDialogProvider />
-<MudSnackbarProvider />
+<div class="layout-root">
 
-@if (!ConfS.IsInitialized)
-{
-    <Loading />
-    @Body
-}
-else
-{
-    <MudLayout>
+    <MudThemeProvider DefaultScrollbar="true" @bind-IsDarkMode="_isDarkMode" Theme="_theme" />
+    <MudPopoverProvider />
+    <MudDialogProvider />
+    <MudSnackbarProvider />
 
-        <MudAppBar Elevation="4" Class="app-bar">
-            <div style="display: flex; align-items: center; width: 100%; justify-content: space-between;">
+    @if (!ConfS.IsInitialized)
+    {
+        <Loading />
+        @Body
+    }
+    else
+    {
+        <MudLayout>
 
-                <!-- Left -->
-                <div style="display: flex; align-items: center;">
-                    @if (ConfS.Config.User.IsService)
-                    {
-                        <MudIconButton Icon="@Icons.Material.Filled.Menu"
-                                       Color="Color.Inherit"
-                                       Edge="Edge.Start"
-                                       OnClick="@ToggleDrawer" />
-                    }
-                    <MenuButton Title="@ConfS.Config.OrgDescription" Link="@AppPageRoutes.HomeRoute" />
-                </div>
+            <MudAppBar Elevation="4" Class="app-bar">
+                <div style="display: flex; align-items: center; width: 100%; justify-content: space-between;">
 
-                <!-- Center: Menu items -->
-                <div style="display: flex; gap: 16px;">
-                    <MainMenu />
-                </div>
-
-                <!-- Right Settings -->
-                <div style="display: flex; align-items: center; gap: 12px;">
-                    <MudMenu ActivationEvent="MouseEvent.MouseOver"
-                             AnchorOrigin="Origin.BottomLeft"
-                             TransformOrigin="Origin.TopLeft"
-                             OffsetY="true"
-                             Dense="true">
-                        <ActivatorContent>
-                            <MudIconButton Icon="@Icons.Material.Filled.ManageAccounts"
+                    <!-- Left -->
+                    <div style="display: flex; align-items: center;">
+                        @if (ConfS.Config.User.IsService)
+                        {
+                            <MudIconButton Icon="@Icons.Material.Filled.Menu"
                                            Color="Color.Inherit"
-                                           Size="Size.Large"/>
-                        </ActivatorContent>
-                        <ChildContent>
-                            <MudStack Spacing="1" Style="align-items: flex-start;">
-                                <MudButton Class="custom-menu-button"
-                                           Link="true"
-                                           OnClick="@Logout"
-                                           Color="Color.Inherit"
-                                           Variant="Variant.Text">
-                                    <MudText Typo="Typo.h6">@GetLabel("Logout")</MudText>
-                                </MudButton>
+                                           Edge="Edge.Start"
+                                           OnClick="@ToggleDrawer" />
+                        }
+                        <MenuButton Title="@ConfS.Config.OrgDescription" Link="@AppPageRoutes.HomeRoute" />
+                    </div>
 
-                                <div style="margin-left:9px;">
-                                    <MudSwitch @bind-Value="_isDarkMode"
-                                               T="bool"
-                                               LabelPlacement="Placement.Start"
-                                                >
-                                        <MudText Typo="Typo.h6">@GetLabel("LDM")</MudText>
-                                    </MudSwitch>
-                                </div>
-                                <MenuButton Title="@GetLabel("ChgPw")" Link="@AppPageRoutes.ChangePWRoute" />
-                                <MenuButton Title="@GetLabel("Config")" Link="@AppPageRoutes.ConfigRoute" />
-                            </MudStack>
-                        </ChildContent>
-                    </MudMenu>
+                    <!-- Center: Menu items -->
+                    <div style="display: flex; gap: 16px;">
+                        <MainMenu />
+                    </div>
+
+                    <!-- Right Settings -->
+                    <div style="display: flex; align-items: center; gap: 12px;">
+                        <MudMenu ActivationEvent="MouseEvent.MouseOver"
+                                 AnchorOrigin="Origin.BottomLeft"
+                                 TransformOrigin="Origin.TopLeft"
+                                 OffsetY="true"
+                                 Dense="true">
+                            <ActivatorContent>
+                                <MudIconButton Icon="@Icons.Material.Filled.ManageAccounts"
+                                               Color="Color.Inherit"
+                                               Size="Size.Large"/>
+                            </ActivatorContent>
+                            <ChildContent>
+                                <MudStack Spacing="1" Style="align-items: flex-start;">
+                                    <MudButton Class="custom-menu-button"
+                                               Link="true"
+                                               OnClick="@Logout"
+                                               Color="Color.Inherit"
+                                               Variant="Variant.Text">
+                                        <MudText Typo="Typo.h6">@GetLabel("Logout")</MudText>
+                                    </MudButton>
+
+                                    <div style="margin-left:9px;">
+                                        <MudSwitch @bind-Value="_isDarkMode"
+                                                   T="bool"
+                                                   LabelPlacement="Placement.Start"
+                                                    >
+                                            <MudText Typo="Typo.h6">@GetLabel("LDM")</MudText>
+                                        </MudSwitch>
+                                    </div>
+                                    <MenuButton Title="@GetLabel("ChgPw")" Link="@AppPageRoutes.ChangePWRoute" />
+                                    <MenuButton Title="@GetLabel("Config")" Link="@AppPageRoutes.ConfigRoute" />
+                                </MudStack>
+                            </ChildContent>
+                        </MudMenu>
+                    </div>
+
                 </div>
+            </MudAppBar>
 
-            </div>
-        </MudAppBar>
+            <MudDrawer @bind-Open="_drawerOpen"
+                       Elevation="1"
+                       ClipMode="DrawerClipMode.Always"
+                       Variant="DrawerVariant.Responsive">
+                <ServiceMenu />
+            </MudDrawer>
 
-        <MudDrawer @bind-Open="_drawerOpen"
-                   Elevation="1"
-                   ClipMode="DrawerClipMode.Always"
-                   Variant="DrawerVariant.Responsive">
-            <ServiceMenu />
-        </MudDrawer>
+            <MudMainContent Class="main-content-fill-screen">
+                <MudContainer MaxWidth="MaxWidth.False" Class="fill-container">
+                    <MudPaper Class="fill-container" Elevation="0" Square="true">
+                        @Body
+                    </MudPaper>
+                </MudContainer>
+            </MudMainContent>
 
-        <MudMainContent Class="main-content-fill-screen">
-            <MudContainer MaxWidth="MaxWidth.False" Class="mt-4">
-                @Body
-            </MudContainer>
-        </MudMainContent>
-
-    </MudLayout>
-}
-
+        </MudLayout>
+    }
+</div>
 
 @using GC = FrontendServer.GlobalConstants;
 @using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage
