@@ -1,15 +1,6 @@
-﻿@attribute [Route(BasePageRoutes.OrgRoute)]
+﻿@attribute [Route(BaseRoutes.OrgRoute)]
 @inherits BasePage
 @attribute [Authorize]
-
-@using System.Net
-@using MudBlazor
-@using FrontendServer.Base.Util
-@using System.Text;
-@using sysJ = System.Text.Json
-@using GC = FrontendServer.GlobalConstants;
-@using CGC = Common.GlobalConstants;
-@using FrontendServer.Base._Base;
 
 <ConfirmNavigation List="list" />
 
@@ -79,14 +70,14 @@
                                 
                                 <TextField Width=GC.TextFieldWidth.Short
                                            LangCode="Code"
-                                           MaxLength="@CGC.LenCode"
+                                           MaxLength="@GC.LenCode"
                                            Value="@orgDto.Code"
                                            ValueChanged="@((string val) => orgDto.Code = val)"
                                            ValueExpression="() => orgDto.Code" />
 
                                 <TextField Width=GC.TextFieldWidth.Medium
                                            LangCode="Desc"
-                                           MaxLength="@CGC.LenDescription"
+                                           MaxLength="@GC.LenDescription"
                                            Value="@orgDto.Description"
                                            ValueChanged="@((string val) => orgDto.Description = val)"
                                            ValueExpression="() => orgDto.Description" />
@@ -108,7 +99,7 @@
                             <div style="display: flex; flex-wrap: wrap; gap: 20px;">
                                 <TextField Width=GC.TextFieldWidth.Short
                                            LangCode="LangCode"
-                                           MaxLength="@CGC.LenLangCode"
+                                           MaxLength="@GC.LenLangCode"
                                            Value="@orgDto.LangCode"
                                            ValueChanged="@((string val) => orgDto.LangCode = val)"
                                            ValueExpression="() => orgDto.LangCode"/>
@@ -193,6 +184,13 @@
     }
 </MudGrid>
 
+@using System.Net
+@using MudBlazor
+@using FrontendServer.Base.Util
+@using System.Text;
+@using sysJ = System.Text.Json
+@using GC = FrontendServer.GlobalConstants;
+@using FrontendServer.Base._Base;
 
 @code {
     private bool showList = false;
@@ -204,8 +202,8 @@
     {
         if (firstRender)
         {
-            await InitialiseBasePage();
-            _pageCode = BasePageRoutes.OrgPageCode;
+            await InitialiseBasePage(GC.PerOrg);
+            _pageCode = BaseRoutes.OrgPageCode;
 
             list = await GetAsync<List<OrgDto>>(GC.URL_org_list);
 

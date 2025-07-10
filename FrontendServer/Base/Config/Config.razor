@@ -1,16 +1,6 @@
-﻿@attribute [Route(BasePageRoutes.ConfigRoute)]
+﻿@attribute [Route(BaseRoutes.ConfigRoute)]
 @inherits BasePage
 @attribute [Authorize]
-@inject ConfigService ConfigService
-
-@using System.Net
-@using MudBlazor
-@using FrontendServer.Base.Util
-@using System.Text;
-@using sysJ = System.Text.Json
-@using GC = FrontendServer.GlobalConstants;
-@using FrontendServer.Base._Base;
-
 
 <ConfirmNavigation Dto="configDto" />
 
@@ -59,6 +49,16 @@
 </MudGrid>
 
 
+
+@using System.Net
+@using MudBlazor
+@using FrontendServer.Base.Util
+@using System.Text;
+@using sysJ = System.Text.Json
+@using FrontendServer.Base._Base;
+@using GC = FrontendServer.GlobalConstants;
+
+@inject ConfigService ConfigService
 @code {
     private AppConfigDto? configDto;
     private bool tbSave;
@@ -67,8 +67,8 @@
     {
         if (firstRender)
         {
-            await InitialiseBasePage();
-            _pageCode = BasePageRoutes.ConfigPageCode;
+            await InitialiseBasePage(GC.PerConfig);
+            _pageCode = BaseRoutes.ConfigPageCode;
             configDto = ConfigService.Config;
             _isLoading = false;
             tbSave = !_isLoading && !_isError;

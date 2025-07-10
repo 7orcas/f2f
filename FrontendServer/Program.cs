@@ -54,18 +54,15 @@ builder.Services.AddDistributedMemoryCache();
 builder.Services.AddScoped<ProtectedSessionStorage>();
 
 //Base Services 
+builder.Services.AddScoped<HttpService>();
 builder.Services.AddScoped<ConfigService>();
 builder.Services.AddScoped<LabelService>();
 builder.Services.AddScoped<ThemeService>();
 builder.Services.AddScoped<BaseServiceDELETE_ME>();
-//builder.Services.AddScoped<AuthorizationMessageHandler>();
 builder.Services.AddScoped<LogoutService>();
 builder.Services.AddScoped<PermissionService>();
 builder.Services.AddScoped<RoleService>();
 builder.Services.AddScoped<AuditService>();
-
-//builder.Services.AddScoped<MachineService>();
-
 
 var app = builder.Build();
 

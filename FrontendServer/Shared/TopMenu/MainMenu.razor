@@ -22,7 +22,7 @@
         </ActivatorContent>
         <ChildContent>
             <MudStack Spacing="1" Style="align-items: flex-start;">
-                <MenuButton Title="@GetLabel("Roles")" Link="@AppPageRoutes.UserRoleRoute" />
+                <MenuButton Title="@GetLabel("Roles")" Link="@AppRoutes.UserRoleRoute" />
             </MudStack>
         </ChildContent>
     </MudMenu>
@@ -38,13 +38,13 @@
 
     private string[] items =
         {
-            "Machines",     AppPageRoutes.MachinesRoute, "",
-            "Organisation", AppPageRoutes.OrgRoute,      "",
-            "Permissions",  AppPageRoutes.PermRoute,     "",
-            "Roles",        AppPageRoutes.RoleRoute,     "",
-            "UserRs",       AppPageRoutes.UserRoleRoute, "",
-            "Config",       AppPageRoutes.ConfigRoute,   "",
-            "Audit",        AppPageRoutes.AuditRoute,    "",
+            "Machines",     AppRoutes.MachinesRoute, "",
+            "Organisation", AppRoutes.OrgRoute,      "",
+            "Permissions",  AppRoutes.PermRoute,     "",
+            "Roles",        AppRoutes.RoleRoute,     "",
+            "UserRs",       AppRoutes.UserRoleRoute, "",
+            "Config",       AppRoutes.ConfigRoute,   "",
+            "Audit",        AppRoutes.AuditRoute,    "",
     };
 
 

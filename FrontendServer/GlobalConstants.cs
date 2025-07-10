@@ -1,6 +1,6 @@
 ﻿namespace FrontendServer
 {
-    public class GlobalConstants
+    public class GlobalConstants : Common.GlobalConstants
     {
         public const int AppClient                = 1; //defined in FrontendLogin as well
         

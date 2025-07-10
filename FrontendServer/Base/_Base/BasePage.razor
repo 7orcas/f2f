@@ -1,19 +1,15 @@
 ﻿@inherits BaseComponent
 
-@inject HttpClient HttpClient
-@inject NavigationManager NavigationManager
-@inject IHttpClientFactory HttpClientFactory
-@inject CacheService CS
+@using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage
+@using GC = FrontendServer.GlobalConstants;
+
 @inject ProtectedSessionStorage PS
+@inject CacheService CS
 @inject ConfigService ConfS
 @inject LabelService LS
-@inject ThemeService TS
 @inject PermissionService PermS
-
-@using GC = FrontendServer.GlobalConstants;
-@using CGC = Common.GlobalConstants;
-@using Newtonsoft.Json;
-@using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage
+@inject HttpService HS
+@inject ThemeService TS
 
 @code {
     [Inject] protected IJSRuntime JS { get; set; }
@@ -29,10 +25,9 @@
     public bool _isCrudRO = true;
     public string? _pageCode;
     private string? _token;
-    public HttpClient? _client;
     public MarkupString? _errorMessage;
     public int? _statusCode;
-    public ErrorBoundary? errorBoundary;
+    //public ErrorBoundary? errorBoundary;
     public Exception? exception;
     private AppConfigDto _config;
     private Dictionary<string, LangLabelDto> _labels;
@@ -41,7 +36,7 @@
     public bool _debugOutlined = false;
 
 
-    public async Task InitialiseBasePage()
+    public async Task InitialiseBasePage(int permissionNr)
     {
         if (!ConfS.IsInitialized)
         {
@@ -55,6 +50,9 @@
 
         _config = ConfS.Config;
         _labels = LS.Labels;
+
+        if (permissionNr != GC.PerIgnore)
+            SetCrud(permissionNr);
     }
 
     //Force an update
@@ -85,73 +83,13 @@
         if (p == null || 
             string.IsNullOrEmpty(p.Crud)) return;
 
-        _isCrudC = p.Crud.Contains(CGC.CrudCreate);
-        _isCrudR = p.Crud.Contains(CGC.CrudRead);
-        _isCrudU = p.Crud.Contains(CGC.CrudUpdate);
-        _isCrudD = p.Crud.Contains(CGC.CrudDelete);
+        _isCrudC = p.Crud.Contains(GC.CrudCreate);
+        _isCrudR = p.Crud.Contains(GC.CrudRead);
+        _isCrudU = p.Crud.Contains(GC.CrudUpdate);
+        _isCrudD = p.Crud.Contains(GC.CrudDelete);
         _isCrudRO = !_isCrudC && !_isCrudU && !_isCrudD;
     }
 
-    //Http Client
-    public async Task<HttpClient> SetClient()
-    {
-        var store = await PS.GetAsync<string>(GC.TokenCacheKey);
-        if (store.Success)
-            _token = store.Value;
-        else
-            NavigationManager.NavigateTo("https://localhost:7289", true);  //ToDo Change me!
-
-        _client = HttpClientFactory.CreateClient(GC.AuthorizedClientKey);
-        _client.DefaultRequestHeaders.Authorization =
-            new System.Net.Http.Headers.AuthenticationHeaderValue(GC.BearerKey, _token);
-
-        //SetLabels();
-        return _client;
-    }
-
-    public async Task<T> GetAsync<T>(string url)
-    {
-        _isLoading = true;
-
-        await SetClient();
-
-        var response = await _client.GetAsync(url);
-
-        try
-        {
-            response.EnsureSuccessStatusCode();
-            var r = await response.Content.ReadAsStringAsync();
-            var dto = JsonConvert.DeserializeObject<_ResponseDto>(r);
-            _statusCode = dto.StatusCode;
-            _isLoading = false;
-
-            if (dto.Valid)
-                return JsonConvert.DeserializeObject<T>(dto.Result.ToString());
-
-            _errorMessage = new MarkupString(dto.ErrorMessage);
-        }
-        catch
-        {
-            _statusCode = -1;
-            try
-            {
-                var r = await response.Content.ReadAsStringAsync();
-                if (!string.IsNullOrEmpty(r))
-                    _errorMessage = new MarkupString(r);
-                //ToDo label
-                else
-                    _errorMessage = new MarkupString("Opps, something went wrong");
-            }
-            catch(Exception ex)
-            {
-                _errorMessage = new MarkupString($"Exception occurred: {ex.Message}");
-            }
-        }
-
-        _isLoading = false;
-        _isError = true;
-        return default;
-    }
 
     public MarkupString AppendMarkupString(MarkupString m, string s)
     {

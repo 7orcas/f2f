@@ -1,12 +1,11 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using GC = Backend.GlobalConstants;
-using CGC = Common.GlobalConstants;
 
 namespace Backend.Base.Role
 {
     [Authorize]
-    [PermissionAtt(CGC.PerRole)]
+    [PermissionAtt(GC.PerRole)]
     [ApiController]
     [Route("api/[controller]")]
     public class RoleController : BaseController
@@ -28,7 +27,7 @@ namespace Backend.Base.Role
             _PermissionInitialiseService = PermissionInitialiseService;
         }
 
-        [CrudAtt(CGC.CrudRead)]
+        [CrudAtt(GC.CrudRead)]
         [AuditListAtt(GC.EntityTypeRole)]
         [HttpGet("userroles")]
         public async Task<IActionResult> GetUserRoles()
@@ -58,7 +57,7 @@ namespace Backend.Base.Role
             return Ok(r);
         }
 
-        [CrudAtt(CGC.CrudRead)]
+        [CrudAtt(GC.CrudRead)]
         [AuditListAtt(GC.EntityTypeRole)]
         [HttpGet("roles")]
         public async Task<IActionResult> GetRoles()
@@ -83,7 +82,7 @@ namespace Backend.Base.Role
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        [CrudAtt(CGC.CrudRead)] //ToDo
+        [CrudAtt(GC.CrudRead)] //ToDo
         [AuditListAtt(GC.EntityTypeRole)]
         [HttpGet("get/{id}")]
         public async Task<IActionResult> GetRole(long id)

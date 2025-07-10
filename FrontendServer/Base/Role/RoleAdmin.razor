@@ -1,4 +1,4 @@
-﻿@attribute [Route(BasePageRoutes.RoleRoute)]
+﻿@attribute [Route(BaseRoutes.RoleRoute)]
 @inherits BasePage
 @attribute [Authorize]
 
@@ -9,7 +9,7 @@
 <Header @key="_stateChangedToggle"
         TitleKey="Roles"
         SubTitleKey="RoleSub"
-        PageCode=@BasePageRoutes.RolePageCode
+        PageCode=@BaseRoutes.RolePageCode
         IsReadOnly="@_isCrudRO"
         TBSave="SaveAsync"
         TBSaveLabel="SaveChg" />
@@ -103,26 +103,26 @@
                                         var matching = role.RolePermissions.FirstOrDefault(p => p.PermissionNr == permission.PermissionNr);
                                         <td class="mud-table-cell">
                                             <MudCheckBox T="bool" 
-                                                         Value="@IsCrud(matching, CGC.CrudCreate)"
-                                                         ValueChanged="@(v => SetCrud(matching, CGC.CrudCreate, v))"
+                                                         Value="@IsCrud(matching, GC.CrudCreate)"
+                                                         ValueChanged="@(v => SetCrud(matching, GC.CrudCreate, v))"
                                                          ReadOnly="@(!_isCrudU)" />
                                         </td>
                                         <td class="mud-table-cell">
                                             <MudCheckBox T="bool" 
-                                                         Value="@IsCrud(matching, CGC.CrudRead)"
-                                                         ValueChanged="@(v => SetCrud(matching, CGC.CrudRead, v))"
+                                                         Value="@IsCrud(matching, GC.CrudRead)"
+                                                         ValueChanged="@(v => SetCrud(matching, GC.CrudRead, v))"
                                                          ReadOnly="@(!_isCrudU)" />
                                         </td>
                                         <td class="mud-table-cell">
                                             <MudCheckBox T="bool" 
-                                                         Value="@IsCrud(matching, CGC.CrudUpdate)"
-                                                         ValueChanged="@(v => SetCrud(matching, CGC.CrudUpdate, v))"
+                                                         Value="@IsCrud(matching, GC.CrudUpdate)"
+                                                         ValueChanged="@(v => SetCrud(matching, GC.CrudUpdate, v))"
                                                          ReadOnly="@(!_isCrudU)" />
                                         </td>
                                         <td class="mud-table-cell">
                                             <MudCheckBox T="bool" 
-                                                         Value="@IsCrud(matching, CGC.CrudDelete)"
-                                                         ValueChanged="@(v => SetCrud(matching, CGC.CrudDelete, v))"
+                                                         Value="@IsCrud(matching, GC.CrudDelete)"
+                                                         ValueChanged="@(v => SetCrud(matching, GC.CrudDelete, v))"
                                                          ReadOnly="@(!_isCrudU)" />
                                         </td>
 
@@ -143,9 +143,8 @@
 @using FrontendServer.Base.Util
 @using System.Text;
 @using sysJ = System.Text.Json
-@using GC = FrontendServer.GlobalConstants;
-@using CGC = Common.GlobalConstants;
 @using FrontendServer.Base._Base;
+@using GC = FrontendServer.GlobalConstants;
 
 @code {
     private string tableHeight = "70vh";
@@ -159,11 +158,10 @@
     {
         if (firstRender)
         {
-            await InitialiseBasePage();
-            _pageCode = BasePageRoutes.OrgPageCode;
+            await InitialiseBasePage(GC.PerRole);
+            _pageCode = BaseRoutes.OrgPageCode;
 
             roles = await GetAsync<List<RoleDto>>(GC.URL_role_list);
-            SetCrud(CGC.PerRole);
 
             if (roles.Count > 0)
                 Select(roles[0], true);
@@ -218,10 +216,10 @@
             crud += crudChar;
 
         var crudx = "";
-        if (crud.Contains(CGC.CrudCreate)) crudx += CGC.CrudCreate;
-        if (crud.Contains(CGC.CrudRead)) crudx += CGC.CrudRead;
-        if (crud.Contains(CGC.CrudUpdate)) crudx += CGC.CrudUpdate;
-        if (crud.Contains(CGC.CrudDelete)) crudx += CGC.CrudDelete;
+        if (crud.Contains(GC.CrudCreate)) crudx += GC.CrudCreate;
+        if (crud.Contains(GC.CrudRead)) crudx += GC.CrudRead;
+        if (crud.Contains(GC.CrudUpdate)) crudx += GC.CrudUpdate;
+        if (crud.Contains(GC.CrudDelete)) crudx += GC.CrudDelete;
         match.Crud = crudx;
     }
 

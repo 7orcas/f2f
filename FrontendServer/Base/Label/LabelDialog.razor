@@ -1,6 +1,5 @@
 ﻿@inherits BasePage
 
-@using GC = FrontendServer.GlobalConstants;
  
 @if (_isLoading || _isError)
 {
@@ -113,6 +112,7 @@ else
     </MudDialog>
 }
 
+@using GC = FrontendServer.GlobalConstants;
 
 @code {
     [Parameter] public string LangKey { get; set; }
@@ -147,7 +147,7 @@ else
     {
         if (firstRender)
         {
-            await InitialiseBasePage();
+            await InitialiseBasePage(GC.PerLang);
             appConfig = await GetConfig();
             
             lLangCode = GetLabelHighlightNoKey("LangCode");

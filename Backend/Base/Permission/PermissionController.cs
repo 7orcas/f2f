@@ -1,13 +1,12 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using GC = Backend.GlobalConstants;
-using CGC = Common.GlobalConstants;
 using System.Runtime.ConstrainedExecution;
 
 namespace Backend.Base.Permission
 {
     [Authorize]
-    [PermissionAtt(CGC.PerPerm)]
+    [PermissionAtt(GC.PerPerm)]
     [ApiController]
     [Route("api/[controller]")]
     public class PermissionController : BaseController
@@ -28,7 +27,7 @@ namespace Backend.Base.Permission
             _PermissionService = PermissionService;
         }
 
-        [CrudAtt(CGC.CrudRead)]
+        [CrudAtt(GC.CrudRead)]
         [AuditListAtt(GC.EntityTypePermission)]
         [HttpGet("list")]
         public async Task<IActionResult> Get()
@@ -66,7 +65,7 @@ namespace Backend.Base.Permission
             return Ok(r);
         }
 
-        [CrudAtt(CGC.CrudRead)]
+        [CrudAtt(GC.CrudRead)]
         [AuditListAtt(GC.EntityTypePermissionEffect)]
         [HttpGet("listeffective")]
         public async Task<IActionResult> GetEffective()

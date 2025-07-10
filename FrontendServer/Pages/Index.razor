@@ -1,11 +1,6 @@
 ﻿@page "/"
 @inherits BasePage
 
-@using GC = FrontendServer.GlobalConstants;
-@using Newtonsoft.Json;
-@using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage
-@using sysJ = System.Text.Json
-
 @if (_isLoading)
 {
     <Loading />
@@ -43,6 +38,11 @@ else
     </p>
 }
 
+@using Newtonsoft.Json;
+@using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage
+@using sysJ = System.Text.Json
+@using GC = FrontendServer.GlobalConstants;
+
 @inject HttpClient HttpClient
 @inject IHttpClientFactory HttpClientFactory
 @inject NavigationManager NM
@@ -61,7 +61,7 @@ else
             var result = await PS.GetAsync<string>(GC.TokenCacheKey);
             if (result.Success)
             {
-                await InitialiseBasePage();
+                await InitialiseBasePage(GC.PerIgnore);
                 _isLoading = false;
                 StateHasChanged();
                 return;
@@ -98,8 +98,8 @@ else
             //Is there an auto open?
             if (query.TryGetValue("open", out var autoOpenX))
             {
-                if (AppPageRoutes.IsRoute(autoOpenX))
-                    NM.NavigateTo("/" + AppPageRoutes.GetRoute(autoOpenX));
+                if (AppRoutes.IsRoute(autoOpenX))
+                    NM.NavigateTo("/" + AppRoutes.GetRoute(autoOpenX));
             }
 
         }

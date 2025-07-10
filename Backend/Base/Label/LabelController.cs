@@ -2,12 +2,11 @@
 using Microsoft.AspNetCore.Mvc;
 using Serilog.Events;
 using GC = Backend.GlobalConstants;
-using CGC = Common.GlobalConstants;
 
 namespace Backend.Base.Label
 {
     [Authorize]
-    [PermissionAtt(CGC.PerLabel)]
+    [PermissionAtt(GC.PerLabel)]
     [ApiController]
     [Route("api/[controller]")]
     public class LabelController : BaseController
@@ -28,7 +27,7 @@ namespace Backend.Base.Label
         /// </summary>
         /// <param name="langCode"></param>
         /// <returns></returns>
-        [CrudAtt(CGC.CrudRead)]
+        [CrudAtt(GC.CrudRead)]
         [AuditListAtt(GC.EntityTypeLangLabelList)]
         [HttpGet("clientlist/{langCode}/{variant}")]
         public async Task<IActionResult> GetClientLabelList(string langCode, int? variant)
@@ -73,7 +72,7 @@ namespace Backend.Base.Label
         /// </summary>
         /// <param name="LangKeyCode"></param>
         /// <returns></returns>
-        [CrudAtt(CGC.CrudRead)]
+        [CrudAtt(GC.CrudRead)]
         [AuditListAtt(GC.EntityTypeLangLabelRelated)]
         [HttpGet("relatedlist/{LangKeyCode}")]
         public async Task<IActionResult> GetRelatedLabels(string langKeyCode)

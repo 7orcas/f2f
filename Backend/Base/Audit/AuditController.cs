@@ -1,12 +1,11 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using GC = Backend.GlobalConstants;
-using CGC = Common.GlobalConstants;
 
 namespace Backend.Base.Audit
 {
     [Authorize]
-    [PermissionAtt(CGC.PerAudit)]
+    [PermissionAtt(GC.PerAudit)]
     [ApiController]
     [Route("api/[controller]")]
     public class AuditController : BaseController
@@ -21,7 +20,7 @@ namespace Backend.Base.Audit
         }
 
 
-        [CrudAtt(CGC.CrudRead)]
+        [CrudAtt(GC.CrudRead)]
         [AuditListAtt(GC.EntityTypeAudit)]
         [HttpGet("list")]
         public async Task<IActionResult> Get()

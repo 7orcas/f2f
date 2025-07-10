@@ -26,6 +26,7 @@ namespace Common
         public const string CrudReadList = "l";
         public const string CrudIgnore   = "x"; //Don't need a permission crud setting
 
+        public const int PerIgnore  = 0;
         public const int PerOrg     = 1;
         public const int PerPerm    = 2;
         public const int PerLabel   = 3;

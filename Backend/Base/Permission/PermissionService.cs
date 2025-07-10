@@ -1,7 +1,6 @@
 ﻿using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Caching.Memory;
 using GC = Backend.GlobalConstants;
-using CGC = Common.GlobalConstants;
 
 namespace Backend.Base.Permission
 {
@@ -179,7 +178,7 @@ namespace Backend.Base.Permission
             if (session == null) return false;
             if (session.UserAccount.IsService()) return true;
 
-            if (crud != null && crud.Action == CGC.CrudIgnore) return true;
+            if (crud != null && crud.Action == GC.CrudIgnore) return true;
 
             var permEnt = GetPermissionEnt(permAtt.Nr);
             if (permEnt == null) return false;

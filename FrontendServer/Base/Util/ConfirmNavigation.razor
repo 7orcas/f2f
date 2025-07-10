@@ -4,6 +4,8 @@
 <!-- ConfirmExternalNavigation="true" -->
 <NavigationLock OnBeforeInternalNavigation="HandleNavigation" />
 
+@using GC = FrontendServer.GlobalConstants;
+
 @code {
     [Parameter] public _BaseDto<T> Dto { get; set; }
     [Parameter] public IEnumerable<_BaseDto<T>> List { get; set; }
@@ -35,7 +37,7 @@
     {
         if (firstRender)
         {
-            await InitialiseBasePage();
+            await InitialiseBasePage(GC.PerIgnore);
             StateHasChanged();
         }
     }

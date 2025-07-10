@@ -1,5 +1,4 @@
 ﻿using GC = Backend.GlobalConstants;
-using CGC = Common.GlobalConstants;
 using Microsoft.Extensions.Caching.Memory;
 
 /// <summary>
@@ -31,10 +30,10 @@ namespace Backend.Base.Permission
         {
             var dic = new Dictionary<int, PermissionEnt>(); //permission nr, entity
 
-            for (int i=0; i<CGC.Permissions.Length; i += 2)
+            for (int i=0; i<GC.Permissions.Length; i += 2)
             {
-                var nr = (int)CGC.Permissions[i];
-                var langKey = (string)CGC.Permissions[i + 1];
+                var nr = (int)GC.Permissions[i];
+                var langKey = (string)GC.Permissions[i + 1];
 
                 dic.Add(nr, new PermissionEnt 
                 { 

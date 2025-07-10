@@ -1,4 +1,4 @@
-﻿@attribute [Route(BasePageRoutes.UserRoleRoute)]
+﻿@attribute [Route(BaseRoutes.UserRoleRoute)]
 @inherits BasePage
 @attribute [Authorize]
 
@@ -50,7 +50,7 @@ else
     {
         if (firstRender)
         {
-            await SetClient();
+           // await SetClient();
             await SetConfig();
 
             roles = await GetAsync<List<UserRoleDto>>(GC.URL_user_role_list);

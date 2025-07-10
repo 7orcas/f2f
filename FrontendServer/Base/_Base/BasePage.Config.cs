@@ -1,5 +1,4 @@
-﻿using Newtonsoft.Json;
-using GC = FrontendServer.GlobalConstants;
+﻿using GC = FrontendServer.GlobalConstants;
 
 /// <summary>
 /// Configuration methods for BasePage

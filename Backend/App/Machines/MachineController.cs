@@ -1,12 +1,11 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using GC = Backend.GlobalConstants;
-using CGC = Common.GlobalConstants;
 
 namespace Backend.App.Machines
 {
     [Authorize]
-    [PermissionAtt(CGC.PerMach)]
+    [PermissionAtt(GC.PerMach)]
     [ApiController]
     [Route("api/[controller]")]
     public class MachineController : BaseController
@@ -24,7 +23,7 @@ namespace Backend.App.Machines
             _machineService = machineService;
         }
 
-        [CrudAtt(CGC.CrudRead)]
+        [CrudAtt(GC.CrudRead)]
         [AuditListAtt(GC.EntityTypeMachine)]
         [HttpGet("list")]
         public async Task<IActionResult> Get()

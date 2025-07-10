@@ -1,6 +1,4 @@
 ﻿@inherits BasePage
-@inject ThemeService TS
-@using GC = FrontendServer.GlobalConstants;
 
 <PageTitle>@title</PageTitle>
 
@@ -41,6 +39,10 @@
     </MudPaper>
 }
 
+@using GC = FrontendServer.GlobalConstants;
+
+@inject ThemeService TS
+
 @code {
     [Parameter] public string TitleKey { get; set; }
     [Parameter] public string SubTitleKey { get; set; }
@@ -58,7 +60,7 @@
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         if (firstRender){
-            await InitialiseBasePage();
+            await InitialiseBasePage(GC.PerIgnore);
             title = GetLabel(TitleKey);
             isSubTitle = string.IsNullOrEmpty(SubTitleKey);
 

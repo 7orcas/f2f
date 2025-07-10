@@ -1,17 +1,6 @@
-﻿@attribute [Route(BasePageRoutes.PermRoute)]
+﻿@attribute [Route(BaseRoutes.PermRoute)]
 @inherits BasePage
 @attribute [Authorize]
-
-@inject HttpClient HttpClient
-@inject NavigationManager NavigationManager
-@inject IHttpClientFactory HttpClientFactory
-
-
-@using GC = FrontendServer.GlobalConstants;
-@using Newtonsoft.Json;
-@using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage
-@inject ProtectedSessionStorage ProtectedSessionStore
-
 
 <Header @key="_pageCode"
         TitleKey="UserPerm"
@@ -91,7 +80,16 @@ else
     </MudGrid>
 }
 
+@using Newtonsoft.Json;
+@using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage
+@using GC = FrontendServer.GlobalConstants;
+
+@inject HttpClient HttpClient
+@inject NavigationManager NavigationManager
+@inject IHttpClientFactory HttpClientFactory
+@inject ProtectedSessionStorage ProtectedSessionStore
 @inject PermissionService PS
+
 @code {
     private bool _expandFirstPanel = true;
     private List<PermissionDto>? effective;
@@ -102,8 +100,8 @@ else
     {
         if (firstRender)
         {
-            await InitialiseBasePage();
-            _pageCode = BasePageRoutes.PermPageCode;
+            await InitialiseBasePage(GC.PerPerm);
+            _pageCode = BaseRoutes.PermPageCode;
 
             permissions = PS.AllPermissions;
             effective = PS.Permissions;

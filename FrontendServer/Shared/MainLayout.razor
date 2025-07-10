@@ -28,7 +28,7 @@
                                            Edge="Edge.Start"
                                            OnClick="@ToggleDrawer" />
                         }
-                        <MenuButton Title="@ConfS.Config.OrgDescription" Link="@AppPageRoutes.HomeRoute" />
+                        <MenuButton Title="@ConfS.Config.OrgDescription" Link="@AppRoutes.HomeRoute" />
                     </div>
 
                     <!-- Center: Menu items -->
@@ -66,8 +66,8 @@
                                             <MudText Typo="Typo.h6">@GetLabel("LDM")</MudText>
                                         </MudSwitch>
                                     </div>
-                                    <MenuButton Title="@GetLabel("ChgPw")" Link="@AppPageRoutes.ChangePWRoute" />
-                                    <MenuButton Title="@GetLabel("Config")" Link="@AppPageRoutes.ConfigRoute" />
+                                    <MenuButton Title="@GetLabel("ChgPw")" Link="@AppRoutes.ChangePWRoute" />
+                                    <MenuButton Title="@GetLabel("Config")" Link="@AppRoutes.ConfigRoute" />
                                 </MudStack>
                             </ChildContent>
                         </MudMenu>

@@ -1,4 +1,4 @@
-﻿using CGC = Common.GlobalConstants;
+﻿using GC = Backend.GlobalConstants;
 
 namespace Backend.Base.Permission.Ent
 {
@@ -23,10 +23,10 @@ namespace Backend.Base.Permission.Ent
                 if (!Crud.Contains(crud[i])) Crud += crud[i];
            
             var crudx = "";
-            if (Crud.Contains(CGC.CrudCreate)) crudx += CGC.CrudCreate;
-            if (Crud.Contains(CGC.CrudRead)) crudx += CGC.CrudRead;
-            if (Crud.Contains(CGC.CrudUpdate)) crudx += CGC.CrudUpdate;
-            if (Crud.Contains(CGC.CrudDelete)) crudx += CGC.CrudDelete;
+            if (Crud.Contains(GC.CrudCreate)) crudx += GC.CrudCreate;
+            if (Crud.Contains(GC.CrudRead)) crudx += GC.CrudRead;
+            if (Crud.Contains(GC.CrudUpdate)) crudx += GC.CrudUpdate;
+            if (Crud.Contains(GC.CrudDelete)) crudx += GC.CrudDelete;
             Crud = crudx;
         }
 

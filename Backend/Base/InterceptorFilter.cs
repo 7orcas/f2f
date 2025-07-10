@@ -4,7 +4,6 @@ using Microsoft.AspNetCore.Mvc.Filters;
 using Serilog.Events;
 using System.Reflection;
 using GC = Backend.GlobalConstants;
-using CGC = Common.GlobalConstants;
 
 namespace Backend.Base
 {
@@ -75,7 +74,7 @@ namespace Backend.Base
                     {
                         Valid = false,
                         ErrorMessage = "Not Authorised",  //ToDo label 'NAuth'
-                        StatusCode = CGC.StatusCodeNotAuthorised // HTTP status code
+                        StatusCode = GC.StatusCodeNotAuthorised // HTTP status code
                     };
                     context.Result = new OkObjectResult(r);
                 }

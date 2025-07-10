@@ -2,7 +2,7 @@
 
 namespace FrontendServer.Application
 {
-    public class AppPageRoutes : BasePageRoutes
+    public class AppRoutes : BaseRoutes
     {
         static private Dictionary<string, string> PageCodeDic; //page code, route
 

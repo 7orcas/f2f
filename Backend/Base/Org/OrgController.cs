@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using GC = Backend.GlobalConstants;
-using CGC = Common.GlobalConstants;
 
 /// <summary>
 /// Organisation controller
@@ -13,7 +12,7 @@ using CGC = Common.GlobalConstants;
 namespace Backend.Base.Org
 {
     [Authorize]
-    [PermissionAtt(CGC.PerOrg)]
+    [PermissionAtt(GC.PerOrg)]
     [ApiController]
     [Route("api/[controller]")]
     public class OrgController : BaseController
@@ -31,7 +30,7 @@ namespace Backend.Base.Org
             _orgService = orgService;
         }
 
-        [CrudAtt(CGC.CrudIgnore)]  //ToDo
+        [CrudAtt(GC.CrudIgnore)]  //ToDo
         [AuditListAtt(GC.EntityTypeOrg)]
         [HttpGet("list")]
         public async Task<IActionResult> Get()
@@ -66,7 +65,7 @@ namespace Backend.Base.Org
         /// </summary>
         /// <param name="nr"></param>
         /// <returns></returns>
-        [CrudAtt(CGC.CrudIgnore)] //ToDo
+        [CrudAtt(GC.CrudIgnore)] //ToDo
         [AuditListAtt(GC.EntityTypeOrg)]
         [HttpGet("get/{nr}")]
         public async Task<IActionResult> GetOrg(int nr)
@@ -117,7 +116,7 @@ namespace Backend.Base.Org
         /// Update Org
         /// </summary>
         /// <returns></returns>
-        [CrudAtt(CGC.CrudIgnore)]
+        [CrudAtt(GC.CrudIgnore)]
         [AuditListAtt(GC.EntityTypeOrg)]
         [HttpPost("update")]
         public async Task<IActionResult> UpdateOrg([FromBody] OrgDto dto)

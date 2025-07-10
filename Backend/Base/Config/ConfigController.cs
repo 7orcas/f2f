@@ -4,7 +4,6 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using GC = Backend.GlobalConstants;
-using CGC = Common.GlobalConstants;
 
 /// <summary>
 /// Configuration is a combination of the org config and the user settings.
@@ -17,7 +16,7 @@ using CGC = Common.GlobalConstants;
 namespace Backend.Base.Config
 {
     [Authorize]
-    [PermissionAtt(CGC.PerConfig)]
+    [PermissionAtt(GC.PerConfig)]
     [ApiController]
     [Route("api/[controller]")]
     public class ConfigController : BaseController
@@ -40,7 +39,7 @@ namespace Backend.Base.Config
         /// This is a mix of organisation and user account config
         /// </summary>
         /// <returns></returns>
-        [CrudAtt(CGC.CrudIgnore)]
+        [CrudAtt(GC.CrudIgnore)]
         [HttpGet("clientConfig")]
         public async Task<IActionResult> GetClientConfig()
         {

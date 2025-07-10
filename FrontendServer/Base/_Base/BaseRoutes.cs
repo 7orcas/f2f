@@ -1,6 +1,6 @@
 ﻿namespace FrontendServer.Base._Base
 {
-    public class BasePageRoutes
+    public class BaseRoutes
     {
         //Routes
         public const string HomeRoute        = "/";
