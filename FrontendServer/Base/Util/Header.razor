@@ -14,28 +14,22 @@
 {
     <MudPaper Elevation="0" Outlined="@_debugOutlined">
         
-            <!-- Buttons -->
-            @if(TBSave.HasDelegate)
-            {
-                <MudButton OnClick="TBSave">
-                    <Label Key="@TBSaveLabel"
-                           Class="toolbar-button" 
-                           Size="GC.TextSize.ButtonText" 
-                           HideTooltip=true                        
-                    >
-                    </Label>
-                </MudButton>
-            }
-            @if(TBExport.HasDelegate)
-            {
-                <MudButton class="toolbar-button" OnClick="TBExport">
-                    <Label Key="Export"
-                           Size="GC.TextSize.ButtonText"     
-                    ></Label>
-                </MudButton>
-            }
-            <MudSpacer></MudSpacer>
-        
+        <!-- Buttons -->
+        @for (int i = 0; i < ToolBarButtons.Count; i++)
+        {
+            var b = ToolBarButtons[i];
+
+            <MudButton OnClick="b.Action">
+                <Label Key="@b.LangKey"
+                        Class="@b.Class" 
+                        Size="GC.TextSize.ButtonText" 
+                        HideTooltip=true                        
+                >
+                </Label>
+            </MudButton>
+        }
+            
+        <MudSpacer></MudSpacer>
     </MudPaper>
 }
 
@@ -48,14 +42,12 @@
     [Parameter] public string SubTitleKey { get; set; }
     [Parameter] public string PageCode { get; set; }
     [Parameter] public bool IsReadOnly { get; set; } = false;
-    [Parameter] public string TBSaveLabel { get; set; }
-    [Parameter] public EventCallback TBSave { get; set; }
-    [Parameter] public EventCallback TBExport { get; set; }
+    [Parameter] public List<ToolBarButton> ToolBarButtons { get; set; } = new();
     [Parameter] public RenderFragment ChildContent { get; set; }
 
     private string title;
     private bool isSubTitle;
-    private bool isToolbar;
+    private bool isToolbar = false;
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
@@ -64,11 +56,7 @@
             title = GetLabel(TitleKey);
             isSubTitle = string.IsNullOrEmpty(SubTitleKey);
 
-            isToolbar = TBSave.HasDelegate || TBExport.HasDelegate;
-            isToolbar = isToolbar && !IsReadOnly;
-
-            if (string.IsNullOrEmpty(TBSaveLabel))
-                TBSaveLabel = "SaveRec";
+            isToolbar = ToolBarButtons != null && ToolBarButtons.Count > 0;
 
             StateHasChanged();
         }

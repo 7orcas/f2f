@@ -29,6 +29,12 @@
     color: indianred !important;
 }
 
+.toolbar-button-test {
+    color: white !important;
+    background-color: red !important;
+}
+
+
 [data-tooltip]:hover::after {
     display: block;
     position: absolute;

@@ -79,7 +79,7 @@ namespace Backend.Base.Org
                         Update("isActive", org.IsActive) +
                         Update("langCode", org.LangCode) +
                         NoComma(Update("langLabelVariant", org.LangLabelVariant)) +
-                    " WHERE id = " + org.Nr
+                    " WHERE nr = " + org.Nr
             );
             _memoryCache.Set(GC.CacheKeyOrgPrefix + org.Nr, org);
         }
