@@ -3,37 +3,68 @@ using Microsoft.Extensions.Caching.Memory;
 using System.Collections.Generic;
 using GC = Backend.GlobalConstants;
 
+/// <summary>
+/// Holds all language dictionaries
+/// Cached objects: 
+/// - Dictionary<string, LangLabel> language label objects
+/// - Dictionary<string, string> language lables only
+/// Created: June 2025
+/// [*Licence*]
+/// Author: John Stewart
+/// </summary>
+
 namespace Backend.Base.Label
 {
     public class LabelService : BaseService, LabelServiceI
     {
-        private readonly IMemoryCache _memoryCache;
+        private readonly IMemoryCache cache;
 
         public LabelService(IServiceProvider serviceProvider,
             IMemoryCache memoryCache) 
             : base(serviceProvider)
         {
-            _memoryCache = memoryCache;
+            cache = memoryCache;
         }
 
         public async Task<Dictionary<string, LangLabel>> GetLanguageLabelDic(string langCode, int? variant)
         {
-            var dic = _memoryCache.Get<Dictionary<string, LangLabel>>(CacheKey(langCode, variant));
+            var key = CacheKey(langCode, variant, "l");
+            var dic = cache.Get<Dictionary<string, LangLabel>>(key);
             if (dic != null) return dic;
 
             await GetLanguageLabelList(langCode, variant);
-            return _memoryCache.Get<Dictionary<string, LangLabel>>(CacheKey(langCode, variant));
+            return cache.Get<Dictionary<string, LangLabel>>(key);
         }
+
+        public async Task<Dictionary<string, string>> GetLangCodeDic(SessionEnt session)
+        {
+            return await GetLangCodeDic(session.UserConfig.LangCodeCurrent, session.Org.LangLabelVariant);
+        }
+
+        public async Task<Dictionary<string, string>> GetLangCodeDic(string langCode, int? variant)
+        {
+            var key = CacheKey(langCode, variant, "c");
+            var dic = cache.Get<Dictionary<string, string>>(key);
+            if (dic != null) return dic;
+
+            var list = await GetLanguageLabelList(langCode, variant);
+            var dicX = list.ToDictionary(x => x.LangKeyCode, x => x.Code);
+            cache.Set(key, dicX);
+
+            return dicX;
+        }
+
 
         private async Task SetLanguageLabelDic(string langCode, int? variant, List<LangLabel> list)
         {
+            var key = CacheKey(langCode, variant, "l");
             var dic = list.ToDictionary(x => x.LangKeyCode, x => x);
-            _memoryCache.Set(CacheKey(langCode, variant), dic);
+            cache.Set(key, dic);
         }
 
-        private string CacheKey(string langCode, int? variant)
+        private string CacheKey(string langCode, int? variant, string type)
         {
-            return GC.CacheKeyLabelPrefix + langCode + (variant.HasValue ? variant : 0);
+            return GC.CacheKeyLabelPrefix + langCode + (variant.HasValue ? variant : 0) + type;
         }
 
         /*
@@ -41,7 +72,8 @@ namespace Backend.Base.Label
          */
         public async Task<List<LangLabel>> GetLanguageLabelList(string langCode, int? variant)
         {
-            var dic = _memoryCache.Get<Dictionary<string, LangLabel>>(CacheKey(langCode, variant));
+            var key = CacheKey(langCode, variant, "l");
+            var dic = cache.Get<Dictionary<string, LangLabel>>(key);
             if (dic != null) return dic.Values.ToList(); 
 
             var list = await GetLabelList(null, langCode, null, null, null);
@@ -173,9 +205,7 @@ namespace Backend.Base.Label
 
             return list;
         }
-
-       
-
+        
         public async Task<bool> SaveLabel(LangLabel label)
         {
             string sql = "";

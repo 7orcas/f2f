@@ -33,6 +33,13 @@ namespace Backend.Base
             return langKey;
         }
 
+        protected string GetLabel(string langKey, Dictionary<string, string> labels)
+        {
+            if (labels.ContainsKey(langKey))
+                return labels[langKey];
+            return langKey;
+        }
+
         protected bool IsSame (int? i1, int? i2)
         {
             if (i1 == null && i2 == null) return true;

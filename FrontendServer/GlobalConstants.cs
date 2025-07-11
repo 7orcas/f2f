@@ -19,6 +19,7 @@
         public const string URL_user_role_list    = "api/Role/userroles";
         public const string URL_role_list         = "api/Role/roles";
         public const string URL_role              = "api/Role/get/";
+        public const string URL_role_update       = "api/Role/update/";
         public const string URL_config            = "api/Config/clientConfig";
         public const string URL_org_list          = "api/Org/list";
         public const string URL_org               = "api/Org/get/";

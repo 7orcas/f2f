@@ -176,10 +176,7 @@ else
             await InitialiseBasePage(GC.PerRole);
             _pageCode = BaseRoutes.OrgPageCode;
 
-            roles = await GetAsync<List<RoleDto>>(GC.URL_role_list);
-
-            if (roles.Count > 0)
-                Select(roles[0], true);
+            await Load();
 
             showList = roles.Count > 1;
 
@@ -193,6 +190,8 @@ else
                     LangKey = "RoleA", 
                     Action = AddRole });
 
+            toolBarButtonsRight.Add(new ToolBarButton { LangKey = "Export", Action = Export });
+
             if (toolBarButtonsLeft.Count>0)
                 toolBarButtonsRight.Add(new ToolBarButton { 
                     LangKey = "SaveChg", 
@@ -201,6 +200,13 @@ else
 
             ForceStateHasChanged();
         }
+    }
+
+    private async Task Load()
+    {
+        roles = await GetAsync<List<RoleDto>>(GC.URL_role_list);
+        if (roles.Count > 0)
+            Select(roles[0], true);
     }
 
     private async void OnItemSelected(RoleDto r) => Select(r, false);
@@ -261,36 +267,29 @@ else
     }
 
     private string GetLabelRoleEdit() => GetLabel("RoleEN") + ": " + (editRoles ? GetLabel("On") : GetLabel("Off"));
-    
+
 
     private async Task SaveAsync()
     {
         _isSaving = true;
-        // var curIndex = roleDto != null ? list.FindIndex(d => d.Id == roleDto.Id) : -1;
-        // // var client = await SetClient();
-        // for (int i = 0; i < list.Count; i++)
-        // {
-        //     var dto = list[i];
-        //     if (dto.IsLoaded && dto.HasChanged())
-        //     {
 
-        //         // var json = sysJ.JsonSerializer.Serialize(dto);
-        //         // var content = new StringContent(json, Encoding.UTF8, "application/json");
-        //         // var response = await client.PostAsync(GC.URL_org_update, content);
+        var updates = new List<RoleDto>();
+        for (int i = 0; i < roles.Count; i++)
+        {
+            var dto = roles[i];
+            if (dto.IsLoaded && dto.HasChanged())
+                updates.Add(dto);
+        }
 
-        //         var response = await PostAsync<OrgDto>(GC.URL_org_update, dto);
-
-        //         if (response.StatusCode == HttpStatusCode.OK)
-        //         {
-        //             var o = await GetAsync<OrgDto>(GC.URL_org + dto.Id);
-        //             list[i] = o.HashMe().SetLoaded();
-        //         }
-        //     }
-        // }
+        if (updates.Count>0)
+        {
+            var response = await PostAsync<RoleDto>(GC.URL_role_update, updates);
+            if (response.StatusCode == GC.StatusCodeOk)
+            {
+                await Load();
+            }
+        }
          _isSaving = false;
-
-        // if (curIndex != -1)
-        //     OnItemSelected(curIndex);
     }
 
     private async Task AddRole()
@@ -300,7 +299,7 @@ else
 
 
     //ToDo
-    private async void Export()
+    private async Task Export()
     {
 
     }

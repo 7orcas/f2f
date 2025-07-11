@@ -116,7 +116,7 @@ namespace Backend.Base.Org
         /// Update Org
         /// </summary>
         /// <returns></returns>
-        [CrudAtt(GC.CrudIgnore)]
+        [CrudAtt(GC.CrudUpdate)]
         [AuditListAtt(GC.EntityTypeOrg)]
         [HttpPost("update")]
         public async Task<IActionResult> UpdateOrg([FromBody] OrgDto dto)

@@ -29,7 +29,7 @@ Nr,Number
 AdminM,Admin
 Role,Role
 Roles,Roles
-RoleSub,Roles contain permissions. Permissions are cumulative||ie. they combine to give the user the maximum authorisation
+RoleSub,Roles contain permissions. Permissions are cumulative|| i.e.|| they combine to give the user the maximum authorisation.
 RoleA,Add New Role
 RoleEN,Edit Role Names
 MachSub,Machine record
@@ -54,4 +54,6 @@ LDM,Light/Dark Mode
 Logout,Logout
 ChgPw,Change Password
 Audit,Audit
+InvR,Invalid Records
+InvF,Field can't be empty
 <LAST>,<LAST LINE>

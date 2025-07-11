@@ -78,5 +78,21 @@ namespace FrontendServer.Base._Base
             _isSaving = false;
             return response;
         }
+
+        protected async Task<_ResponseDto> PostAsync<T>(string url, IEnumerable<T> dtos) 
+        {
+            _isSaving = true;
+            var client = await GetClient();
+
+            var json = System.Text.Json.JsonSerializer.Serialize(dtos);
+            var content = new StringContent(json, Encoding.UTF8, "application/json");
+            var response = await client.PostAsync(url, content);
+
+            var r = await response.Content.ReadAsStringAsync();
+            var dto = JsonConvert.DeserializeObject<_ResponseDto>(r);
+
+            _isSaving = false;
+            return dto;
+        }
     }
 }

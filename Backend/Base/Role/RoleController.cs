@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using Common.Validator;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using GC = Backend.GlobalConstants;
 
@@ -128,6 +129,47 @@ namespace Backend.Base.Role
                 Result = dto
             };
 
+            return Ok(r);
+        }
+
+        /// <summary>
+        /// Update Roles
+        /// </summary>
+        /// <returns></returns>
+        [CrudAtt(GC.CrudUpdate)]
+        [AuditListAtt(GC.EntityTypeOrg)]
+        [HttpPost("update")]
+        public async Task<IActionResult> UpdateOrg([FromBody] List<RoleDto> dtos)
+        {
+            var session = HttpContext.Items["session"] as SessionEnt;
+            var langDic = await _labelService.GetLangCodeDic(session);
+            var validations = new List<_ValDto>();
+
+            foreach (var dto in dtos)
+            {
+                var v = new RoleVal(dto).Validate(langDic);
+                if (v.Status() != GC.ValStatusOk)
+                    validations.Add(v);
+            }
+
+            if (validations.Count > 0)
+            {
+                var x = new _ResponseDto
+                {
+                    Valid = false,
+                    StatusCode = GC.StatusCodeUnProcessable,
+                    ErrorMessage = base.GetLabel("InvR", langDic),
+                    Result = validations
+                };
+                return Ok(x);
+            }
+            
+
+            var r = new _ResponseDto
+            {
+                SuccessMessage = "Save Ok",
+                Result = dtos
+            };
             return Ok(r);
         }
 

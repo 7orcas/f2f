@@ -10,13 +10,19 @@ namespace Common
 {
     public class GlobalConstants
     {
+        public const int StatusCodeOk            = 200;
         public const int StatusCodeNotAuthorised = 403;
+        public const int StatusCodeUnProcessable = 422;
 
         //Field Lengths
         public const int LenCode        = 15;
         public const int LenDescription = 50;
         public const int LenLangCode    = 4;
 
+        //Validation Status
+        public const int ValStatusOk      = 0;
+        public const int ValStatusError   = 1;
+        public const int ValStatusWarning = 2;
 
         //Permissions
         public const string CrudCreate   = "c";
