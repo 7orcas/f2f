@@ -22,121 +22,124 @@
                       Message=@_errorMessage>
         @exception
     </LoadingWithError>
+    <MudSkeleton Height="100%" Width="100%" />
 }
-
-<MudGrid Class="mt-4">
+else
+{
+    <MudGrid Class="mt-4">
     
-    <!-- Left Side: List -->
-    @if (showList)
-    {
-        <MudItem xs="2">
-            <MudPaper Elevation="0" Outlined="true">
-                <MudTable Items="@roles"
-                          Height="@tableHeight"
-                          FixedHeader="true"
-                          Hover="true"
-                          Bordered="true"
-                          Striped="true">
+        <!-- Left Side: List -->
+        @if (showList)
+        {
+            <MudItem xs="2">
+                <MudPaper Elevation="0" Outlined="true">
+                    <MudTable Items="@roles"
+                              Height="@tableHeight"
+                              FixedHeader="true"
+                              Hover="true"
+                              Bordered="true"
+                              Striped="true">
 
-                    <HeaderContent>
-                        <MudTh><Label Key="Role" /></MudTh>
-                        <MudTh><Label Key="Active" /></MudTh>
-                    </HeaderContent>
-                    <RowTemplate>
-                        <MudTd DataLabel="Column 1"
-                               Class="@(selections.Contains(context) ? "selected-row" : null)"
-                               @onclick="() => OnItemSelected(context)">
-                               @context.Code
-                        </MudTd>
-                        <MudTd DataLabel="Column 2">
-                            <MudCheckBox T="bool"
-                                         ReadOnly="@(!_isCrudU)"
-                                         @bind-Value="context.IsActive"/>
-                        </MudTd>
-                    </RowTemplate>
+                        <HeaderContent>
+                            <MudTh><Label Key="Role" /></MudTh>
+                            <MudTh><Label Key="Active" /></MudTh>
+                        </HeaderContent>
+                        <RowTemplate>
+                            <MudTd DataLabel="Column 1"
+                                   Class="@(selections.Contains(context) ? "selected-row" : null)"
+                                   @onclick="() => OnItemSelected(context)">
+                                   @context.Code
+                            </MudTd>
+                            <MudTd DataLabel="Column 2">
+                                <MudCheckBox T="bool"
+                                             ReadOnly="@(!_isCrudU)"
+                                             @bind-Value="context.IsActive"/>
+                            </MudTd>
+                        </RowTemplate>
 
-                </MudTable>
-            </MudPaper>
-        </MudItem>
-    }
+                    </MudTable>
+                </MudPaper>
+            </MudItem>
+        }
 
 
-    <!-- Right Side: Details -->
-    @if (selections.Count > 0)
-    {
-        <MudItem xs="8">
-            <MudPaper Elevation="0" Outlined="@_debugOutlined">
-                <div style="max-height: @tableHeight; overflow-y: auto;">
+        <!-- Right Side: Details -->
+        @if (selections.Count > 0)
+        {
+            <MudItem xs="8">
+                <MudPaper Elevation="0" Outlined="@_debugOutlined">
+                    <div style="max-height: @tableHeight; overflow-y: auto;">
 
-                    <table class="mud-table mud-table-hover mud-table-bordered mud-table-striped full-width-table" style="width: 100%;">
+                        <table class="mud-table mud-table-hover mud-table-bordered mud-table-striped full-width-table" style="width: 100%;">
 
-                        <!-- Header -->
-                        <thead class="mud-table-head">
-                            <tr class="mud-table-row">
-
-                                <th class="mud-table-cell sticky-header" rowspan="2"><Label Key="Perm"/></th>
-                                @for (int i = 0; i < selections.Count; i++)
-                                {
-                                    <th class="mud-table-cell sticky-header" style="text-align: center;" colspan="4">@selections[i].Code</th>
-                                }
-                            </tr>
-                            <tr class="mud-table-row">
-                                @foreach (var role in selections)
-                                {
-                                    <th class="mud-table-cell sticky-header" style="text-align: center;"><Label Key="Crud.C" /></th>
-                                    <th class="mud-table-cell sticky-header" style="text-align: center;"><Label Key="Crud.R" /></th>
-                                    <th class="mud-table-cell sticky-header" style="text-align: center;"><Label Key="Crud.U" /></th>
-                                    <th class="mud-table-cell sticky-header" style="text-align: center;"><Label Key="Crud.D" /></th>
-                                }
-                            </tr>
-
-                        </thead>
-                        <tbody class="mud-table-body">
-
-                            @foreach (var permission in selections.First().RolePermissions)
-                            {
+                            <!-- Header -->
+                            <thead class="mud-table-head">
                                 <tr class="mud-table-row">
 
-                                    <td class="mud-table-cell">@permission.Permission</td>
-                                    @foreach (var role in selections)
+                                    <th class="mud-table-cell sticky-header" rowspan="2"><Label Key="Perm"/></th>
+                                    @for (int i = 0; i < selections.Count; i++)
                                     {
-                                        var matching = role.RolePermissions.FirstOrDefault(p => p.PermissionNr == permission.PermissionNr);
-                                        <td class="mud-table-cell">
-                                            <MudCheckBox T="bool" 
-                                                         Value="@IsCrud(matching, GC.CrudCreate)"
-                                                         ValueChanged="@(v => SetCrud(matching, GC.CrudCreate, v))"
-                                                         ReadOnly="@(!_isCrudU)" />
-                                        </td>
-                                        <td class="mud-table-cell">
-                                            <MudCheckBox T="bool" 
-                                                         Value="@IsCrud(matching, GC.CrudRead)"
-                                                         ValueChanged="@(v => SetCrud(matching, GC.CrudRead, v))"
-                                                         ReadOnly="@(!_isCrudU)" />
-                                        </td>
-                                        <td class="mud-table-cell">
-                                            <MudCheckBox T="bool" 
-                                                         Value="@IsCrud(matching, GC.CrudUpdate)"
-                                                         ValueChanged="@(v => SetCrud(matching, GC.CrudUpdate, v))"
-                                                         ReadOnly="@(!_isCrudU)" />
-                                        </td>
-                                        <td class="mud-table-cell">
-                                            <MudCheckBox T="bool" 
-                                                         Value="@IsCrud(matching, GC.CrudDelete)"
-                                                         ValueChanged="@(v => SetCrud(matching, GC.CrudDelete, v))"
-                                                         ReadOnly="@(!_isCrudU)" />
-                                        </td>
-
+                                        <th class="mud-table-cell sticky-header" style="text-align: center;" colspan="4">@selections[i].Code</th>
                                     }
                                 </tr>
-                            }
-                        </tbody>
+                                <tr class="mud-table-row">
+                                    @foreach (var role in selections)
+                                    {
+                                        <th class="mud-table-cell sticky-header" style="text-align: center;"><Label Key="Crud.C" /></th>
+                                        <th class="mud-table-cell sticky-header" style="text-align: center;"><Label Key="Crud.R" /></th>
+                                        <th class="mud-table-cell sticky-header" style="text-align: center;"><Label Key="Crud.U" /></th>
+                                        <th class="mud-table-cell sticky-header" style="text-align: center;"><Label Key="Crud.D" /></th>
+                                    }
+                                </tr>
+
+                            </thead>
+                            <tbody class="mud-table-body">
+
+                                @foreach (var permission in selections.First().RolePermissions)
+                                {
+                                    <tr class="mud-table-row">
+
+                                        <td class="mud-table-cell">@permission.Permission</td>
+                                        @foreach (var role in selections)
+                                        {
+                                            var matching = role.RolePermissions.FirstOrDefault(p => p.PermissionNr == permission.PermissionNr);
+                                            <td class="mud-table-cell">
+                                                <MudCheckBox T="bool" 
+                                                             Value="@IsCrud(matching, GC.CrudCreate)"
+                                                             ValueChanged="@(v => SetCrud(matching, GC.CrudCreate, v))"
+                                                             ReadOnly="@(!_isCrudU)" />
+                                            </td>
+                                            <td class="mud-table-cell">
+                                                <MudCheckBox T="bool" 
+                                                             Value="@IsCrud(matching, GC.CrudRead)"
+                                                             ValueChanged="@(v => SetCrud(matching, GC.CrudRead, v))"
+                                                             ReadOnly="@(!_isCrudU)" />
+                                            </td>
+                                            <td class="mud-table-cell">
+                                                <MudCheckBox T="bool" 
+                                                             Value="@IsCrud(matching, GC.CrudUpdate)"
+                                                             ValueChanged="@(v => SetCrud(matching, GC.CrudUpdate, v))"
+                                                             ReadOnly="@(!_isCrudU)" />
+                                            </td>
+                                            <td class="mud-table-cell">
+                                                <MudCheckBox T="bool" 
+                                                             Value="@IsCrud(matching, GC.CrudDelete)"
+                                                             ValueChanged="@(v => SetCrud(matching, GC.CrudDelete, v))"
+                                                             ReadOnly="@(!_isCrudU)" />
+                                            </td>
+
+                                        }
+                                    </tr>
+                                }
+                            </tbody>
                         
-                    </table>
-                </div>
-            </MudPaper>
-        </MudItem>
-    }
-</MudGrid>
+                        </table>
+                    </div>
+                </MudPaper>
+            </MudItem>
+        }
+    </MudGrid>
+}
 
 @using System.Net
 @using MudBlazor
@@ -170,8 +173,10 @@
 
             if (!_isCrudRO)
             {
-                toolBarButtons.Add(new ToolBarButton { LangKey = "New", Action = AddRole, Class = "toolbar-button-test" });
-                toolBarButtons.Add(new ToolBarButton { LangKey = "Save", Action = SaveAsync });
+                toolBarButtons.Add(new ToolBarButton { LangKey = "RoleA", Action = AddRole });
+                toolBarButtons.Add(new ToolBarButton { LangKey = "SaveChg", Action = SaveAsync });
+                toolBarButtons.Add(new ToolBarButton { Label = GetLabel("RoleA"), Action = AddRole });
+                //toolBarButtons.Add(new ToolBarButton { Label = GetLabel("SaveChg"), Action = SaveAsync });
             }
 
             ForceStateHasChanged();
@@ -185,7 +190,7 @@
         int index = -1;
         if (!dto.IsLoaded || force)
         {
-            var roleDto = await GetAsync<RoleDto>(GC.URL_role + dto.Id);
+            var roleDto = await GetAsync<RoleDto>(GC.URL_role + dto.Id, true);
             roleDto.HashMe();
             roleDto.IsLoaded = true;
             index = roles.FindIndex(r => r.Id == dto.Id);
@@ -206,7 +211,7 @@
             selections.Add(dto);
         }
 
-        ForceStateHasChanged();
+        StateHasChanged();
     }
 
     private bool IsCrud(RolePermissionDto p, string crudChar) => !string.IsNullOrEmpty(p.Crud) && p.Crud.Contains(crudChar);

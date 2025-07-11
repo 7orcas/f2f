@@ -107,4 +107,5 @@
         return i % 2 == 0 ? " list-odd-row" : " list-even-row";
     }
   
+    public string GetLightDarkClassSuffix() => TS.IsDarkMode ? "-dark" : "-light";
 }

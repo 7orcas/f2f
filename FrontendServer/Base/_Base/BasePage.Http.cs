@@ -19,7 +19,12 @@ namespace FrontendServer.Base._Base
 
         public async Task<T> GetAsync<T>(string url)
         {
-            _isLoading = true;
+            return await GetAsync<T>(url, false);
+        }
+
+        public async Task<T> GetAsync<T>(string url, bool surpressLoading)
+        {
+            _isLoading = !surpressLoading;
 
             var client = await GetClient();
 

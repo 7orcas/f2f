@@ -29,6 +29,7 @@
 
         public enum TextSize
         {
+            None       = 0,
             Heading    = 1,
             SubHeading = 2,
             Section    = 3,

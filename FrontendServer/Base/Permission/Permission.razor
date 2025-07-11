@@ -6,7 +6,7 @@
         TitleKey="UserPerm"
         SubTitleKey="UserPermSub"
         PageCode=@_pageCode
-        />
+        ToolBarButtons="toolBarButtons" />
 
 @if (_isLoading || _isError || _isSaving)
 {
@@ -94,6 +94,7 @@ else
     private bool _expandFirstPanel = true;
     private List<PermissionDto>? effective;
     private List<UserRolePermissionDto>? permissions;
+    private List<ToolBarButton> toolBarButtons = new List<ToolBarButton>();
 
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
@@ -108,8 +109,16 @@ else
 
             _isError = effective == null;
             _isLoading = false;
+
+            toolBarButtons.Add(new ToolBarButton { LangKey = "Export", Action = Export });
+            toolBarButtons.Add(new ToolBarButton { LangKey = "Export", Action = Export });
+            toolBarButtons.Add(new ToolBarButton { LangKey = "Export", Action = Export });
+            toolBarButtons.Add(new ToolBarButton { LangKey = "Export", Action = Export });
+
             StateHasChanged();
         }
     }
    
+    private async Task Export() { }
+
 }

@@ -1,13 +1,17 @@
 @import url('open-iconic/font/css/open-iconic-bootstrap.min.css');
 
+/* Check MudTheme in MainLayout */
 :root {
-    --bg-color-lm: #1976d2;
-    
-    --bg-color-dm: rgb(56, 56, 67);
-    --accent-color: #e91e63;
-    --text-light: #ffffff;
-    --text-dark: #333333;
+    /* Light mode settings */
+    --toolbar-bg-light: var(--mud-palette-surface);
+    --button-overlay-light: #1976d2;
+    --button-text-color-light: white;
+    /* Dark mode settings */
+    --toolbar-bg-dark: #222;
+    --button-overlay-dark: rgba(255, 255, 255, 0.05);
+    --button-text-color-dark: white;
 }
+
 
 
 html, body, #app {
@@ -136,7 +140,8 @@ a, .btn-link {
 
 .custom-menu-button {
     border-radius: 4px;
-    transition: 0.3s ease;
+    /*transition: 0.3s ease;*/
+    transition: none !important;
     text-transform: none;
 }
     .custom-menu-button:hover {

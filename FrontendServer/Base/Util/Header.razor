@@ -3,49 +3,61 @@
 <PageTitle>@title</PageTitle>
 
 <div class="title-container">
-    <div class="@GetTitleClass()"><Label Size="GC.TextSize.Heading" Key=@TitleKey></Label></div>
+    <div class="@GetTitleClass()">@title</div>
     <div class="page-code">@PageCode</div>
 </div>
-<Label Size="GC.TextSize.Normal" Key="@SubTitleKey"></Label>
-<div class="subtitle">
+
+<div class="@GetSubTitleClass()">@subtitle</div>
+
+<div>
     @ChildContent
 </div>
 @if (isToolbar)
 {
     <MudPaper Elevation="0" Outlined="@_debugOutlined">
-        
-        <!-- Buttons -->
-        @for (int i = 0; i < ToolBarButtons.Count; i++)
-        {
-            var b = ToolBarButtons[i];
+        <div class="toolbar">
+            <!-- Buttons -->
+            @for (int i = 0; i < ToolBarButtons.Count; i++)
+            {
+                var b = ToolBarButtons[i];
 
-            <MudButton OnClick="b.Action">
-                <Label Key="@b.LangKey"
-                        Class="@b.Class" 
-                        Size="GC.TextSize.ButtonText" 
-                        HideTooltip=true                        
-                >
-                </Label>
-            </MudButton>
-        }
+                @if (b.IsLabel())
+                {
+                    <MudButton OnClick="b.Action">
+                        <div class="@GetButtonClass(b) label label-no-link">
+                            <MudText Typo="@GetTypo(GC.TextSize.ButtonText)">@b.Label</MudText>
+                        </div>
+                    </MudButton>
+                }
+                else
+                {
+                    <MudButton OnClick="b.Action">
+                        <Label Key="@b.LangKey"
+                               Class="@GetButtonClass(b)"
+                               Size="GC.TextSize.ButtonText"
+                               HideTooltip=true>
+                        </Label>
+                    </MudButton>
+                }
+            }
             
-        <MudSpacer></MudSpacer>
+            <MudSpacer></MudSpacer>
+        </div>
     </MudPaper>
 }
 
 @using GC = FrontendServer.GlobalConstants;
 
-@inject ThemeService TS
-
 @code {
-    [Parameter] public string TitleKey { get; set; }
-    [Parameter] public string SubTitleKey { get; set; }
-    [Parameter] public string PageCode { get; set; }
-    [Parameter] public bool IsReadOnly { get; set; } = false;
-    [Parameter] public List<ToolBarButton> ToolBarButtons { get; set; } = new();
-    [Parameter] public RenderFragment ChildContent { get; set; }
+        [Parameter] public string TitleKey { get; set; }
+        [Parameter] public string SubTitleKey { get; set; }
+        [Parameter] public string PageCode { get; set; }
+        [Parameter] public bool IsReadOnly { get; set; } = false;
+        [Parameter] public List<ToolBarButton> ToolBarButtons { get; set; } = new();
+        [Parameter] public RenderFragment ChildContent { get; set; }
 
     private string title;
+    private string? subtitle;
     private bool isSubTitle;
     private bool isToolbar = false;
 
@@ -54,7 +66,8 @@
         if (firstRender){
             await InitialiseBasePage(GC.PerIgnore);
             title = GetLabel(TitleKey);
-            isSubTitle = string.IsNullOrEmpty(SubTitleKey);
+            isSubTitle = !string.IsNullOrEmpty(SubTitleKey);
+            subtitle = isSubTitle? GetLabel(SubTitleKey) : null;
 
             isToolbar = ToolBarButtons != null && ToolBarButtons.Count > 0;
 
@@ -62,10 +75,18 @@
         }
     }
 
-    private string GetTitleClass()
+    private string GetTitleClass() => " title title" + GetLightDarkClassSuffix();
+    private string GetSubTitleClass() => " subtitle subtitle" + GetLightDarkClassSuffix();
+    
+    private string GetButtonClass(ToolBarButton b)
     {
-        if (TS.IsDarkMode)
-            return " title title-dm";
-        return " title title-lm"; 
+        var clazz = " toolbar-button ";
+        
+        if (!string.IsNullOrEmpty(b.Class))
+            clazz += b.Class;
+        else
+            clazz += "toolbar-button"; 
+
+        return clazz += GetLightDarkClassSuffix();
     }
 }
