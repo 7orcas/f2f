@@ -6,10 +6,14 @@
     --toolbar-bg-light: var(--mud-palette-surface);
     --button-overlay-light: #1976d2;
     --button-text-color-light: white;
+    --button-highlight-overlay-light: #d70f0f;
+    --button-highlight-text-color-light: white;
     /* Dark mode settings */
     --toolbar-bg-dark: #222;
     --button-overlay-dark: rgba(255, 255, 255, 0.05);
     --button-text-color-dark: white;
+    --button-highlight-overlay-dark: #8e2f2f;
+    --button-highlight-text-color-dark: white;
 }
 
 

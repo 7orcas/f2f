@@ -1,12 +1,20 @@
 ﻿.title-container {
     display: flex;
-    justify-content: space-between; /* Places one item on the left and one on the right */
-    align-items: center; /* Ensures vertical alignment */
-    width: 100%; /* Ensures it takes up the full width */
+    justify-content: space-between; 
+    align-items: center; 
+    padding: 16px;
+    gap: 16px;
 }
 
+.title-container-right {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+
 .page-code {
-    font-size: 10px;
+    font-size: 0.8rem;
     color: gray;
 }
 
@@ -53,10 +61,17 @@
 /* Shared button styles */
 .toolbar {
     display: flex;
-    gap: 8px;
+    justify-content: space-between;
     padding: 10px 16px;
     border-bottom: 1px solid #ccc;
 }
+
+.toolbar-left,
+.toolbar-right {
+    display: flex;
+    gap: 8px; /* spacing between buttons */
+}
+
 
 
 .toolbar-button {

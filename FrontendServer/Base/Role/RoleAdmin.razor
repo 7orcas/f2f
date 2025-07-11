@@ -10,8 +10,8 @@
         TitleKey="Roles"
         SubTitleKey="RoleSub"
         PageCode=@BaseRoutes.RolePageCode
-        IsReadOnly="@_isCrudRO"
-        ToolBarButtons="toolBarButtons"/>
+        ToolBarButtonsLeft="toolBarButtonsLeft"
+        ToolBarButtonsRight="toolBarButtonsRight" />
 
 
 @if (_isLoading || _isError || _isSaving)
@@ -48,7 +48,18 @@ else
                             <MudTd DataLabel="Column 1"
                                    Class="@(selections.Contains(context) ? "selected-row" : null)"
                                    @onclick="() => OnItemSelected(context)">
-                                   @context.Code
+                                @if (editRoles)
+                                {
+                                    <MudTextField T="string"
+                                                  @bind-Value="context.Code"
+                                                  Immediate="true"
+                                                  Margin="Margin.Dense"
+                                                  Variant="Variant.Text" />
+                                }
+                                else
+                                {
+                                    @context.Code
+                                }
                             </MudTd>
                             <MudTd DataLabel="Column 2">
                                 <MudCheckBox T="bool"
@@ -56,7 +67,6 @@ else
                                              @bind-Value="context.IsActive"/>
                             </MudTd>
                         </RowTemplate>
-
                     </MudTable>
                 </MudPaper>
             </MudItem>
@@ -153,9 +163,11 @@ else
     private string tableHeight = "70vh";
     private int maxSelections = 3;
     private bool showList = false;
+    private bool editRoles = false;
     private List<RoleDto> roles;
     private List<RoleDto> selections = new List<RoleDto>();
-    private List<ToolBarButton> toolBarButtons = new List<ToolBarButton>();
+    private List<ToolBarButton> toolBarButtonsLeft = new List<ToolBarButton>();
+    private List<ToolBarButton> toolBarButtonsRight = new List<ToolBarButton>();
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
@@ -171,13 +183,21 @@ else
 
             showList = roles.Count > 1;
 
-            if (!_isCrudRO)
-            {
-                toolBarButtons.Add(new ToolBarButton { LangKey = "RoleA", Action = AddRole });
-                toolBarButtons.Add(new ToolBarButton { LangKey = "SaveChg", Action = SaveAsync });
-                toolBarButtons.Add(new ToolBarButton { Label = GetLabel("RoleA"), Action = AddRole });
-                //toolBarButtons.Add(new ToolBarButton { Label = GetLabel("SaveChg"), Action = SaveAsync });
-            }
+            if (_isCrudU)
+                toolBarButtonsLeft.Add(new ToolBarButton { 
+                    GetLabel = GetLabelRoleEdit,
+                    Action = EditRoles });
+
+            if (_isCrudC)
+                toolBarButtonsLeft.Add(new ToolBarButton { 
+                    LangKey = "RoleA", 
+                    Action = AddRole });
+
+            if (toolBarButtonsLeft.Count>0)
+                toolBarButtonsRight.Add(new ToolBarButton { 
+                    LangKey = "SaveChg", 
+                    Action = SaveAsync, 
+                    Class = "toolbar-button-highlight" });
 
             ForceStateHasChanged();
         }
@@ -234,7 +254,14 @@ else
         match.Crud = crudx;
     }
 
+    private async Task EditRoles()
+    {
+        if (!_isCrudU) return;
+        editRoles = !editRoles;
+    }
 
+    private string GetLabelRoleEdit() => GetLabel("RoleEN") + ": " + (editRoles ? GetLabel("On") : GetLabel("Off"));
+    
 
     private async Task SaveAsync()
     {

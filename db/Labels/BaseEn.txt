@@ -1,3 +1,6 @@
+Close,Close
+On,On
+Off:Off
 Org,Organisation
 Orgs,Organisations
 Orgs-s,Orgs
@@ -28,6 +31,7 @@ Role,Role
 Roles,Roles
 RoleSub,Roles contain permissions. Permissions are cumulative||ie. they combine to give the user the maximum authorisation
 RoleA,Add New Role
+RoleEN,Edit Role Names
 MachSub,Machine record
 NAuth,Not Authorised
 NAuthX,You are not authorised to view this page
