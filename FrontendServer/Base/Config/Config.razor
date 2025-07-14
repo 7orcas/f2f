@@ -7,8 +7,7 @@
 <Header TitleKey="Cfg"
         SubTitleKey="ConfSub"
         PageCode=@_pageCode
-        TBSave="SaveAsync"
-        TBSaveLabel="SaveChg" />
+        ToolBarButtonsRight="toolBarButtonsRight" />
 
 @if (_isLoading || _isError || _isSaving)
 {
@@ -61,8 +60,7 @@
 @inject ConfigService ConfigService
 @code {
     private AppConfigDto? configDto;
-    private bool tbSave;
-
+    
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         if (firstRender)
@@ -71,7 +69,8 @@
             _pageCode = BaseRoutes.ConfigPageCode;
             configDto = ConfigService.Config;
             _isLoading = false;
-            tbSave = !_isLoading && !_isError;
+                        
+            AddToolbarSave(SaveAsync);
             StateHasChanged();
         }
     }

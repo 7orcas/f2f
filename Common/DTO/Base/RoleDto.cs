@@ -1,12 +1,11 @@
-﻿
-namespace Common.DTO
+﻿namespace Common.DTO.Base
 {
     public class RoleDto : _BaseFieldsDto<RoleDto>
     {
         public List<RolePermissionDto> RolePermissions { get; set; }
     }
 
-    public class RolePermissionDto 
+    public class RolePermissionDto
     {
         public long Id { get; set; }
         public long RoleId { get; set; }

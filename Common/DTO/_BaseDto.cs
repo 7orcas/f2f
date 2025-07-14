@@ -25,6 +25,9 @@ namespace Common.DTO
         [JsonInclude]
         public string? OriginalHashCode { get; set; }
 
+        [JsonInclude]
+        public bool IsError { get; set; } = false;
+
         /// <summary>
         /// Get this object's hash code (can only be run once)
         /// </summary>
@@ -45,6 +48,12 @@ namespace Common.DTO
             return (T)(object)this;
         }
 
+        public T SetError()
+        {
+            IsError = true;
+            return (T)(object)this;
+        }
+
         public bool HasChanged()
         {
             if (string.IsNullOrEmpty(OriginalHashCode)) return true;
@@ -59,6 +68,8 @@ namespace Common.DTO
             dto.OriginalHashCode = null;
             var l = dto.IsLoaded;
             dto.IsLoaded = false;
+            var e = dto.IsError;
+            dto.IsError = false;
 
             var json = JsonSerializer.Serialize(dto);
             using var sha256 = SHA256.Create();
@@ -68,6 +79,7 @@ namespace Common.DTO
             //Reset fields
             dto.OriginalHashCode = o;
             dto.IsLoaded = l;
+            dto.IsError = e;
 
             return hash;
         }

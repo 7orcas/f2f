@@ -33,35 +33,43 @@ else
         {
             <MudItem xs="2">
                 <MudPaper Elevation="0" Outlined="true">
-                    <MudTable Items="@roles"
+                    <MudTable Style="table-layout: fixed;"
+                              Items="@roles"
                               Height="@tableHeight"
                               FixedHeader="true"
                               Hover="true"
                               Bordered="true"
                               Striped="true">
 
+                        
                         <HeaderContent>
-                            <MudTh><Label Key="Role" /></MudTh>
+                            <MudTh colspan="2"><Label Key="Role" /></MudTh>
                             <MudTh><Label Key="Active" /></MudTh>
                         </HeaderContent>
                         <RowTemplate>
-                            <MudTd DataLabel="Column 1"
-                                   Class="@(selections.Contains(context) ? "selected-row" : null)"
+                            <MudTd Style="max-width:px; padding:0px; border-right: none;"
+                                   DataLabel="Error"
+                                   Class="@GetFirstColumnErrorClass(context)"
                                    @onclick="() => OnItemSelected(context)">
+                                @GetSelectRowPointer(context)
+                            </MudTd>
+                            <MudTd DataLabel="Role"
+                                    Class="@GetSelectRowClass(context)"
+                                    @onclick="() => OnItemSelected(context)">
                                 @if (editRoles)
                                 {
                                     <MudTextField T="string"
-                                                  @bind-Value="context.Code"
-                                                  Immediate="true"
-                                                  Margin="Margin.Dense"
-                                                  Variant="Variant.Text" />
+                                                    @bind-Value="context.Code"
+                                                    Immediate="true"
+                                                    Margin="Margin.Dense"
+                                                    Variant="Variant.Text" />
                                 }
                                 else
                                 {
                                     @context.Code
                                 }
                             </MudTd>
-                            <MudTd DataLabel="Column 2">
+                            <MudTd DataLabel="Active">
                                 <MudCheckBox T="bool"
                                              ReadOnly="@(!_isCrudU)"
                                              @bind-Value="context.IsActive"/>
@@ -159,6 +167,9 @@ else
 @using FrontendServer.Base._Base;
 @using GC = FrontendServer.GlobalConstants;
 
+@using Newtonsoft.Json;  
+
+
 @code {
     private string tableHeight = "70vh";
     private int maxSelections = 3;
@@ -166,14 +177,12 @@ else
     private bool editRoles = false;
     private List<RoleDto> roles;
     private List<RoleDto> selections = new List<RoleDto>();
-    private List<ToolBarButton> toolBarButtonsLeft = new List<ToolBarButton>();
-    private List<ToolBarButton> toolBarButtonsRight = new List<ToolBarButton>();
-
+    
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         if (firstRender)
         {
-            await InitialiseBasePage(GC.PerRole);
+            await InitialiseBasePage(GC.PerRole, "Role");
             _pageCode = BaseRoutes.OrgPageCode;
 
             await Load();
@@ -190,13 +199,10 @@ else
                     LangKey = "RoleA", 
                     Action = AddRole });
 
-            toolBarButtonsRight.Add(new ToolBarButton { LangKey = "Export", Action = Export });
-
+            AddToolbarExport(Export);
             if (toolBarButtonsLeft.Count>0)
-                toolBarButtonsRight.Add(new ToolBarButton { 
-                    LangKey = "SaveChg", 
-                    Action = SaveAsync, 
-                    Class = "toolbar-button-highlight" });
+                AddToolbarSave(SaveAsync);
+                
 
             ForceStateHasChanged();
         }
@@ -240,6 +246,9 @@ else
         StateHasChanged();
     }
 
+    private string GetSelectRowPointer(RoleDto dto) => GetSelectRowPointer(selections.Contains(dto));
+    private string GetSelectRowClass(RoleDto dto) => GetSelectRowClass(selections.Contains(dto));
+
     private bool IsCrud(RolePermissionDto p, string crudChar) => !string.IsNullOrEmpty(p.Crud) && p.Crud.Contains(crudChar);
 
     private void SetCrud(RolePermissionDto? match, string crudChar, bool value)
@@ -268,7 +277,6 @@ else
 
     private string GetLabelRoleEdit() => GetLabel("RoleEN") + ": " + (editRoles ? GetLabel("On") : GetLabel("Off"));
 
-
     private async Task SaveAsync()
     {
         _isSaving = true;
@@ -291,6 +299,7 @@ else
         }
          _isSaving = false;
     }
+
 
     private async Task AddRole()
     {

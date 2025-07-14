@@ -27,6 +27,7 @@
 
   <ItemGroup>
     <Folder Include="Base\Session\" />
+    <Folder Include="Logs\" />
   </ItemGroup>
 
 </Project>

@@ -6,7 +6,14 @@
     <div class="@GetTitleClass()">@title</div>
     <div class="title-container-right">
         <div class="page-code">@PageCode</div>
-        <MenuButton Title="@GetLabel("Close")" Link="@AppRoutes.HomeRoute" />
+        @if (CloseAction.HasDelegate)
+        {
+            <MudButton OnClick="@CloseAction" style="margin-left: 10px; text-transform: none;">@GetLabel("Close")</MudButton>
+        }
+        else
+        {
+            <MenuButton Title="@GetLabel("Close")" Link="@AppRoutes.HomeRoute" />
+        }
     </div>
 </div>
 
@@ -91,6 +98,7 @@
     [Parameter] public string PageCode { get; set; }
     [Parameter] public List<ToolBarButton> ToolBarButtonsLeft { get; set; } = new();
     [Parameter] public List<ToolBarButton> ToolBarButtonsRight { get; set; } = new();
+    [Parameter] public EventCallback CloseAction { get; set; } = new();
     [Parameter] public RenderFragment ChildContent { get; set; }
 
     private string title;

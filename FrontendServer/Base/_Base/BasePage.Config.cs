@@ -1,4 +1,5 @@
-﻿using GC = FrontendServer.GlobalConstants;
+﻿using Common.DTO.Base;
+using GC = FrontendServer.GlobalConstants;
 
 /// <summary>
 /// Configuration methods for BasePage

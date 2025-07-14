@@ -14,6 +14,9 @@ namespace Common
         public const int StatusCodeNotAuthorised = 403;
         public const int StatusCodeUnProcessable = 422;
 
+        //Labels
+        public const string LabelParameterPrefix = "%%";
+
         //Field Lengths
         public const int LenCode        = 15;
         public const int LenDescription = 50;
@@ -22,8 +25,7 @@ namespace Common
         //Validation Status
         public const int ValStatusOk      = 0;
         public const int ValStatusError   = 1;
-        public const int ValStatusWarning = 2;
-
+        
         //Permissions
         public const string CrudCreate   = "c";
         public const string CrudRead     = "r";

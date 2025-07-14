@@ -1,4 +1,5 @@
 ﻿using Backend.App.Machines;
+using Common.DTO.Base;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.DependencyInjection;
 using Serilog;

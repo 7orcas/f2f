@@ -3,7 +3,7 @@
     public class GlobalConstants : Common.GlobalConstants
     {
         public const int BaseOrgNr   = 0;
-        public const int NewRecordId = -9;
+        public const int NewRecordId = -9000;
         
         public const int AppClient          = 1; //defined in FrontendLogin as well
         public const string LangCodeDefault = "en";

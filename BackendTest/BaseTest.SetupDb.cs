@@ -67,11 +67,11 @@ namespace BackendTest
         {
             PermissionEnt[] perms = new PermissionEnt[MaxPermissions];
             for (int i = 0; i < MaxPermissions; i++)
-                perms[i] = new PermissionEnt { Id = -1 + i*-1, Permission = "perm" + (i+1) };
+                perms[i] = new PermissionEnt { Nr = -1 + i*-1, LangKey = "perm" + (i+1) };
 
             string sql = "";
             foreach (var rec in perms)
-                sql += "INSERT INTO " + tP + " (id, code) VALUES (" + rec.Id + ",'" + rec.Permission + "');";
+                sql += "INSERT INTO " + tP + " (id, code) VALUES (" + rec.Nr + ",'" + rec.LangKey + "');";
             await Sql.Execute(IdentityInsert(tP, sql));
 
 
@@ -94,7 +94,7 @@ namespace BackendTest
                 else p = 0;
                 string c = crud[p];
                 foreach (var rec2 in perms)
-                    sql += "INSERT INTO " + tRP + " (id, roleId, permissionId, crud) VALUES (" + --idTest + "," + rec1.Id + "," + rec2.Id + ",'" + c + "');";
+                    sql += "INSERT INTO " + tRP + " (id, roleId, permissionId, crud) VALUES (" + --idTest + "," + rec1.Id + "," + rec2.Nr + ",'" + c + "');";
             }
             await Sql.Execute(IdentityInsert(tRP, sql));
 

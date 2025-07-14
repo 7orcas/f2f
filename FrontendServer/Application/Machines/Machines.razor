@@ -19,8 +19,8 @@
 }
 
 
-<MudGrid>
-    <ChildContent>
+<MudGrid Class="mt-4">
+    <MudPaper Elevation="0" Outlined="true">
 
         <Label Key="AddRecordXX"></Label>
         <Label Key="AddRecord"></Label>
@@ -49,11 +49,12 @@
         }
         <Label Key="Bottom"></Label>
     
-     </ChildContent>
+     </MudPaper>
    
 </MudGrid>
 
 @using GC = FrontendServer.GlobalConstants;
+@using Common.DTO.App;
 @code {
     private List<MachineDto>? machines;
 

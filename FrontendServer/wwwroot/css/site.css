@@ -8,15 +8,17 @@
     --button-text-color-light: white;
     --button-highlight-overlay-light: #d70f0f;
     --button-highlight-text-color-light: white;
+    --row-error-color-light: white;
+    --row-error-bg-light: #d70f0f;
     /* Dark mode settings */
     --toolbar-bg-dark: #222;
     --button-overlay-dark: rgba(255, 255, 255, 0.05);
     --button-text-color-dark: white;
     --button-highlight-overlay-dark: #8e2f2f;
     --button-highlight-text-color-dark: white;
+    --row-error-color-dark: white;
+    --row-error-bg-dark: #8e2f2f;
 }
-
-
 
 html, body, #app {
     font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
@@ -120,35 +122,23 @@ a, .btn-link {
     content: "An error has occurred."
 }
 
-/*Main Layout*/
-.app-bar-lm {
-    background-color: gray !important;
-    color: yellow !important;
-}
-
-.app-bar-dm {
-    background-color: red !important;
-    color: green !important;
-}
-
-
-.list-even-row {
+.list-even-row-light {
     color: var(--mud-palette-text-primary);
     background-color: var(--mud-palette-surface);
     /*background-color: #f0f0f0 !important;*/ /* Light gray */
 }
 
-.list-even-row-dm {
-    background-color: blue !important; 
+.list-even-row-dark {
+    background-color: blue !important;
 }
 
-.list-odd-row {
+.list-odd-row-light {
     background-color: var(--mud-palette-background);
     color: var(--mud-palette-text-secondary);
 }
 
-.list-odd-row-dm {
-    background-color: red !important; 
+.list-odd-row-dark {
+    background-color: red !important;
 }
 
 .custom-menu-button {
@@ -188,5 +178,13 @@ a, .btn-link {
     font-weight: bold !important;
 }
 
+.first-colum-error-light {
+    color: var(--row-error-color-light) !important;
+    background-color: var(--row-error-bg-light) !important;
+}
 
+.first-colum-error-dark {
+    color: var(--row-error-color-dark) !important;
+    background-color: var(--row-error-bg-dark) !important;
+}
 

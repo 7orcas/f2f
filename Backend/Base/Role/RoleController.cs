@@ -1,6 +1,9 @@
-﻿using Common.Validator;
+﻿using Common.DTO.Base;
+using Common.Validator.Base;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.IdentityModel.Tokens;
+using System.Collections.Generic;
 using GC = Backend.GlobalConstants;
 
 namespace Backend.Base.Role
@@ -96,6 +99,7 @@ namespace Backend.Base.Role
             var ent = await _RoleService.GetRole(id);
             var dto = LoadDto<RoleDto>(ent);
             dto.RolePermissions = new List<RolePermissionDto>();
+            var newId = -1L;
 
             foreach(var perm in permList)
             {
@@ -115,7 +119,7 @@ namespace Backend.Base.Role
                 else
                     dto.RolePermissions.Add(new RolePermissionDto
                     {
-                        Id = GC.NewRecordId,
+                        Id = newId--,
                         RoleId = ent.Id,
                         PermissionNr = perm.Nr,
                         Permission = lk,
@@ -125,7 +129,7 @@ namespace Backend.Base.Role
 
             var r = new _ResponseDto
             {
-                SuccessMessage = "Config Ok",
+                SuccessMessage = "Ok",
                 Result = dto
             };
 
@@ -139,32 +143,22 @@ namespace Backend.Base.Role
         [CrudAtt(GC.CrudUpdate)]
         [AuditListAtt(GC.EntityTypeOrg)]
         [HttpPost("update")]
-        public async Task<IActionResult> UpdateOrg([FromBody] List<RoleDto> dtos)
+        public async Task<IActionResult> UpdateRoles([FromBody] List<RoleDto> dtos)
         {
             var session = HttpContext.Items["session"] as SessionEnt;
-            var langDic = await _labelService.GetLangCodeDic(session);
-            var validations = new List<_ValDto>();
 
-            foreach (var dto in dtos)
-            {
-                var v = new RoleVal(dto).Validate(langDic);
-                if (v.Status() != GC.ValStatusOk)
-                    validations.Add(v);
-            }
+            var roles = await _RoleService.GetRoles(session);
 
-            if (validations.Count > 0)
-            {
-                var x = new _ResponseDto
-                {
-                    Valid = false,
-                    StatusCode = GC.StatusCodeUnProcessable,
-                    ErrorMessage = base.GetLabel("InvR", langDic),
-                    Result = validations
-                };
-                return Ok(x);
-            }
+            var valFields = await ValidateFields<RoleDto, RoleVal>(dtos);
+            var valCodesInDB = await ValidateCodesInDB<RoleDto, RoleEnt>(dtos, roles);
+            ValidateCombine(valFields, valCodesInDB);
+
+            var valCodesNew = await ValidateCodesNew<RoleDto>(dtos);
+            ValidateCombine(valFields, valCodesNew);
+
+            if (valFields.Count > 0) 
+                return await Response(valFields);
             
-
             var r = new _ResponseDto
             {
                 SuccessMessage = "Save Ok",

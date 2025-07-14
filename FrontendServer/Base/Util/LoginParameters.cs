@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Components;
+﻿using Common.DTO.Base;
+using Microsoft.AspNetCore.Components;
 
 /// <summary>
 /// Object to store initial login parameters

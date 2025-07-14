@@ -9,9 +9,12 @@
 
 namespace Common.Validator
 {
-    public class _ValDto
+    public class ValDto
     {
-        public List<ValMessage> Messages { get; set; }
+        public long Id { get; set; }
+        public string Code { get; set; }
+
+        public List<ValMessage> Messages { get; set; } = new List<ValMessage>();
 
         public int Status()
         {
@@ -23,17 +26,13 @@ namespace Common.Validator
                 if (m.Status == GC.ValStatusError)
                     return GC.ValStatusError;
             }
-            return GC.ValStatusWarning;
+            return s;
         }
 
-        public void AddWarning(string field, string message) => Add(field, message, GC.ValStatusWarning);
         public void AddError(string field, string message) => Add(field, message, GC.ValStatusError);
 
         private void Add(string field, string message, int status)
         {
-            if (Messages == null)
-                Messages = new List<ValMessage>();
-
             Messages.Add(new ValMessage
             {
                 Status = status,
@@ -41,6 +40,8 @@ namespace Common.Validator
                 Message = message
             });
         }
+
+        public bool IsError () => Messages != null && Messages.Count > 0;
 
     }
 

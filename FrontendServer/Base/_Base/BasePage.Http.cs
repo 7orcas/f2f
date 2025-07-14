@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.Components;
+using MudBlazor;
 using Newtonsoft.Json;
 using System.Text;
+using GC = FrontendServer.GlobalConstants;
 
 
 /// <summary>
@@ -79,9 +81,14 @@ namespace FrontendServer.Base._Base
             return response;
         }
 
-        protected async Task<_ResponseDto> PostAsync<T>(string url, IEnumerable<T> dtos) 
+        protected async Task<_ResponseDto> PostAsync<T>(string url, IEnumerable<T> dtos) where T : _BaseFieldsDto<T>
         {
             _isSaving = true;
+            _isValidationError = false;
+
+            foreach (var d in dtos)
+                d.IsError = false;
+
             var client = await GetClient();
 
             var json = System.Text.Json.JsonSerializer.Serialize(dtos);
@@ -91,8 +98,42 @@ namespace FrontendServer.Base._Base
             var r = await response.Content.ReadAsStringAsync();
             var dto = JsonConvert.DeserializeObject<_ResponseDto>(r);
 
+            if (dto.StatusCode == GC.StatusCodeUnProcessable)
+            {
+                _isValidationError = true;
+                var list = JsonConvert.DeserializeObject<List<ValDto>>(dto.Result.ToString());
+                foreach (var v in list)
+                {
+                    var rec = dtos.FirstOrDefault(r => r.Id == v.Id);
+                    if (rec != null)
+                        rec.IsError = true;
+                }
+                await OpenValidationDialog(list);
+            }
+
+
             _isSaving = false;
             return dto;
+        }
+
+        protected Task OpenValidationDialog(List<ValDto> vals)
+        {
+            var options = new DialogOptions
+            {
+                CloseOnEscapeKey = true,
+                Position = DialogPosition.TopCenter,
+                MaxWidth = MaxWidth.Medium
+            };
+            var key = !string.IsNullOrEmpty(_entityLangKey) ? _entityLangKey : "Entity";
+
+            var parameters = new DialogParameters
+            {
+                { "Errors", vals},
+                { "EntityKey", key }
+            };
+
+            var title = GetLabel("ValE");
+            return DialogService.ShowAsync<ValidationDialog>(title, parameters, options);
         }
     }
 }

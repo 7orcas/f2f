@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage;
+﻿using Common.DTO.Base;
+using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage;
 using Newtonsoft.Json;
 using GC = FrontendServer.GlobalConstants;
 

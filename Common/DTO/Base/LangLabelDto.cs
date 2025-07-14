@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Common.DTO
+namespace Common.DTO.Base
 {
     public class LangLabelDto
     {
@@ -16,7 +16,7 @@ namespace Common.DTO
         public string Label { get; set; }
         public string? Tooltip { get; set; }
         public DateTime Updated { get; set; }
-                
+
         public bool IsUpdateable { get; set; } = false;
     }
 }

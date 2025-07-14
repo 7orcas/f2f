@@ -8,8 +8,7 @@
     TitleKey="Org" 
     SubTitleKey="OrgSub" 
     PageCode=@_pageCode
-    TBSave="SaveAsync"
-    TBSaveLabel="SaveChg" />
+    ToolBarButtonsRight="toolBarButtonsRight" />
 
 @if (_isLoading || _isError || _isSaving)
 {
@@ -196,7 +195,6 @@
     private bool showList = false;
     private List<OrgDto> list;
     private OrgDto? orgDto;
-    private bool tbSave;
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
@@ -211,7 +209,9 @@
                 Load(0, true);
 
             showList = list.Count > 1;
-            tbSave = !_isLoading && !_isError;
+               
+            AddToolbarSave(SaveAsync);
+
             StateHasChanged();
         }
     }

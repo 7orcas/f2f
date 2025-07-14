@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Caching.Memory;
+﻿using Common.DTO.Base;
+using Microsoft.Extensions.Caching.Memory;
 using GC = FrontendServer.GlobalConstants;
 
 /// <summary>

@@ -1,5 +1,6 @@
 ﻿using Backend.App.Machines;
 using Backend.Base.Label.Ent;
+using Common.DTO.Base;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;

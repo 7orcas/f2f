@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using GC = Backend.GlobalConstants;
 using System.Runtime.ConstrainedExecution;
+using Common.DTO.Base;
 
 namespace Backend.Base.Permission
 {

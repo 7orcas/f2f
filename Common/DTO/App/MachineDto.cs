@@ -1,4 +1,4 @@
-﻿namespace Common.DTO
+﻿namespace Common.DTO.App
 {
     public class MachineDto
     {

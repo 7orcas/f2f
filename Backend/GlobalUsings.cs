@@ -1,4 +1,6 @@
 ﻿global using Common.DTO;
+global using Common.DTO.App;
+global using Common.DTO.Base;
 global using Common.Request;
 global using Serilog;
 global using Backend.Base;

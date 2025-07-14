@@ -1,5 +1,4 @@
-﻿
-namespace Common.DTO
+﻿namespace Common.DTO.Base
 {
     public class OrgDto : _BaseDto<OrgDto>
     {
@@ -15,7 +14,7 @@ namespace Common.DTO
         public PasswordRuleDto PasswordRule { get; set; }
     }
 
-    public class OrgLangDto 
+    public class OrgLangDto
     {
         public string? LangCode { get; set; }
         public bool IsReadonly { get; set; }
@@ -25,10 +24,10 @@ namespace Common.DTO
     public class PasswordRuleDto
     {
         public int MaxNumberLoginAttempts { get; set; }
-        public int MinLength { get; set; } 
-        public int MaxLength { get; set; } 
+        public int MinLength { get; set; }
+        public int MaxLength { get; set; }
         public bool IsMixedCase { get; set; }
-        public bool IsNumber { get; set; } 
+        public bool IsNumber { get; set; }
         public bool IsNonLetter { get; set; }
     }
 

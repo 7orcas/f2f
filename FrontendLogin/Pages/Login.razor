@@ -1,9 +1,10 @@
 ﻿@page "/"
+@using Newtonsoft.Json;
+@using GC = FrontendLogin.GlobalConstants;
+@using Common.DTO.Base;
 @inject HttpClient HttpClient
 @inject NavigationManager NavigationManager
 @inject IHttpClientFactory HttpClientFactory
-@using Newtonsoft.Json;
-@using GC = FrontendLogin.GlobalConstants;
 
 <h3>Login</h3>
 <EditForm Model="@loginRequest" OnValidSubmit="@HandleLogin">

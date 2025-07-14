@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Net.Http;
+using Common.DTO.Base;
 using FrontendServer.Base._Base;
 using Newtonsoft.Json;
 using GC = FrontendServer.GlobalConstants;
