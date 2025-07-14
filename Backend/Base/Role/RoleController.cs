@@ -147,14 +147,18 @@ namespace Backend.Base.Role
         {
             var session = HttpContext.Items["session"] as SessionEnt;
 
+            //Get current codes and updated date/time from db
             var roles = await _RoleService.GetRoles(session);
 
-            var valFields = await ValidateFields<RoleDto, RoleVal>(dtos);
-            var valCodesInDB = await ValidateCodesInDB<RoleDto, RoleEnt>(dtos, roles);
-            ValidateCombine(valFields, valCodesInDB);
+            //var valFields = await ValidateFields<RoleDto, RoleVal>(dtos);
+            //var valCodesInDB = await ValidateCodesInDB<RoleDto, RoleEnt>(dtos, roles);
+            //var valCodesNew = await ValidateCodesNew<RoleDto>(dtos);
+            //var valCodesUpdate = await ValidateUpdateDateTime<RoleDto, RoleEnt>(dtos, roles);
+            //ValidateCombine(valFields, valCodesInDB);
+            //ValidateCombine(valFields, valCodesNew);
+            //ValidateCombine(valFields, valCodesUpdate);
 
-            var valCodesNew = await ValidateCodesNew<RoleDto>(dtos);
-            ValidateCombine(valFields, valCodesNew);
+            var valFields = await Validate<RoleDto, RoleEnt, RoleVal>(dtos, roles);
 
             if (valFields.Count > 0) 
                 return await Response(valFields);

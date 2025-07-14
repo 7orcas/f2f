@@ -18,7 +18,7 @@ namespace Common.DTO
         public DateTime Updated { get; set; }
         public bool IsActive { get; set; }
 
-        public bool IsNew() => Id > 0;
+        public bool IsNew() => Id < 0;
         
     }
 }
