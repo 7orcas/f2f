@@ -71,7 +71,7 @@ namespace Backend.Base.Role
             var list = new List<RoleDto>();
 
             foreach (var m in roles)
-                list.Add(LoadDto<RoleDto>(m));
+                list.Add(LoadDto<RoleEnt, RoleDto>(m));
 
             var r = new _ResponseDto
             {
@@ -97,7 +97,7 @@ namespace Backend.Base.Role
             var permList = permDic.Values.OrderBy(v => v.Nr).ToList();
 
             var ent = await _RoleService.GetRole(id);
-            var dto = LoadDto<RoleDto>(ent);
+            var dto = LoadDto<RoleEnt, RoleDto>(ent);
             dto.RolePermissions = new List<RolePermissionDto>();
             var newId = -1L;
 
@@ -149,20 +149,33 @@ namespace Backend.Base.Role
 
             //Get current codes and updated date/time from db
             var roles = await _RoleService.GetRoles(session);
-
-            //var valFields = await ValidateFields<RoleDto, RoleVal>(dtos);
-            //var valCodesInDB = await ValidateCodesInDB<RoleDto, RoleEnt>(dtos, roles);
-            //var valCodesNew = await ValidateCodesNew<RoleDto>(dtos);
-            //var valCodesUpdate = await ValidateUpdateDateTime<RoleDto, RoleEnt>(dtos, roles);
-            //ValidateCombine(valFields, valCodesInDB);
-            //ValidateCombine(valFields, valCodesNew);
-            //ValidateCombine(valFields, valCodesUpdate);
-
             var valFields = await Validate<RoleDto, RoleEnt, RoleVal>(dtos, roles);
 
             if (valFields.Count > 0) 
                 return await Response(valFields);
-            
+
+            //Save
+            var list = new List<RoleEnt>();
+            foreach (var dto in dtos)
+            {
+                var ent = LoadEnt<RoleEnt, RoleDto>(dto);
+                ent.RolePermissions = new List<RolePermissionEnt>();
+
+                foreach (var p in dto.RolePermissions)
+                    ent.RolePermissions.Add(new RolePermissionEnt
+                        { 
+                            RoleId = ent.Id,
+                            PermissionNr = p.PermissionNr,
+                            Crud = p.Crud,
+                        });
+
+                list.Add(ent);
+            }
+            await _RoleService.SaveRoles(list, session);
+
+            //Audit changes
+
+
             var r = new _ResponseDto
             {
                 SuccessMessage = "Save Ok",

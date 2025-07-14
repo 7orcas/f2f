@@ -6,5 +6,6 @@ namespace Backend.Base.Role
         Task<List<UserAccountRoleEnt>> GetUserRoles(SessionEnt session);
         Task<List<RoleEnt>> GetRoles(SessionEnt session);
         Task<RoleEnt> GetRole(long id);
+        Task SaveRoles(List<RoleEnt> list, SessionEnt session);
     }
 }

@@ -45,7 +45,7 @@ namespace Backend.Base
             return i1 == i2;
         }
 
-        protected T LoadDto<T>(BaseEntity e) where T : _BaseFieldsDto<T>, new()
+        protected T LoadDto<E, T>(BaseEntity<E> e) where T : _BaseFieldsDto<T>, new()
         {
             var dto = new T();
             dto.Id = e.Id;
@@ -56,7 +56,21 @@ namespace Backend.Base
             dto.IsActive = e.IsActive;
             return dto;
         }
-                
+
+        protected E LoadEnt<E, D>(_BaseFieldsDto<D> dto)
+            where E : BaseEntity<E>, new()
+            where D : _BaseFieldsDto<D>
+        {
+            var ent = new E();
+            ent.Id = dto.Id;
+            ent.OrgNr = dto.orgNr;
+            ent.Code = dto.Code;
+            ent.Description = dto.Description;
+            ent.Updated = dto.Updated;
+            ent.IsActive = dto.IsActive;
+            return ent;
+        }
+
         public async Task<IActionResult> Response(List<ValDto> validations)
         {
             var session = HttpContext.Items["session"] as SessionEnt;

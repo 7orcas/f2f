@@ -10,7 +10,7 @@
 
 namespace Backend.Base.Role.Ent
 {
-    public class RoleEnt : BaseEntity
+    public class RoleEnt : BaseEntity <RoleEnt>
     {
         public RoleEnt() { }
 

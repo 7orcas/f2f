@@ -1,4 +1,8 @@
-﻿using Microsoft.Data.SqlClient;
+﻿using Common.Validator;
+using Microsoft.Data.SqlClient;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
+using System.Transactions;
 using GC = Backend.GlobalConstants;
 
 namespace Backend.Base.Role
@@ -144,7 +148,67 @@ namespace Backend.Base.Role
             }
         }
 
-        
 
+        /// <summary>
+        /// Update and/or Insert the list of roles
+        /// </summary>
+        /// <param name="list"></param>
+        /// <returns></returns>
+        public async Task SaveRoles(List<RoleEnt> list, SessionEnt session)
+        {
+                Transaction
+            foreach (var ent in list.Where(e => !e.IsNew()))
+            {
+                await DeleteRolePermissions(ent);
+                await UpdateRole(ent);
+                await InsertRolePermissions(ent);
+            }
+            foreach (var ent in list.Where(e => e.IsNew()))
+                await InsertRole(ent);
+        }
+
+        private async Task UpdateRole(RoleEnt ent)
+        {
+            ent.Encode();
+            await Sql.Execute(
+                    "UPDATE base.role " +
+                    "SET " + Update(ent) +
+                    " WHERE id = " + ent.Id
+            );
+        }
+
+        private async Task InsertRole(RoleEnt ent)
+        {
+            ent.Encode();
+            await Sql.Execute("INSERT base.role " + Insert(ent));
+        }
+
+        private async Task InsertRolePermissions(RoleEnt ent)
+        {
+            StringBuilder sb = new StringBuilder();
+            foreach (var p in ent.RolePermissions)
+            {
+                if (!string.IsNullOrEmpty(p.Crud))
+                    sb.Append(
+                        "INSERT base.rolePermission (roleId,PermissionNr,crud,updated) " +
+                        "VALUES (" + 
+                        ent.Id + "," +
+                        p.PermissionNr + "," +
+                        (p.Crud != null ? "'" + p.Crud + "'," : "") +
+                        "'" + DateTime.Now.ToString(GC.DateTimeFormat) + "'" +
+                        ");");
+            }
+            var sql = sb.ToString();
+            if (!string.IsNullOrEmpty(sql))
+                await Sql.Execute(sql);
+        }
+
+        private async Task DeleteRolePermissions(RoleEnt ent)
+        {
+            await Sql.Execute(
+                    "DELETE FROM base.rolePermission " +
+                    " WHERE roleId = " + ent.Id
+            );
+        }
     }
 }

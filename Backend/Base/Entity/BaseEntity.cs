@@ -8,7 +8,7 @@
 
 namespace Backend.Base.Entity
 {
-    public abstract class BaseEntity : BaseEncode
+    public abstract class BaseEntity<E> : BaseEncode
     {
         public long Id { get; set; }
         public int OrgNr { get; set; }
@@ -18,5 +18,7 @@ namespace Backend.Base.Entity
         public bool IsActive { get; set; }
 
         public BaseEntity() { }
+
+        public bool IsNew() => Id < 0;
     }        
 }

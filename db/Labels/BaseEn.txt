@@ -4,6 +4,7 @@ Off,Off
 Org,Organisation
 Orgs,Organisations
 Orgs-s,Orgs
+OrgNr,Org Nr
 OrgSub,Configuration of Organisation
 Conf,Configuration
 ConfSub,User Configuration
@@ -58,6 +59,7 @@ ValE,Validation Error
 ValT,There are Validation Errors|| Save is unsuccessful.
 ValTs,Please fix the erros and re-save.
 InvR,Invalid Records
+InvO,Invalid Org Nr
 InvF,Field can't be empty
 InvL,Field exceeds maximum length (%%)
 InvCE,Code already exists

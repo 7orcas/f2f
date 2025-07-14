@@ -1,5 +1,5 @@
-﻿using Backend.Base.Audit;
-using Microsoft.Data.SqlClient;
+﻿using Microsoft.Data.SqlClient;
+using GC = Backend.GlobalConstants;
 
 namespace Backend.Base;
 
@@ -21,7 +21,7 @@ public abstract class BaseService : SqlUtils
         _auditService = scope.ServiceProvider.GetRequiredService<AuditServiceI>();
     }
 
-    public T ReadBaseEntity<T>(SqlDataReader r) where T : BaseEntity, new()
+    public T ReadBaseEntity<T>(SqlDataReader r) where T : BaseEntity<T>, new()
     {
         var entity = new T();
         entity.OrgNr = GetOrgNr(r);
@@ -41,5 +41,38 @@ public abstract class BaseService : SqlUtils
         System.Threading.Thread.Sleep(seconds * 1000); 
     }
 
-    
+    protected string Update<E> (BaseEntity<E> ent)
+    {
+        return Update("orgNr", ent.OrgNr) + 
+            Update("code", ent.Code) + 
+            Update("descr", ent.Description) + 
+            Update("encoded", ent.Encoded) + 
+            Update("updated", DateTime.Now) +
+            NoComma(Update("isActive", ent.IsActive));
+    }
+
+    protected string Insert<E>(BaseEntity<E> ent)
+    {
+        string? e = null;
+        if (ent is BaseEncode be)
+            e = be.Encoded;
+        
+        return "(orgNr," +
+            "code," +
+            (ent.Description != null? "descr," : "") +
+            (e != null ? "encoded," : "") +
+            "encoded," +
+            "updated," +
+            "isActive) " +
+
+            "VALUES (" +
+            ent.OrgNr + "," +
+            "'" + ent.Code + "'," +
+            (ent.Description != null ? "'" + ent.Description + "'," : "") +
+            (e != null ? "'" + e + "'," : "") +
+            "'" + DateTime.Now.ToString(GC.DateTimeFormat) + "'," +
+            (ent.IsActive?1:0) +
+            ")";
+    }
+
 }
