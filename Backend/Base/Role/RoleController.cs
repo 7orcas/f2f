@@ -147,6 +147,10 @@ namespace Backend.Base.Role
         {
             var session = HttpContext.Items["session"] as SessionEnt;
 
+            //New roles require orgNr
+            foreach (var dto in dtos.Where(e => e.IsNew()))
+                dto.orgNr = session.Org.Nr;
+
             //Get current codes and updated date/time from db
             var roles = await _RoleService.GetRoles(session);
             var valFields = await Validate<RoleDto, RoleEnt, RoleVal>(dtos, roles);
@@ -174,7 +178,7 @@ namespace Backend.Base.Role
             await _RoleService.SaveRoles(list, session);
 
             //Audit changes
-
+            xx
 
             var r = new _ResponseDto
             {

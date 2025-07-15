@@ -1,3 +1,4 @@
+New,New
 Close,Close
 On,On
 Off,Off

@@ -10,6 +10,8 @@ namespace Common
 {
     public class GlobalConstants
     {
+        public const int NewRecordId = -9000;
+
         public const int StatusCodeOk            = 200;
         public const int StatusCodeNotAuthorised = 403;
         public const int StatusCodeUnProcessable = 422;

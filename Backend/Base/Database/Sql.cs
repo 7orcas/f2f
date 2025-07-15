@@ -92,5 +92,38 @@ namespace Backend.Base.Database
                 return true;
             });
         }
+
+        static public async Task<long> ExecuteAndReturnId(string sqlString)
+        {
+            sqlString += "; SELECT SCOPE_IDENTITY();";
+
+            return await Task.Run(() =>
+            {
+
+                //Thread.Sleep(400);
+                var connectionString = AppSettings.DBMainConnection;
+
+                SqlConnection connection = null;
+                try
+                {
+                    connection = new SqlConnection(connectionString);
+                    connection.Open();
+                    var command = new SqlCommand(sqlString, connection);
+                    object result = command.ExecuteScalar();
+                    return Convert.ToInt64(result); // ✅ ID returned
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine(ex.Message);
+                    Log.Logger.Error(sqlString + " -> " + ex.Message);
+                    throw;
+                }
+                finally
+                {
+                    if (connection != null) connection.Close();
+                }
+            });
+        }
+
     }
 }

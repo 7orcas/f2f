@@ -61,7 +61,6 @@ public abstract class BaseService : SqlUtils
             "code," +
             (ent.Description != null? "descr," : "") +
             (e != null ? "encoded," : "") +
-            "encoded," +
             "updated," +
             "isActive) " +
 

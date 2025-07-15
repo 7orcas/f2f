@@ -156,7 +156,6 @@ namespace Backend.Base.Role
         /// <returns></returns>
         public async Task SaveRoles(List<RoleEnt> list, SessionEnt session)
         {
-                Transaction
             foreach (var ent in list.Where(e => !e.IsNew()))
             {
                 await DeleteRolePermissions(ent);
@@ -164,7 +163,10 @@ namespace Backend.Base.Role
                 await InsertRolePermissions(ent);
             }
             foreach (var ent in list.Where(e => e.IsNew()))
+            {
                 await InsertRole(ent);
+                await InsertRolePermissions(ent);
+            }
         }
 
         private async Task UpdateRole(RoleEnt ent)
@@ -180,7 +182,8 @@ namespace Backend.Base.Role
         private async Task InsertRole(RoleEnt ent)
         {
             ent.Encode();
-            await Sql.Execute("INSERT base.role " + Insert(ent));
+            var id = await Sql.ExecuteAndReturnId("INSERT base.role " + Insert(ent));
+            ent.Id = id;
         }
 
         private async Task InsertRolePermissions(RoleEnt ent)

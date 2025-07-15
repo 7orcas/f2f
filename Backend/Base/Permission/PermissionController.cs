@@ -31,7 +31,7 @@ namespace Backend.Base.Permission
         [CrudAtt(GC.CrudRead)]
         [AuditListAtt(GC.EntityTypePermission)]
         [HttpGet("list")]
-        public async Task<IActionResult> Get()
+        public async Task<IActionResult> GetUserPermissions()
         {
             var session = HttpContext.Items["session"] as SessionEnt;
             var permissions = await _PermissionService.GetPermissions(session);

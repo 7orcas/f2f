@@ -56,7 +56,7 @@ else
                             <MudTd DataLabel="Role"
                                     Class="@GetSelectRowClass(context)"
                                     @onclick="() => OnItemSelected(context)">
-                                @if (editRoles)
+                                @if (editRoles || @context.IsNew())
                                 {
                                     <MudTextField T="string"
                                                     @bind-Value="context.Code"
@@ -177,7 +177,7 @@ else
     private bool editRoles = false;
     private List<RoleDto> roles;
     private List<RoleDto> selections = new List<RoleDto>();
-    
+
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         if (firstRender)
@@ -186,6 +186,8 @@ else
             _pageCode = BaseRoutes.OrgPageCode;
 
             await Load();
+            Get Permissions as there may be none selected
+
 
             showList = roles.Count > 1;
 
@@ -202,7 +204,7 @@ else
             AddToolbarExport(Export);
             if (toolBarButtonsLeft.Count>0)
                 AddToolbarSave(SaveAsync);
-                
+
 
             ForceStateHasChanged();
         }
@@ -211,13 +213,32 @@ else
     private async Task Load()
     {
         roles = await GetAsync<List<RoleDto>>(GC.URL_role_list);
-        if (roles.Count > 0)
-            Select(roles[0], true);
+
+        //Reselect
+        if (selections.Count > 0)
+        {
+            var x = new List<RoleDto>(selections);
+            selections.Clear();
+            foreach (var r in x)
+            {
+                var s = roles.Find(z => z.Code.Equals(r.Code));
+                if (s != null)
+                    await Select(s, false);
+            }
+        }
+        else if (roles.Count > 0)
+            await Select(roles[0], true);
+        
+        StateHasChanged();
     }
 
-    private async void OnItemSelected(RoleDto r) => Select(r, false);
+    private async Task OnItemSelected(RoleDto r) 
+    {
+        await Select(r, false);
+        StateHasChanged();
+    }
 
-    private async void Select(RoleDto dto, bool force)
+    private async Task Select(RoleDto dto, bool force)
     {
         int index = -1;
         if (!dto.IsLoaded || force)
@@ -242,8 +263,6 @@ else
 
             selections.Add(dto);
         }
-
-        StateHasChanged();
     }
 
     private string GetSelectRowPointer(RoleDto dto) => GetSelectRowPointer(selections.Contains(dto));
@@ -273,6 +292,7 @@ else
     {
         if (!_isCrudU) return;
         editRoles = !editRoles;
+        await Task.CompletedTask;
     }
 
     private string GetLabelRoleEdit() => GetLabel("RoleEN") + ": " + (editRoles ? GetLabel("On") : GetLabel("Off"));
@@ -297,13 +317,45 @@ else
                 await Load();
             }
         }
-         _isSaving = false;
+        _isSaving = false;
     }
 
 
     private async Task AddRole()
     {
-        var x = 0;
+        var id = GC.NewRecordId;
+        foreach (var r in roles)
+            id = r.Id < id ? id - 1 : id;
+
+        var role = new RoleDto
+            {
+                Id = id,
+                Code = GetLabel("New").ToUpper(),
+                IsActive = true,
+                Updated = DateTime.Now,
+                IsLoaded = true,
+                RolePermissions = new List<RolePermissionDto>(),
+            };
+
+        //Add permissions 
+        if (roles.Count > 0)
+        {
+            var roleX = roles[0];
+            foreach (var p in roleX.RolePermissions)
+                role.RolePermissions.Add(new RolePermissionDto
+                {
+                    Id = GC.NewRecordId,
+                    RoleId = role.Id,
+                    Crud = "",
+                    PermissionNr = p.PermissionNr,
+                    Permission = p.Permission,
+                    IsActive = true,
+                });
+        }
+        role.HashMe();
+        roles.Insert(0, role);
+        Select(role, false);
+        await Task.CompletedTask;
     }
 
 
