@@ -23,6 +23,9 @@ namespace Common.DTO
         public bool IsLoaded { get; set; } = false;
 
         [JsonInclude]
+        public bool IsDelete { get; set; } = false;
+
+        [JsonInclude]
         public string? OriginalHashCode { get; set; }
 
         [JsonInclude]

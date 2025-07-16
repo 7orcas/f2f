@@ -1,4 +1,5 @@
-﻿using Microsoft.Data.SqlClient;
+﻿using Backend.Base.Label.Ent;
+using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Caching.Memory;
 using System.Collections.Generic;
 using GC = Backend.GlobalConstants;
@@ -26,6 +27,10 @@ namespace Backend.Base.Label
             cache = memoryCache;
         }
 
+        public async Task<Dictionary<string, LangLabel>> GetLanguageLabelDic(SessionEnt session) =>
+            await GetLanguageLabelDic(session.UserConfig.LangCodeCurrent, session.Org.LangLabelVariant);
+        
+
         public async Task<Dictionary<string, LangLabel>> GetLanguageLabelDic(string langCode, int? variant)
         {
             var key = CacheKey(langCode, variant, "l");
@@ -36,10 +41,9 @@ namespace Backend.Base.Label
             return cache.Get<Dictionary<string, LangLabel>>(key);
         }
 
-        public async Task<Dictionary<string, string>> GetLangCodeDic(SessionEnt session)
-        {
-            return await GetLangCodeDic(session.UserConfig.LangCodeCurrent, session.Org.LangLabelVariant);
-        }
+        public async Task<Dictionary<string, string>> GetLangCodeDic(SessionEnt session) =>
+            await GetLangCodeDic(session.UserConfig.LangCodeCurrent, session.Org.LangLabelVariant);
+        
 
         public async Task<Dictionary<string, string>> GetLangCodeDic(string langCode, int? variant)
         {
@@ -62,11 +66,9 @@ namespace Backend.Base.Label
             cache.Set(key, dic);
         }
 
-        private string CacheKey(string langCode, int? variant, string type)
-        {
-            return GC.CacheKeyLabelPrefix + langCode + (variant.HasValue ? variant : 0) + type;
-        }
-
+        private string CacheKey(string langCode, int? variant, string type) =>
+            GC.CacheKeyLabelPrefix + langCode + (variant.HasValue ? variant : 0) + type;
+        
         /*
          * Get language list for passed in language code (eg 'en')
          */
@@ -109,18 +111,14 @@ namespace Backend.Base.Label
             return null;
         }
 
-        public async Task<List<LangLabel>> GetAllLanguageLabels()
-        {
-            return await GetLabelList(null, null, null, null, null);
-        }
+        public async Task<List<LangLabel>> GetAllLanguageLabels() =>
+            await GetLabelList(null, null, null, null, null);
 
         /**
          * Return related labels, ie for a given label key get all languages
          */
-        public async Task<List<LangLabel>> GetRelatedLabels(string langKeyCode, List<string> langCodes)
-        {
-            return await GetLabelList(null, null, langKeyCode, langCodes, null);
-        }
+        public async Task<List<LangLabel>> GetRelatedLabels(string langKeyCode, List<string> langCodes) =>
+            await GetLabelList(null, null, langKeyCode, langCodes, null);
 
         /*
          * Get language key for passed in language key code 

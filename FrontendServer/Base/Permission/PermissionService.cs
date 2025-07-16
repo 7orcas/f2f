@@ -43,7 +43,7 @@ namespace FrontendServer.Base.Permission
                 var config = _configService.Config;
                 var client = await GetClient();
 
-                var response = await client.GetAsync(GC.URL_perm_list);
+                var response = await client.GetAsync(GC.URL_perm_user);
                 if (response.IsSuccessStatusCode)
                 {
                     var result = await response.Content.ReadAsStringAsync();
@@ -52,7 +52,7 @@ namespace FrontendServer.Base.Permission
                     if (responseDto.Valid)
                     {
                         AllPermissions = JsonConvert.DeserializeObject<List<UserRolePermissionDto>>(responseDto.Result.ToString());
-                        lps.LoadedUrl(GC.URL_perm_list);
+                        lps.LoadedUrl(GC.URL_perm_user);
                     }
                 }
             }
@@ -68,7 +68,7 @@ namespace FrontendServer.Base.Permission
                 var config = _configService.Config;
                 var client = await GetClient();
 
-                var response1 = await client.GetAsync(GC.URL_perm_eff);
+                var response1 = await client.GetAsync(GC.URL_perm_user_eff);
                 if (response1.IsSuccessStatusCode)
                 {
                     var result = await response1.Content.ReadAsStringAsync();
@@ -77,7 +77,7 @@ namespace FrontendServer.Base.Permission
                     if (responseDto.Valid)
                     {
                         Permissions = JsonConvert.DeserializeObject<List<PermissionDto>>(responseDto.Result.ToString());
-                        lps.LoadedUrl(GC.URL_perm_eff);
+                        lps.LoadedUrl(GC.URL_perm_user_eff);
                     }
                 }
             }

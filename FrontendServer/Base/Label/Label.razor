@@ -9,7 +9,7 @@
         {
             <div data-tooltip="@ShowToolTip()">
                 <div class="@GetClass()">
-                    <MudText Style="white-space: normal; word-break: break-word;"
+                    <MudText Style="@style"
                         Typo="@size">@ShowLabel()</MudText>
                 </div>
             </div>
@@ -17,7 +17,7 @@
         else
         {
             <div class="@GetClass()">
-                <MudText Style="white-space: normal; word-break: break-word;"
+                <MudText Style="@style"
                     Typo="@size">@ShowLabel()</MudText>
             </div>
         }
@@ -28,7 +28,7 @@
         {
             <div data-tooltip="@ShowToolTip()">
                 <button class="@GetClass()" @onclick="OpenDialog">
-                    <MudText Style="white-space: normal; word-break: break-word;"
+                    <MudText Style="@style"
                         Typo="@size">@ShowLabel()</MudText>
                  </button>
             </div>
@@ -36,7 +36,7 @@
         else
         {
             <button class="@GetClass()" @onclick="OpenDialog">
-                <MudText Style="white-space: normal; word-break: break-word;"
+                <MudText Style="@style"
                     Typo="@size">@ShowLabel()</MudText>
             </button>
         }
@@ -49,11 +49,13 @@
     [Parameter] public string Class { get; set; }
     [Parameter] public GC.TextSize Size { get; set; } = GC.TextSize.Normal;
     [Parameter] public bool HideTooltip { get; set; } = false;
+    [Parameter] public bool Bold { get; set; } = false;
 
     private Typo size = Typo.body1;
     private bool showTooltip = false;
     private bool highlightNoKey = false;
     private bool isAdminLanguage = false;
+    private string style = "white-space: normal; word-break: break-word;";
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
@@ -64,6 +66,8 @@
             highlightNoKey = !IsLabel(Key) && (cnfg?.Label.HighlightNoKey ?? false);
             isAdminLanguage = cnfg?.Label.IsAdminLanguage ?? false;
             size = GetTypo(Size);
+            if (Bold)
+                style += " font-weight:bold;";
 
             StateHasChanged();
         }

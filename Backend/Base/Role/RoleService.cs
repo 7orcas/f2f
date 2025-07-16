@@ -154,8 +154,13 @@ namespace Backend.Base.Role
         /// </summary>
         /// <param name="list"></param>
         /// <returns></returns>
-        public async Task SaveRoles(List<RoleEnt> list, SessionEnt session)
+        public async Task SaveRoles(List<RoleEnt> list, List<RoleEnt> listDel, SessionEnt session)
         {
+            foreach (var ent in listDel.Where(e => !e.IsNew()))
+            {
+                await DeleteRolePermissions(ent);
+                await DeleteRole(ent);
+            }
             foreach (var ent in list.Where(e => !e.IsNew()))
             {
                 await DeleteRolePermissions(ent);
@@ -206,12 +211,15 @@ namespace Backend.Base.Role
                 await Sql.Execute(sql);
         }
 
+        private async Task DeleteRole(RoleEnt ent)
+        {
+            await Sql.Execute("DELETE FROM base.userAccRole WHERE roleId = " + ent.Id);
+            await Sql.Execute("DELETE FROM base.role WHERE Id = " + ent.Id);
+        }
+
         private async Task DeleteRolePermissions(RoleEnt ent)
         {
-            await Sql.Execute(
-                    "DELETE FROM base.rolePermission " +
-                    " WHERE roleId = " + ent.Id
-            );
+            await Sql.Execute("DELETE FROM base.rolePermission WHERE roleId = " + ent.Id);
         }
     }
 }

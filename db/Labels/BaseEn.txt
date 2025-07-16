@@ -1,5 +1,6 @@
 New,New
 Close,Close
+Delete,Delete
 On,On
 Off,Off
 Org,Organisation

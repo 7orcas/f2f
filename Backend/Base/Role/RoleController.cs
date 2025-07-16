@@ -160,9 +160,17 @@ namespace Backend.Base.Role
 
             //Save
             var list = new List<RoleEnt>();
+            var listDel = new List<RoleEnt>();
             foreach (var dto in dtos)
             {
                 var ent = LoadEnt<RoleEnt, RoleDto>(dto);
+
+                if (dto.IsDelete)
+                {
+                    listDel.Add(ent);
+                    continue;
+                }
+
                 ent.RolePermissions = new List<RolePermissionEnt>();
 
                 foreach (var p in dto.RolePermissions)
@@ -175,10 +183,10 @@ namespace Backend.Base.Role
 
                 list.Add(ent);
             }
-            await _RoleService.SaveRoles(list, session);
+            await _RoleService.SaveRoles(list, listDel, session);
 
             //Audit changes
-            xx
+            
 
             var r = new _ResponseDto
             {

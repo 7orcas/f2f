@@ -13,8 +13,9 @@
 
         public const string URL_token             = "api/Token/token";
         public const string URL_logout            = "api/Logout/logout";
+        public const string URL_perm_user         = "api/Permission/userlist";
+        public const string URL_perm_user_eff     = "api/Permission/userlisteff";
         public const string URL_perm_list         = "api/Permission/list";
-        public const string URL_perm_eff          = "api/Permission/listeffective";
         public const string URL_audit_list        = "api/Audit/list";
         public const string URL_user_role_list    = "api/Role/userroles";
         public const string URL_role_list         = "api/Role/roles";

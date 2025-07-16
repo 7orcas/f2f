@@ -59,10 +59,11 @@ else
                                 @if (editRoles || @context.IsNew())
                                 {
                                     <MudTextField T="string"
-                                                    @bind-Value="context.Code"
-                                                    Immediate="true"
-                                                    Margin="Margin.Dense"
-                                                    Variant="Variant.Text" />
+                                                  @bind-Value="context.Code"
+                                                  Immediate="true"
+                                                  MaxLength="@GC.LenCode"
+                                                  Margin="Margin.Dense"
+                                                  Variant="Variant.Text" />
                                 }
                                 else
                                 {
@@ -93,20 +94,53 @@ else
                             <!-- Header -->
                             <thead class="mud-table-head">
                                 <tr class="mud-table-row">
-
-                                    <th class="mud-table-cell sticky-header" rowspan="2"><Label Key="Perm"/></th>
+                                    <th></th>
                                     @for (int i = 0; i < selections.Count; i++)
                                     {
-                                        <th class="mud-table-cell sticky-header" style="text-align: center;" colspan="4">@selections[i].Code</th>
+                                        var index = i;
+                                        <th class="mud-table-cell sticky-header" style="@styleDivLeft" colspan="4">
+                                            <MudPaper Class="border-none pa-4" Elevation="0">
+                                                <MudTextField T="string"
+                                                              @bind-Value="@selections[index].Code"
+                                                              Label="@GetLabel("Role")"
+                                                              Immediate="true"
+                                                              ReadOnly="@(!_isCrudU || @selections[index].IsNew())"
+                                                              MaxLength="@GC.LenCode"
+                                                              Margin="Margin.Dense"
+                                                              Variant="Variant.Text" />
+
+                                                <MudTextField T="string"
+                                                              @bind-Value="@selections[index].Description"
+                                                              Immediate="true"
+                                                              Label="@GetLabel("Desc")"
+                                                              ReadOnly="@(!_isCrudU || @selections[index].IsNew())"
+                                                              MaxLength="@GC.LenDescription"
+                                                              Margin="Margin.Dense"
+                                                              Variant="Variant.Text" />
+
+                                                <div class="d-flex gap-4 mt-2">
+                                                    <MudCheckBox T="bool"
+                                                                 Label="@GetLabel("Active")"
+                                                                 ReadOnly="@(!_isCrudU)"
+                                                                 @bind-Value="@selections[index].IsActive" />
+
+                                                    <MudCheckBox T="bool"
+                                                                 Label="@GetLabel("Delete")"
+                                                                 ReadOnly="@(!_isCrudU)"
+                                                                 @bind-Value="@selections[index].IsDelete" />
+                                                </div>
+                                            </MudPaper>
+                                        </th>
                                     }
                                 </tr>
-                                <tr class="mud-table-row">
+                                <tr class="mud-table-row" style="font-weight:bold;">
+                                    <th class="mud-table-cell sticky-header"><Label Bold Key="Perm" /></th>
                                     @foreach (var role in selections)
                                     {
-                                        <th class="mud-table-cell sticky-header" style="text-align: center;"><Label Key="Crud.C" /></th>
-                                        <th class="mud-table-cell sticky-header" style="text-align: center;"><Label Key="Crud.R" /></th>
-                                        <th class="mud-table-cell sticky-header" style="text-align: center;"><Label Key="Crud.U" /></th>
-                                        <th class="mud-table-cell sticky-header" style="text-align: center;"><Label Key="Crud.D" /></th>
+                                        <th class="mud-table-cell sticky-header" style="@styleDivLeft"><Label Bold Key="Crud.C" /></th>
+                                        <th class="mud-table-cell sticky-header" style="text-align: center;"><Label Bold Key="Crud.R" /></th>
+                                        <th class="mud-table-cell sticky-header" style="text-align: center;"><Label Bold Key="Crud.U" /></th>
+                                        <th class="mud-table-cell sticky-header" style="text-align: center;"><Label Bold Key="Crud.D" /></th>
                                     }
                                 </tr>
 
@@ -121,26 +155,30 @@ else
                                         @foreach (var role in selections)
                                         {
                                             var matching = role.RolePermissions.FirstOrDefault(p => p.PermissionNr == permission.PermissionNr);
-                                            <td class="mud-table-cell">
-                                                <MudCheckBox T="bool" 
+                                            <td class="mud-table-cell" style="@styleDivLeft">
+                                                <MudCheckBox T="bool"
+                                                             Style="@styleCB"
                                                              Value="@IsCrud(matching, GC.CrudCreate)"
                                                              ValueChanged="@(v => SetCrud(matching, GC.CrudCreate, v))"
                                                              ReadOnly="@(!_isCrudU)" />
                                             </td>
                                             <td class="mud-table-cell">
-                                                <MudCheckBox T="bool" 
+                                                <MudCheckBox T="bool"
+                                                             Style="@styleCB"
                                                              Value="@IsCrud(matching, GC.CrudRead)"
                                                              ValueChanged="@(v => SetCrud(matching, GC.CrudRead, v))"
                                                              ReadOnly="@(!_isCrudU)" />
                                             </td>
                                             <td class="mud-table-cell">
-                                                <MudCheckBox T="bool" 
+                                                <MudCheckBox T="bool"
+                                                             Style="@styleCB"
                                                              Value="@IsCrud(matching, GC.CrudUpdate)"
                                                              ValueChanged="@(v => SetCrud(matching, GC.CrudUpdate, v))"
                                                              ReadOnly="@(!_isCrudU)" />
                                             </td>
                                             <td class="mud-table-cell">
-                                                <MudCheckBox T="bool" 
+                                                <MudCheckBox T="bool"
+                                                             Style="@styleCB"
                                                              Value="@IsCrud(matching, GC.CrudDelete)"
                                                              ValueChanged="@(v => SetCrud(matching, GC.CrudDelete, v))"
                                                              ReadOnly="@(!_isCrudU)" />
@@ -175,6 +213,9 @@ else
     private int maxSelections = 3;
     private bool showList = false;
     private bool editRoles = false;
+    private string styleDivLeft = "text-align: center; border-left-style:double; border-left-width:3px; border-left-style:groove;";
+    private string styleCB = "align-items: center;";
+    private List<PermissionDto> permissions;
     private List<RoleDto> roles;
     private List<RoleDto> selections = new List<RoleDto>();
 
@@ -186,8 +227,7 @@ else
             _pageCode = BaseRoutes.OrgPageCode;
 
             await Load();
-            Get Permissions as there may be none selected
-
+            permissions = await GetAsync<List<PermissionDto>>(GC.URL_perm_list);
 
             showList = roles.Count > 1;
 
@@ -227,7 +267,11 @@ else
             }
         }
         else if (roles.Count > 0)
+        {
             await Select(roles[0], true);
+            await Select(roles[3], true); //DELETE ME
+            await Select(roles[4], true); //DELETE ME
+        }
         
         StateHasChanged();
     }
@@ -338,20 +382,18 @@ else
             };
 
         //Add permissions 
-        if (roles.Count > 0)
-        {
-            var roleX = roles[0];
-            foreach (var p in roleX.RolePermissions)
-                role.RolePermissions.Add(new RolePermissionDto
-                {
-                    Id = GC.NewRecordId,
-                    RoleId = role.Id,
-                    Crud = "",
-                    PermissionNr = p.PermissionNr,
-                    Permission = p.Permission,
-                    IsActive = true,
-                });
-        }
+        var roleX = roles[0];
+        foreach (var p in permissions)
+            role.RolePermissions.Add(new RolePermissionDto
+            {
+                Id = GC.NewRecordId,
+                RoleId = role.Id,
+                Crud = "",
+                PermissionNr = p.PermissionNr,
+                Permission = p.LangKey,
+                IsActive = true,
+            });
+
         role.HashMe();
         roles.Insert(0, role);
         Select(role, false);

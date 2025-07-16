@@ -18,24 +18,26 @@
         public const string CacheKeyPermDic         = "PS_dic";
 
         //Entity Type Id
-        public const int EntityTypePermission       = 1;
-        public const int EntityTypePermissionEffect = 2;
-        public const int EntityTypeRole             = 3;
-        public const int EntityTypeAudit            = 4;
-        public const int EntityTypeLogin            = 5;
-        public const int EntityTypeLogout           = 6;
-        public const int EntityTypeLangCode         = 7;
-        public const int EntityTypeLangKey          = 8;
-        public const int EntityTypeLangLabelList    = 9;
-        public const int EntityTypeLangLabelRelated = 10;
-        public const int EntityTypeConfig           = 11;
-        public const int EntityTypeOrg              = 12;
+        public const int EntityTypePermUser         = 10;
+        public const int EntityTypePermUserEffect   = 11;
+        public const int EntityTypePermList         = 12;
+        public const int EntityTypeRole             = 30;
+        public const int EntityTypeAudit            = 40;
+        public const int EntityTypeLogin            = 50;
+        public const int EntityTypeLogout           = 60;
+        public const int EntityTypeLangCode         = 70;
+        public const int EntityTypeLangKey          = 80;
+        public const int EntityTypeLangLabelList    = 90;
+        public const int EntityTypeLangLabelRelated = 100;
+        public const int EntityTypeConfig           = 110;
+        public const int EntityTypeOrg              = 120;
 
-        public const int EntityTypeMachine          = 101;
+        public const int EntityTypeMachine          = 10001;
 
         public static readonly object[] EntityTypes = {
-            EntityTypePermission,       "Permission",
-            EntityTypePermissionEffect, "PermissionEffective",
+            EntityTypePermUser,         "PermUser",
+            EntityTypePermUserEffect,   "PermUserEff",
+            EntityTypePermList,         "PermList",
             EntityTypeRole,             "Role",
             EntityTypeAudit,            "Audit",
             EntityTypeLogin,            "Login",
