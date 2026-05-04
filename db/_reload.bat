@@ -1,1 +1,0 @@
-sqlcmd -S localhost -d blue -E -i _reload.sql
