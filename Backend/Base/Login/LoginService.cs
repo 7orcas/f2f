@@ -1,5 +1,5 @@
 ﻿using Backend.Base.Token.Ent;
-using Microsoft.Data.SqlClient;
+using Npgsql;
 using System.IO;
 using GC = Backend.GlobalConstants;
 
@@ -124,7 +124,7 @@ namespace Backend.Base.Login
                             IsActive = GetBoolean(r, "isActive")
                         };
                     },
-                    new SqlParameter("@userid", userid)
+                    new NpgsqlParameter("@userid", userid)
                 );
 
                 if (ServiceAccount != null && userid.Equals(ServiceAccount.UserId))
@@ -151,8 +151,8 @@ namespace Backend.Base.Login
                             Classification = GetIntNull(r, "classification")
                         };
                     },
-                    new SqlParameter("@zzzId", login.Id),
-                    new SqlParameter("@orgNr", orgNr)
+                    new NpgsqlParameter("@zzzId", login.Id),
+                    new NpgsqlParameter("@orgNr", orgNr)
                 );
 
                 if (login.IsService() && account == null)

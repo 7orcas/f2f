@@ -1,5 +1,5 @@
 ﻿using Common.Validator;
-using Microsoft.Data.SqlClient;
+using Npgsql;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using System.Transactions;
@@ -46,8 +46,8 @@ namespace Backend.Base.Role
                             IsActive = IsActive(r),
                         });
                     },
-                    new SqlParameter("@userId", session.UserAccount.Id),
-                    new SqlParameter("@orgNr", session.Org.Nr)
+                    new NpgsqlParameter("@userId", session.UserAccount.Id),
+                    new NpgsqlParameter("@orgNr", session.Org.Nr)
                 );
 
                 await Sql.Run(sql + "AND r.orgNr = " + GC.BaseOrgNr + by,
@@ -62,7 +62,7 @@ namespace Backend.Base.Role
                             IsActive = IsActive(r),
                         });
                     },
-                    new SqlParameter("@userId", session.UserAccount.Id)
+                    new NpgsqlParameter("@userId", session.UserAccount.Id)
                 );
 
                 return list.OrderBy(r => r.Code).ToList();
@@ -89,7 +89,7 @@ namespace Backend.Base.Role
 
                 await Sql.Run(sql + "WHERE r.orgNr = @orgNr" + by,
                     r =>  list.Add(ReadBaseEntity<RoleEnt>(r)),
-                    new SqlParameter("@orgNr", session.Org.Nr)
+                    new NpgsqlParameter("@orgNr", session.Org.Nr)
                 );
 
                 await Sql.Run(sql + "WHERE r.orgNr = " + GC.BaseOrgNr + by,
@@ -119,7 +119,7 @@ namespace Backend.Base.Role
                 RoleEnt ent = null;
                 await Sql.Run(sql,
                     r => ent = ReadBaseEntity<RoleEnt>(r),
-                    new SqlParameter("@id", id)
+                    new NpgsqlParameter("@id", id)
                 );
                 ent.RolePermissions = new List<RolePermissionEnt>();
 
@@ -136,7 +136,7 @@ namespace Backend.Base.Role
                             IsActive = IsActive(r),
                         });
                     },
-                    new SqlParameter("@id", id)
+                    new NpgsqlParameter("@id", id)
                 );
 
                 return ent;

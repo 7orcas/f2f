@@ -1,4 +1,4 @@
-﻿using Microsoft.Data.SqlClient;
+﻿using Npgsql;
 using GC = Backend.GlobalConstants;
 
 namespace Backend.Base;
@@ -21,7 +21,7 @@ public abstract class BaseService : SqlUtils
         _auditService = scope.ServiceProvider.GetRequiredService<AuditServiceI>();
     }
 
-    public T ReadBaseEntity<T>(SqlDataReader r) where T : BaseEntity<T>, new()
+    public T ReadBaseEntity<T>(NpgsqlDataReader r) where T : BaseEntity<T>, new()
     {
         var entity = new T();
         entity.OrgNr = GetOrgNr(r);

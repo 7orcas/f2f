@@ -1,4 +1,4 @@
-﻿using Microsoft.Data.SqlClient;
+﻿using Npgsql;
 using Microsoft.Extensions.Caching.Memory;
 using GC = Backend.GlobalConstants;
 
@@ -77,8 +77,8 @@ namespace Backend.Base.Permission
                             GetString(r, "crud"),
                             perms);
                     },
-                    new SqlParameter("@userAccId", userAccountId),
-                    new SqlParameter("@orgNr", orgNr)
+                    new NpgsqlParameter("@userAccId", userAccountId),
+                    new NpgsqlParameter("@orgNr", orgNr)
                 );
 
                 await Sql.Run(sql + "AND r.orgNr = " + GC.BaseOrgNr,
@@ -88,7 +88,7 @@ namespace Backend.Base.Permission
                             GetString(r, "crud"),
                             perms);
                     },
-                    new SqlParameter("@userAccId", userAccountId)
+                    new NpgsqlParameter("@userAccId", userAccountId)
                 );
                 
                 return perms.Values.ToList<PermissionCrudEnt>();
@@ -143,8 +143,8 @@ namespace Backend.Base.Permission
                             OrgNr = GetOrgNr(r)
                         });
                     },
-                    new SqlParameter("@userAccId", session.UserAccount.Id),
-                    new SqlParameter("@orgNr", session.Org.Nr)
+                    new NpgsqlParameter("@userAccId", session.UserAccount.Id),
+                    new NpgsqlParameter("@orgNr", session.Org.Nr)
                 );
 
                 await Sql.Run(sql + "AND r.orgNr = " + GC.BaseOrgNr + by,
@@ -157,7 +157,7 @@ namespace Backend.Base.Permission
                             OrgNr = GetOrgNr(r)
                         });
                     },
-                    new SqlParameter("@userAccId", session.UserAccount.Id)
+                    new NpgsqlParameter("@userAccId", session.UserAccount.Id)
                 );
 
 

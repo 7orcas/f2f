@@ -1,4 +1,4 @@
-﻿using Microsoft.Data.SqlClient;
+﻿using Npgsql;
 using Microsoft.Extensions.Caching.Memory;
 using GC = Backend.GlobalConstants;
 
@@ -55,7 +55,7 @@ namespace Backend.Base.Org
                         org = OrgLoad.Load(r);
                         _memoryCache.Set(GC.CacheKeyOrgPrefix + org.Nr, org);
                     },
-                    new SqlParameter("@nr", nr)
+                    new NpgsqlParameter("@nr", nr)
                 );
                                 
                 return org;

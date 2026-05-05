@@ -1,4 +1,4 @@
-﻿using Microsoft.Data.SqlClient;
+﻿using Npgsql;
 using System.Reflection.Metadata;
 
 /// <summary>
@@ -12,7 +12,7 @@ namespace Backend.Base.Database
 {
     public class Sql
     {
-        static public async Task<bool> Run(string sqlString, Action<SqlDataReader> action, params SqlParameter[] parameters)
+        static public async Task<bool> Run(string sqlString, Action<NpgsqlDataReader> action, params NpgsqlParameter[] parameters)
         {
             return await Task.Run(() =>
             {
@@ -20,13 +20,13 @@ namespace Backend.Base.Database
                 //Thread.Sleep(400);
                 var connectionString = AppSettings.DBMainConnection;
 
-                SqlConnection connection = null;
-                SqlDataReader reader = null;
+                NpgsqlConnection connection = null;
+                NpgsqlDataReader reader = null;
                 try
                 {
-                    connection = new SqlConnection(connectionString);
+                    connection = new NpgsqlConnection(connectionString);
                     connection.Open();
-                    var command = new SqlCommand(sqlString, connection);
+                    var command = new NpgsqlCommand(sqlString, connection);
 
                     if (parameters != null && parameters.Length > 0)
                         command.Parameters.AddRange(parameters);
@@ -43,7 +43,7 @@ namespace Backend.Base.Database
 
                     var p = "";
                     for (int i = 0; parameters != null && i < parameters.Length; i++)
-                        p += (p.Length > 0 ? "," : "") + parameters[i].TypeName + ":" + parameters[i].Value.ToString();
+                        p += (p.Length > 0 ? "," : "") + parameters[i].NpgsqlDbType + ":" + parameters[i].Value.ToString();
 
                     if (p.Length > 0) p = " p -> (" + p + ")";
 
@@ -70,12 +70,12 @@ namespace Backend.Base.Database
                 //Thread.Sleep(400);
                 var connectionString = AppSettings.DBMainConnection;
 
-                SqlConnection connection = null;
+                NpgsqlConnection connection = null;
                 try
                 {
-                    connection = new SqlConnection(connectionString);
+                    connection = new NpgsqlConnection(connectionString);
                     connection.Open();
-                    var command = new SqlCommand(sqlString, connection);
+                    var command = new NpgsqlCommand(sqlString, connection);
                     command.ExecuteNonQuery();
                 }
                 catch (Exception ex)
@@ -103,12 +103,12 @@ namespace Backend.Base.Database
                 //Thread.Sleep(400);
                 var connectionString = AppSettings.DBMainConnection;
 
-                SqlConnection connection = null;
+                NpgsqlConnection connection = null;
                 try
                 {
-                    connection = new SqlConnection(connectionString);
+                    connection = new NpgsqlConnection(connectionString);
                     connection.Open();
-                    var command = new SqlCommand(sqlString, connection);
+                    var command = new NpgsqlCommand(sqlString, connection);
                     object result = command.ExecuteScalar();
                     return Convert.ToInt64(result); // ✅ ID returned
                 }

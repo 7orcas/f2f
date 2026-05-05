@@ -1,5 +1,5 @@
 ﻿using GC = Backend.GlobalConstants;
-using Microsoft.Data.SqlClient;
+using Npgsql;
 
 /// <summary>
 /// Utility class to load org entities.
@@ -13,7 +13,7 @@ namespace Backend.Base.Org
 {
     public class OrgLoad : SqlUtils
     {
-        static public OrgEnt Load(SqlDataReader r)
+        static public OrgEnt Load(NpgsqlDataReader r)
         {
             var org = new OrgEnt();
             org.Nr = GetInt(r, "nr");

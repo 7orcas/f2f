@@ -1,5 +1,5 @@
 ﻿using Backend.Base.Label.Ent;
-using Microsoft.Data.SqlClient;
+using Npgsql;
 using Microsoft.Extensions.Caching.Memory;
 using System.Collections.Generic;
 using GC = Backend.GlobalConstants;
@@ -137,7 +137,7 @@ namespace Backend.Base.Label
                            Updated = GetUpdated(r),
                        };
                    },
-                   new SqlParameter("@langKeyCode", langKeyCode)
+                   new NpgsqlParameter("@langKeyCode", langKeyCode)
                );
 
             return k;

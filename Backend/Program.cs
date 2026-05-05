@@ -3,10 +3,11 @@ using System.Text;
 using Backend;
 using Backend.App.Machines;
 using Backend.Base.Token.Ent;
+using Backend.Data;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.IdentityModel.Tokens; // For TokenValidationParameters
-
+using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -27,6 +28,11 @@ builder.Services.AddControllers(options =>
     options.Filters.Add<InterceptorFilter>();
 });
 //builder.Services.AddScoped<InterceptorFilter>();
+
+
+builder.Services.AddDbContext<AppDbContext>(options =>
+    options.UseNpgsql(
+        builder.Configuration.GetConnectionString("DBMainConnection")));
 
 
 builder.Services.AddSession(options =>
